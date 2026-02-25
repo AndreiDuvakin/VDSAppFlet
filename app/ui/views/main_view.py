@@ -9,10 +9,10 @@ from app.ui.views.servers_view import ServersView
 
 @ft.component
 def MainView(
-        state: AppState,
-        account_service: AccountService,
-        servers_service: ServersService,
-        page: ft.Page,
+    state: AppState,
+    account_service: AccountService,
+    servers_service: ServersService,
+    page: ft.Page,
 ) -> list[ft.Control]:
 
     def tab_changed(e):
@@ -38,10 +38,11 @@ def MainView(
                     ft.TabBarView(
                         expand=True,
                         controls=[
-                            AccountView(state, account_service),
+                            AccountView(state, account_service, page),
                             ServersView(state, servers_service),
                         ],
                     ),
                 ]
-            ), ),
+            ),
+        ),
     ]
