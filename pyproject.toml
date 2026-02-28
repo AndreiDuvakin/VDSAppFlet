@@ -1,11 +1,11 @@
 [project]
-name = "test02-2026"
+name = "VDSApp"
 version = "0.1.0"
-description = ""
+description = "Unofissial client VDS Selectel"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "Flet developer", email = "you@example.com" }
+    { name = "Duvakin Andrei", email = "andrei@duvakin.ru" }
 ]
 dependencies = [
     "flet>=0.80.5"
@@ -19,10 +19,10 @@ dev = [
 ]
 
 [tool.flet]
-org = "com.mycompany"
-product = "test02-2026"
-company = "Flet"
-copyright = "Copyright (C) 2023-2026 by Flet"
+org = "team.numerum"
+product = "VDSApp"
+company = "Numerum"
+copyright = "Copyright (C) 2023-2026 by Numerum"
 
 [tool.flet.app]
 path = "src"

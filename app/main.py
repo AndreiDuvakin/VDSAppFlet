@@ -7,10 +7,9 @@ from app.ui.views.account_view import AccountView
 
 @ft.component
 def AppRoot(page: ft.Page) -> ft.Control:
-    token = "c0568931e74d193ce4d01d981fbfe2cfe92d0b860725d9ea6cc04b135faa6ae4"
+    token = "цуацацупцупуц"
     account_client = AccountClient(token)
 
-    # Простой dict вместо dataclass — без багов observable
     initial_state = {
         "account": {
             "info": None,
@@ -25,7 +24,6 @@ def AppRoot(page: ft.Page) -> ft.Control:
         client=account_client,
         state=state,
         set_state=set_state,
-        page=page
     )
 
     return AccountView(
