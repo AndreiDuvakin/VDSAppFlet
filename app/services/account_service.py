@@ -1,54 +1,26 @@
-import flet as ft
-from typing import Callable
+from dataclasses import replace
+from typing import Any, Awaitable
 
 from app.api.account_client import AccountClient
 from app.state.app_state import AppState
-from app.state.account_state import AccountState
 
 
 class AccountService:
-    def __init__(
-        self,
-        client: AccountClient,
-        set_state: Callable[[AppState], None],
-        page: ft.Page,
-    ):
+    def __init__(self, client: AccountClient, set_state):
         self.client = client
         self.set_state = set_state
-        self.page = page
 
-    async def load_account(self, current_state: AppState) -> None:
-        new_account = AccountState(
-            info=None,
-            loading=True,
-            error=None,
-        )
-        new_state = AppState(
-            current_tab=current_state.current_tab,
-            account=new_account,
-            servers=current_state.servers,
-        )
+    async def _update(self, state: AppState, **account_changes: Any) -> AppState:
+        new_account = replace(state.account, **account_changes)
+        new_state = replace(state, account=new_account)
         self.set_state(new_state)
-        self.page.update()
+        return new_state
+
+    async def load_account(self, state: AppState) -> None:
+        await self._update(state, loading=True, error=None)
 
         try:
             raw = await self.client.get()
-            new_account = AccountState(
-                info=raw,
-                loading=False,
-                error=None,
-            )
+            await self._update(state, info=raw, loading=False, error=None)
         except Exception as e:
-            new_account = AccountState(
-                info=None,
-                loading=False,
-                error=str(e),
-            )
-
-        new_state = AppState(
-            current_tab=current_state.current_tab,
-            account=new_account,
-            servers=current_state.servers,
-        )
-        self.set_state(new_state)
-        self.page.update()
+            await self._update(state, info=None, loading=False, error=str(e))

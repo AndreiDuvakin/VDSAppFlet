@@ -20,7 +20,6 @@ def AppRoot(page: ft.Page):
     account_service = AccountService(
         client=account_client,
         set_state=set_state,
-        page=page,
     )
     servers_service = ServersService(servers_client, state.servers, page)
 
