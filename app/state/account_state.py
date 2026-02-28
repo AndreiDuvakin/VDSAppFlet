@@ -1,6 +1,6 @@
-import flet as ft
-
 from dataclasses import dataclass
+
+import flet as ft
 
 
 @ft.observable

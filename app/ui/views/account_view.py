@@ -1,28 +1,27 @@
 import flet as ft
 
 from app.services.account_service import AccountService
+from app.state.app_state import AppState
 
 
 @ft.component
-def AccountView(state: dict, service: AccountService, page: ft.Page) -> ft.Control:
-    acc = state["account"]
-
+def AccountView(state: AppState, service: AccountService, page: ft.Page) -> ft.Control:
     def start_loading():
-        if acc["info"] is None and not acc["loading"]:
-            page.run_task(service.load_account)
+        if state.account.info is None and not state.account.loading:
+            page.run_task(service.load_account, state)
 
-    ft.use_effect(start_loading, [])
+    ft.use_effect(start_loading, [state.account.loading, bool(state.account.info)])
 
-    if acc["loading"]:
+    if state.account.loading:
         return ft.ProgressRing(width=50, height=50)
 
-    if acc["error"]:
-        return ft.Text(f"Ошибка: {acc['error']}", color="red")
+    if state.account.error:
+        return ft.Text(f"Ошибка: {state.account.error}", color="red")
 
-    if not acc["info"]:
+    if not state.account.info:
         return ft.Text("Аккаунт не загружен")
 
-    info = acc["info"]
+    info = state.account.info
     return ft.Column(
         [
             ft.Text("✅ Аккаунт загружен", size=20, weight=ft.FontWeight.BOLD),

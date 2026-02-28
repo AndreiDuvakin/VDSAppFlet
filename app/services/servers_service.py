@@ -4,7 +4,7 @@ from app.domain.server import Server
 
 
 class ServersService:
-    def __init__(self, client: ServersClient, state: ServersState):
+    def __init__(self, client: ServersClient, state: ServersState, page):
         self.client = client
         self.state = state
 
