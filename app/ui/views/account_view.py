@@ -13,7 +13,15 @@ def AccountView(state: AppState, service: AccountService, page: ft.Page) -> ft.C
     ft.use_effect(start_loading, [state.account.loading, bool(state.account.info)])
 
     if state.account.loading:
-        return ft.ProgressRing(width=50, height=50)
+        return ft.Column(
+            [
+                ft.ProgressRing()
+            ],
+            expand=True,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            alignment=ft.MainAxisAlignment.CENTER,
+
+        )
 
     if state.account.error:
         return ft.Text(f"Ошибка: {state.account.error}", color="red")

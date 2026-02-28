@@ -27,7 +27,8 @@ def MainView(
         ft.AppBar(title=ft.Text("Vscale Client")),
         ft.Tabs(
             selected_index=state.current_tab,
-            length=3,
+            length=2,
+            expand=True,
             on_change=tab_changed,
             content=ft.Column(
                 expand=True,
@@ -38,11 +39,25 @@ def MainView(
                     ft.TabBarView(
                         expand=True,
                         controls=[
-                            AccountView(state, account_service, page),
+                            AccountView(
+                                state=state,
+                                service=account_service,
+                                page=page,
+                            ),
                             ServersView(state, servers_service),
                         ],
                     ),
                 ]
             ),
         ),
+        ft.BottomAppBar(
+            bgcolor=ft.Colors.SURFACE_CONTAINER_LOW,
+            content=ft.Row(
+                alignment=ft.MainAxisAlignment.SPACE_AROUND,
+                controls=[
+                    ft.IconButton(ft.Icons.ACCOUNT_CIRCLE),
+                    ft.IconButton(ft.Icons.HOME),
+                ],
+            ),
+        )
     ]
