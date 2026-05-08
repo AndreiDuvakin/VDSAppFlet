@@ -1,31 +1,27 @@
 import flet as ft
-
 from app.services.account_service import AccountService
 from app.state.app_state import AppState
 
 
-@ft.component
 def AccountView(state: AppState, service: AccountService, page: ft.Page) -> ft.Control:
-    def start_loading():
-        if state.account.info is None and not state.account.loading:
-            page.run_task(service.load_account, state)
+    # Эффект загрузки – так как нет хуков, запускаем загрузку вручную при создании
+    # Нужно проверить, загружены ли данные, и если нет – вызвать load_account.
+    # Но так как AccountView может вызываться многократно при перерисовке, нужно избежать повторной загрузки.
+    # Решение: вызовем загрузку один раз, используя флаги состояния.
 
-    ft.use_effect(start_loading, [state.account.loading, bool(state.account.info)])
+    if state.account.info is None and not state.account.loading and not state.account.error:
+        # Запускаем загрузку асинхронно
+        page.run_task(service.load_account, state)
 
     if state.account.loading:
         return ft.Column(
-            [
-                ft.ProgressRing()
-            ],
+            [ft.ProgressRing()],
             expand=True,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             alignment=ft.MainAxisAlignment.CENTER,
-
         )
-
     if state.account.error:
         return ft.Text(f"Ошибка: {state.account.error}", color="red")
-
     if not state.account.info:
         return ft.Text("Аккаунт не загружен")
 

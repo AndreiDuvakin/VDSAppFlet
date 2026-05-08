@@ -1,9 +1,8 @@
 from dataclasses import replace
-from typing import Any, Awaitable
+from typing import Any
 
 from app.api.account_client import AccountClient
 from app.state.app_state import AppState
-
 
 class AccountService:
     def __init__(self, client: AccountClient, set_state):
@@ -18,7 +17,6 @@ class AccountService:
 
     async def load_account(self, state: AppState) -> None:
         await self._update(state, loading=True, error=None)
-
         try:
             raw = await self.client.get()
             await self._update(state, info=raw, loading=False, error=None)

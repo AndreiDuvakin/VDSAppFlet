@@ -6,7 +6,7 @@ class BaseVscaleClient:
         self._client = httpx.AsyncClient(base_url=base_url, headers={"X-Token": token}, timeout=timeout)
 
     async def _get(self, path: str, **kwargs):
-        r = await self._client.get("/account")
+        r = await self._client.get(path)  # используем path, а не "/account"
         r.raise_for_status()
         data = r.json()
-        return data.get("info", data)
+        return data.get("info", data)  # возможно, для некоторых методов нужно возвращать data без .get

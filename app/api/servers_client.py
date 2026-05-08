@@ -2,8 +2,8 @@ from app.api.base import BaseVscaleClient
 
 
 class ServersClient(BaseVscaleClient):
-    def list(self) -> list[dict]:
-        return self._get("/scalets")
+    async def list(self) -> list[dict]:
+        return await self._get("/scalets")
 
-    def get(self, ctid: int) -> dict:
-        return self._get(f"/scalets/{ctid}")
+    async def get(self, ctid: int) -> dict:
+        return await self._get(f"/scalets/{ctid}")
