@@ -9,4 +9,5 @@ class BaseVscaleClient:
         r = await self._client.get(path)  # используем path, а не "/account"
         r.raise_for_status()
         data = r.json()
-        return data.get("info", data)  # возможно, для некоторых методов нужно возвращать data без .get
+
+        return data

@@ -20,6 +20,7 @@ def ServersView(state: AppState, service: ServersService, page: ft.Page) -> ft.C
     if not state.servers.items:
         return ft.Text("Серверы не загружены")
 
+
     # Здесь можно отобразить список серверов (для теста пока просто текст)
     return ft.Column(
         [

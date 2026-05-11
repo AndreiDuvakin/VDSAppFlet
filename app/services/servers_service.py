@@ -22,5 +22,5 @@ class ServersService:
             raw_servers = await self.client.list()
             servers = [Server.from_dict(item) for item in raw_servers]
             await self._update(state, items=servers, loading=False, error=None)
-        except Exception as e:
+        except IOError as e:
             await self._update(state, items=[], loading=False, error=str(e))
