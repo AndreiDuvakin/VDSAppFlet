@@ -1,9 +1,6 @@
-import base64
-import os
 from dataclasses import replace
 
 import flet as ft
-import flet_secure_storage as fss
 from dotenv import load_dotenv
 
 from app.core.screens import Screen
@@ -61,4 +58,4 @@ async def main(page: ft.Page):
         await render_page()
 
 
-ft.run(main)
+ft.run(main, view=ft.AppView.WEB_BROWSER)
