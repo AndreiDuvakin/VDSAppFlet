@@ -1,10 +1,22 @@
+from typing import Callable
+
 import flet as ft
+
+from api.servers_client import ServersClient
 from app.services.servers_service import ServersService
 from app.state.app_state import AppState
 
 
-def ServersView(state: AppState, service: ServersService, page: ft.Page) -> ft.Control:
-    # Загрузка серверов, если ещё не загружены
+def ServersView(
+        state: AppState,
+        page: ft.Page,
+        set_state: Callable,
+) -> ft.Control:
+    page.title = 'Список серверов'
+
+    client = ServersClient(state.token)
+    service = ServersService(client, set_state)
+
     if not state.servers.items and not state.servers.loading and not state.servers.error:
         page.run_task(service.load_servers, state)
 
@@ -20,8 +32,6 @@ def ServersView(state: AppState, service: ServersService, page: ft.Page) -> ft.C
     if not state.servers.items:
         return ft.Text("Серверы не загружены")
 
-
-    # Здесь можно отобразить список серверов (для теста пока просто текст)
     return ft.Column(
         [
             ft.Text("Список серверов", size=20, weight=ft.FontWeight.BOLD),

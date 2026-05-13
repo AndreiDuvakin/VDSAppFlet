@@ -1,4 +1,5 @@
-flet==0.80.5
+flet[all]==0.80.5
 uplink==0.10.0
 httpx==0.28.1
 python-dotenv==1.2.1
+flet-secure-storage==0.85.0

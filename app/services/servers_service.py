@@ -13,7 +13,7 @@ class ServersService:
     async def _update(self, state: AppState, **servers_changes: Any) -> AppState:
         new_servers = replace(state.servers, **servers_changes)
         new_state = replace(state, servers=new_servers)
-        self.set_state(new_state)
+        await self.set_state(new_state)
         return new_state
 
     async def load_servers(self, state: AppState) -> None:

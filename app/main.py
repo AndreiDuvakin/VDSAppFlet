@@ -1,78 +1,64 @@
+import base64
 import os
+from dataclasses import replace
+
 import flet as ft
+import flet_secure_storage as fss
 from dotenv import load_dotenv
 
-from app.api.servers_client import ServersClient
-from app.api.account_client import AccountClient
-from app.services.account_service import AccountService
-from app.services.servers_service import ServersService
+from app.core.screens import Screen
 from app.state.app_state import AppState
-from app.ui.pages.account_page import AccountView
-from app.ui.pages.servers_page import ServersView
+from app.ui.app_layout import AppLayout
+from ui.pages.login_page import LoginPage
 
 
-def main(page: ft.Page):
+async def main(page: ft.Page):
     load_dotenv()
-    page.title = "Vscale Client"
     page.theme_mode = ft.ThemeMode.SYSTEM
-
-    token = os.environ.get('TOKEN')
-    if not token:
-        page.add(ft.Text("TOKEN не найден", color="red"))
-        return
-
-    account_client = AccountClient(token)
-    servers_client = ServersClient(token)
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     state = AppState()
 
-    def set_state(new_state):
+    async def set_token(new_token: str):
+        new_state = replace(state, token=new_token)
+        await set_state(new_state)
+
+    async def set_state(new_state):
         nonlocal state
         state = new_state
-        render_page()
+        await render_page()
 
-    account_service = AccountService(account_client, set_state)
-    servers_service = ServersService(servers_client, set_state)
-
-    def render_page():
+    async def render_page():
         page.clean()
-        route = page.route.lstrip("/") or "account"
 
-        if route == "account":
-            content = AccountView(state, account_service, page)
-        elif route == "servers":
-            content = ServersView(state, servers_service, page)
+        if state.token is not None:
+            page.add(
+                AppLayout(
+                    state=state,
+                    page=page,
+                    set_state=set_state,
+                )
+            )
+
         else:
-            content = ft.Text("Страница не найдена", size=24, color="red")
+            page.add(
+                await LoginPage(
+                    page=page,
+                    state=state,
+                    set_state=set_state,
+                    set_token=set_token,
+                )
+            )
 
-        selected_index = 0 if route == "account" else 1
-
-        layout = ft.Column(
-            expand=True,
-            controls=[
-                ft.AppBar(title=ft.Text("Vscale Client")),
-                ft.Container(content=content, expand=True),
-                ft.NavigationBar(
-                    selected_index=selected_index,
-                    on_change=lambda e: page.go(["account", "servers"][e.control.selected_index]),
-                    destinations=[
-                        ft.NavigationBarDestination(icon=ft.Icons.ACCOUNT_CIRCLE_OUTLINED, label="Аккаунт"),
-                        ft.NavigationBarDestination(icon=ft.Icons.CLOUD_OUTLINED, label="Серверы"),
-                    ],
-                ),
-            ]
-        )
-        page.add(layout)
-        page.update()
-
-    def on_route_change(e: ft.RouteChangeEvent):
-        render_page()
+    async def on_route_change(e: ft.RouteChangeEvent):
+        await render_page()
 
     page.on_route_change = on_route_change
     if not page.route:
-        page.go("/account")
+        page.go(f"/{Screen.ACCOUNT}")
     else:
-        render_page()
+        await render_page()
 
 
 ft.run(main)

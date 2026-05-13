@@ -1,16 +1,23 @@
+from typing import Callable
+
 import flet as ft
+
+from api.account_client import AccountClient
 from app.services.account_service import AccountService
 from app.state.app_state import AppState
 
 
-def AccountView(state: AppState, service: AccountService, page: ft.Page) -> ft.Control:
-    # Эффект загрузки – так как нет хуков, запускаем загрузку вручную при создании
-    # Нужно проверить, загружены ли данные, и если нет – вызвать load_account.
-    # Но так как AccountView может вызываться многократно при перерисовке, нужно избежать повторной загрузки.
-    # Решение: вызовем загрузку один раз, используя флаги состояния.
+def AccountView(
+        state: AppState,
+        page: ft.Page,
+        set_state: Callable
+) -> ft.Control:
+    page.title = 'Данные аккаунта'
+
+    client = AccountClient(state.token)
+    service = AccountService(client, set_state)
 
     if state.account.info is None and not state.account.loading and not state.account.error:
-        # Запускаем загрузку асинхронно
         page.run_task(service.load_account, state)
 
     if state.account.loading:
