@@ -1,8 +1,5 @@
-from typing import Callable
-
 import flet as ft
 
-from api.account_client import AccountClient
 from app.services.account_service import AccountService
 from app.state.app_state import AppState
 
@@ -10,12 +7,10 @@ from app.state.app_state import AppState
 def AccountView(
         state: AppState,
         page: ft.Page,
-        set_state: Callable
+        service: AccountService,
 ) -> ft.Control:
     page.title = 'Данные аккаунта'
 
-    client = AccountClient(state.token)
-    service = AccountService(client, set_state)
 
     if state.account.info is None and not state.account.loading and not state.account.error:
         page.run_task(service.load_account, state)

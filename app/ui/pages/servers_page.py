@@ -1,8 +1,5 @@
-from typing import Callable
-
 import flet as ft
 
-from api.servers_client import ServersClient
 from app.services.servers_service import ServersService
 from app.state.app_state import AppState
 
@@ -10,12 +7,9 @@ from app.state.app_state import AppState
 def ServersView(
         state: AppState,
         page: ft.Page,
-        set_state: Callable,
+        service: ServersService,
 ) -> ft.Control:
     page.title = 'Список серверов'
-
-    client = ServersClient(state.token)
-    service = ServersService(client, set_state)
 
     if not state.servers.items and not state.servers.loading and not state.servers.error:
         page.run_task(service.load_servers, state)

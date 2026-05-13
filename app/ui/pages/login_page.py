@@ -59,6 +59,7 @@ async def LoginPage(
         )
     if state.login.error:
         show_simple_dialog('Ошибка входа', ft.Text('Неправильный токен'))
+        state.login.error = None
 
     if state.login.info:
         if state.temp_token:

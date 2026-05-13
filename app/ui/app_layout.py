@@ -2,10 +2,14 @@ from typing import Callable
 
 import flet as ft
 
+from api.account_client import AccountClient
+from api.servers_client import ServersClient
 from app.core.screens import Screen, SCREENS
 from app.state.app_state import AppState
 from app.ui.pages.account_page import AccountView
 from app.ui.pages.servers_page import ServersView
+from services.account_service import AccountService
+from services.servers_service import ServersService
 
 
 def AppLayout(
@@ -17,9 +21,15 @@ def AppLayout(
     route = page.route.lstrip("/") or Screen.SERVERS.value
 
     if route == Screen.ACCOUNT.value:
-        content = AccountView(state=state, page=page, set_state=set_state)
+        client = AccountClient(state.token)
+        service = AccountService(client, set_state)
+
+        content = AccountView(state=state, page=page, service=service)
     elif route == Screen.SERVERS.value:
-        content = ServersView(state=state, page=page, set_state=set_state)
+        client = ServersClient(state.token)
+        service = ServersService(client, set_state)
+
+        content = ServersView(state=state, page=page, service=service)
     else:
         content = ft.Text("Страница не найдена", size=24, color="red")
 
