@@ -58,4 +58,4 @@ async def main(page: ft.Page):
         await render_page()
 
 
-ft.run(main, view=ft.AppView.WEB_BROWSER)
+ft.run(main)

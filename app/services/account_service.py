@@ -3,6 +3,8 @@ from typing import Any
 
 from app.api.account_client import AccountClient
 from app.state.app_state import AppState
+from app.domain.account import Account
+
 
 class AccountService:
     def __init__(self, client: AccountClient, set_state):
@@ -19,6 +21,7 @@ class AccountService:
         await self._update(state, loading=True, error=None)
         try:
             raw = await self.client.get()
-            await self._update(state, info=raw, loading=False, error=None)
+            account = Account.from_dict(raw)
+            await self._update(state, info=account, loading=False, error=None)
         except Exception as e:
             await self._update(state, info=None, loading=False, error=str(e))

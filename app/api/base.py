@@ -11,3 +11,15 @@ class BaseVscaleClient:
         data = r.json()
 
         return data
+
+    async def _delete(self, path: str, **kwargs):
+        r = await self._client.delete(path)
+        r.raise_for_status()
+        if r.status_code == 204:
+            return {}
+        return r.json()
+
+    async def _post(self, path: str, data: dict = None, **kwargs):
+        r = await self._client.post(path, json=data)
+        r.raise_for_status()
+        return r.json()
