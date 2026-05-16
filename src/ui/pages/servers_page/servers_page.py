@@ -3,7 +3,7 @@ import flet as ft
 from src.services.servers_service import ServersService
 from src.state.app_state import AppState
 from src.ui.components.progress_ring import progress_ring
-from src.ui.components.server_card import server_card
+from src.ui.pages.servers_page.components.server_card import server_card
 
 
 def ServersView(
@@ -40,8 +40,10 @@ def ServersView(
             alignment=ft.Alignment.CENTER,
         )
 
-    cards = [server_card(s, on_click=lambda e, s=s: list)
-             for s in state.servers.items]
+    cards = [
+        server_card(page, server, service, state)
+        for server in state.servers.items
+    ]
 
     return ft.Column(
         [

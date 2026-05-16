@@ -15,6 +15,7 @@ class BaseVscaleClient:
         r.raise_for_status()
         if r.status_code == 204:
             return {}
+
         return r.json()
 
     async def _put(self, path: str, json=None, data=None, **kwargs):
@@ -22,6 +23,15 @@ class BaseVscaleClient:
         r.raise_for_status()
         if r.status_code == 204:
             return {}
+
+        return r.json()
+
+    async def _patch(self, path: str, json=None, data=None, **kwargs):
+        r = await self._client.patch(path, json=json, data=data, **kwargs)
+        r.raise_for_status()
+        if r.status_code == 204:
+            return {}
+
         return r.json()
 
     async def _delete(self, path: str, **kwargs):

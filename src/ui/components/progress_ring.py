@@ -2,9 +2,8 @@ import flet as ft
 
 
 def progress_ring() -> ft.Control:
-    return ft.Column(
-            [ft.ProgressRing()],
+    return ft.Container(
+            ft.ProgressRing(),
             expand=True,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            alignment=ft.MainAxisAlignment.CENTER,
+            alignment=ft.Alignment.CENTER,
         )
