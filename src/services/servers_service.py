@@ -1,3 +1,4 @@
+import time
 from dataclasses import replace
 from typing import Any
 
@@ -10,6 +11,7 @@ class ServersService:
     def __init__(self, client: ServersClient, set_state):
         self.client = client
         self.set_state = set_state
+        self.last_refresh = time.time()
 
     async def _update(self, state: AppState, **servers_changes: Any) -> AppState:
         new_servers = replace(state.servers, **servers_changes)
@@ -27,6 +29,9 @@ class ServersService:
             await self._update(state, items=[], loading=False, error=str(e))
 
     async def refresh_servers(self, state: AppState) -> None:
+        if state.servers.loading:
+            return
+
         await self._update(state, loading=False, error=None)
         try:
             raw_servers = await self.client.list()

@@ -12,16 +12,16 @@ def show_server_actions(
         state: AppState,
 ):
     async def restart_server(e):
-        await service.restart_server(state, server.ctid)
         page.pop_dialog()
+        await service.restart_server(state, server.ctid)
 
     async def start_server(e):
-        await service.start_server(state, server.ctid)
         page.pop_dialog()
+        await service.start_server(state, server.ctid)
 
     async def stop_server(e):
-        await service.stop_server(state, server.ctid)
         page.pop_dialog()
+        await service.stop_server(state, server.ctid)
 
     actions_sheet = ft.CupertinoActionSheet(
         title=ft.Text(f"{server.name or server.hostname} (#{server.ctid})"),
