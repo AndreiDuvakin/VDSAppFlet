@@ -1,20 +1,23 @@
 import flet as ft
 
-from src.services.servers_service import ServersService
+from src.services.app_services import AppServices
 from src.state.app_state import AppState
 from src.ui.components.progress_ring import progress_ring
 from src.ui.pages.servers_page.components.server_card import server_card
 
 
-def ServersView(
+def servers_page(
         state: AppState,
         page: ft.Page,
-        service: ServersService,
+        services: AppServices,
 ) -> ft.Control:
     page.title = 'Серверы'
 
     if not state.servers.items and not state.servers.loading and not state.servers.error:
-        page.run_task(service.load_servers, state)
+        page.run_task(services.servers_service.load_servers, state)
+
+    if not state.ssh_keys.items and not state.ssh_keys.loading:
+        page.run_task(services.ssh_keys_service.load_ssh_keys, state)
 
     if state.servers.loading:
         return progress_ring()
@@ -24,7 +27,8 @@ def ServersView(
             content=ft.Column([
                 ft.Icon(ft.Icons.ERROR_OUTLINE, size=64, color=ft.Colors.RED_400),
                 ft.Text(f"Ошибка: {state.servers.error}", size=16),
-                ft.ElevatedButton("Повторить", on_click=lambda _: page.run_task(service.load_servers, state))
+                ft.ElevatedButton("Повторить",
+                                  on_click=lambda _: page.run_task(services.servers_service.load_servers, state))
             ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
             expand=True,
             alignment=ft.Alignment.CENTER,
@@ -41,7 +45,7 @@ def ServersView(
         )
 
     cards = [
-        server_card(page, server, service, state)
+        server_card(page, server, services, state)
         for server in state.servers.items
     ]
 

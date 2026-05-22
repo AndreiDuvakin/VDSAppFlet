@@ -1,23 +1,16 @@
-from typing import Callable
-
 import flet as ft
 
-from src.services.account_service import AccountService
-from src.services.ssh_keys_service import SSHKeysService
+from src.services.app_services import AppServices
 from src.state.app_state import AppState
 from src.ui.pages.account_page.tabs.notifications_tab import notifications_tab
 from src.ui.pages.account_page.tabs.profile_tab import profile_tab
 from src.ui.pages.account_page.tabs.ssh_keys_tab import ssh_keys_tab
-from src.services.notification_service import NotificationService
 
 
-def AccountView(
+def account_page(
         state: AppState,
-        set_state: Callable,
         page: ft.Page,
-        account_service: AccountService,
-        ssh_keys_service: SSHKeysService,
-        notification_service: NotificationService,
+        services: AppServices,
 ) -> ft.Control:
     def on_tab_changed(e):
         state.account_tab_index = e.control.selected_index
@@ -26,15 +19,15 @@ def AccountView(
     def load_current_tab_data(tab_index: int):
         if tab_index == 0:
             if state.account.info is None and not state.account.loading:
-                page.run_task(account_service.load_account, state)
+                page.run_task(services.account_service.load_account, state)
 
         elif tab_index == 1:
             if not state.ssh_keys.items and not state.ssh_keys.loading:
-                page.run_task(ssh_keys_service.load_ssh_keys, state)
+                page.run_task(services.ssh_keys_service.load_ssh_keys, state)
 
         elif tab_index == 2:
             if state.notification.settings is None and not state.notification.loading:
-                page.run_task(notification_service.load_settings, state)
+                page.run_task(services.notification_service.load_settings, state)
 
     load_current_tab_data(state.account_tab_index)
 
@@ -63,7 +56,7 @@ def AccountView(
                                 content=profile_tab(
                                     page=page,
                                     state=state,
-                                    service=account_service,
+                                    services=services,
                                 ),
                                 expand=True,
                             ),
@@ -72,7 +65,7 @@ def AccountView(
                                 content=ssh_keys_tab(
                                     page=page,
                                     state=state,
-                                    service=ssh_keys_service,
+                                    services=services,
                                 ),
                                 expand=True,
                             ),
@@ -81,7 +74,7 @@ def AccountView(
                                 content=notifications_tab(
                                     page=page,
                                     state=state,
-                                    service=notification_service,
+                                    services=services,
                                 ),
                                 expand=True,
                             ),

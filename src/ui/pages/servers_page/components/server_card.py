@@ -1,32 +1,31 @@
 import flet as ft
 
-from src.services.servers_service import ServersService
+from src.core.screens import Screen
 from src.domain.server import Server
-from src.ui.pages.servers_page.components.server_actions_shower import show_server_actions
+from src.services.app_services import AppServices
 from src.state.app_state import AppState
 from src.ui.components.progress_ring import progress_ring
-from src.ui.pages.servers_page.components.server_details_shower.server_details_shower import show_server_details
+from src.ui.pages.servers_page.components.server_actions_shower import show_server_actions
 
 
 def server_card(
         page: ft.Page,
         server: Server,
-        service: ServersService,
+        services: AppServices,
         state: AppState,
 ) -> ft.Control:
-    is_server_in_updating = server.ctid in state.servers.updating_servers_ctids
+    is_server_in_updating = server.ctid in state.servers.updating_servers_ctids or state.ssh_keys.loading
 
-    def open_details(e):
+    async def open_details(e):
         if is_server_in_updating:
             return
-
-        show_server_details(page, server)
+        page.go(Screen.server_details(server.ctid))
 
     def open_actions_menu(e):
         if is_server_in_updating:
             return
 
-        show_server_actions(page, server, service, state)
+        show_server_actions(page, server, services, state)
 
     card_content = ft.GestureDetector(
         on_tap=open_details,

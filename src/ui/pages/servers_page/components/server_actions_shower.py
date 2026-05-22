@@ -1,6 +1,6 @@
 import flet as ft
 
-from src.services.servers_service import ServersService
+from src.services.app_services import AppServices
 from src.domain.server import Server
 from src.state.app_state import AppState
 
@@ -8,20 +8,20 @@ from src.state.app_state import AppState
 def show_server_actions(
         page: ft.Page,
         server: Server,
-        service: ServersService,
+        services: AppServices,
         state: AppState,
 ):
     async def restart_server(e):
         page.pop_dialog()
-        await service.restart_server(state, server.ctid)
+        await services.servers_service.restart_server(state, server.ctid)
 
     async def start_server(e):
         page.pop_dialog()
-        await service.start_server(state, server.ctid)
+        await services.servers_service.start_server(state, server.ctid)
 
     async def stop_server(e):
         page.pop_dialog()
-        await service.stop_server(state, server.ctid)
+        await services.servers_service.stop_server(state, server.ctid)
 
     actions_sheet = ft.CupertinoActionSheet(
         title=ft.Text(f"{server.name or server.hostname} (#{server.ctid})"),

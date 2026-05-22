@@ -1,7 +1,7 @@
 import flet as ft
 
+from src.services.app_services import AppServices
 from src.domain.notification import NotificationSettings
-from src.services.notification_service import NotificationService
 from src.state.app_state import AppState
 from src.ui.components.progress_ring import progress_ring
 
@@ -9,7 +9,7 @@ from src.ui.components.progress_ring import progress_ring
 def notifications_tab(
         page: ft.Page,
         state: AppState,
-        service: NotificationService,
+        services: AppServices,
 ) -> ft.Control:
     page.title = "Уведомления о балансе"
 
@@ -24,7 +24,7 @@ def notifications_tab(
                     ft.Text(f"Ошибка: {state.notification.error}", size=16, color=ft.Colors.RED_400),
                     ft.ElevatedButton(
                         "Повторить",
-                        on_click=lambda _: page.run_task(service.load_settings, state),
+                        on_click=lambda _: page.run_task(services.notification_service.load_settings, state),
                         style=ft.ButtonStyle(color=ft.Colors.WHITE, bgcolor=ft.Colors.BLUE_400),
                     ),
                 ],
@@ -45,10 +45,10 @@ def notifications_tab(
 
     async def switch_notifications(e):
         if e.control.value:
-            await service.update_settings(state, 10000)
+            await services.notification_service.update_settings(state, 10000)
 
         else:
-            await service.update_settings(state, 0)
+            await services.notification_service.update_settings(state, 0)
 
     async def save_settings(e):
         try:
@@ -56,7 +56,7 @@ def notifications_tab(
             if new_rub < 0:
                 raise ValueError("Сумма не может быть отрицательной")
             new_copecks = NotificationSettings.from_rub(new_rub)
-            await service.update_settings(state, new_copecks)
+            await services.notification_service.update_settings(state, new_copecks)
 
             if not state.notification.error:
                 status_text.value = "✅ Настройки сохранены"

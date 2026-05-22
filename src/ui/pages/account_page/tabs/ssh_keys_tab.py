@@ -1,14 +1,15 @@
 import flet as ft
 
-from src.services.ssh_keys_service import SSHKeysService
+from src.services.app_services import AppServices
 from src.state.app_state import AppState
 from src.ui.components.progress_ring import progress_ring
+from src.ui.components.show_simple_dialog import show_simple_dialog
 
 
 def ssh_keys_tab(
         page: ft.Page,
         state: AppState,
-        service: SSHKeysService,
+        services: AppServices,
 ) -> ft.Control:
     page.title = 'SSH Ключи'
 
@@ -23,7 +24,7 @@ def ssh_keys_tab(
                     ft.Text(f"Ошибка: {state.ssh_keys.error}", size=16, color=ft.Colors.RED_400),
                     ft.ElevatedButton(
                         "Повторить",
-                        on_click=lambda _: page.run_task(service.load_ssh_keys, state),
+                        on_click=lambda _: page.run_task(services.ssh_keys_service.load_ssh_keys, state),
                         style=ft.ButtonStyle(color=ft.Colors.WHITE, bgcolor=ft.Colors.BLUE_400),
                     ),
                 ],
@@ -36,7 +37,7 @@ def ssh_keys_tab(
 
     def show_delete_dialog(key_id: int, key_name: str):
         def confirm_delete(e):
-            page.run_task(service.delete_ssh_key, state, key_id)
+            page.run_task(services.ssh_keys_service.delete_ssh_key, state, key_id)
             page.pop_dialog()
 
         dialog = ft.AlertDialog(
@@ -50,7 +51,7 @@ def ssh_keys_tab(
         )
         page.show_dialog(dialog)
 
-    def show_add_dialog():
+    def show_create_ssh_key_dialog():
         name_field = ft.TextField(
             label="Название ключа",
             hint_text="Например: Мой домашний ПК",
@@ -69,19 +70,31 @@ def ssh_keys_tab(
             key = key_field.value.strip()
 
             if not name:
-                name_field.error_text = "Введите название ключа"
+                show_simple_dialog(
+                    "Внимание",
+                    ft.Text("Введите название ключа"),
+                    page,
+                )
                 page.update()
                 return
             if not key:
-                key_field.error_text = "Введите публичный ключ"
+                show_simple_dialog(
+                    "Внимание",
+                    ft.Text("Введите публичный ключ"),
+                    page,
+                )
                 page.update()
                 return
             if not key.startswith(("ssh-rsa", "ssh-ed25519", "ecdsa-sha2-nistp")):
-                key_field.error_text = "Неверный формат публичного ключа"
+                show_simple_dialog(
+                    "Внимание",
+                    ft.Text("Неверный формат публичного ключа"),
+                    page,
+                )
                 page.update()
                 return
 
-            page.run_task(service.add_ssh_key, state, name, key)
+            page.run_task(services.ssh_keys_service.add_ssh_key, state, name, key)
             page.pop_dialog()
 
         dialog = ft.AlertDialog(
@@ -106,10 +119,10 @@ def ssh_keys_tab(
         page.show_dialog(dialog)
 
     add_button = ft.Container(
-        content=ft.ElevatedButton(
+        content=ft.Button(
             "Добавить SSH ключ",
             icon=ft.Icons.ADD,
-            on_click=lambda _: show_add_dialog(),
+            on_click=lambda _: show_create_ssh_key_dialog(),
             style=ft.ButtonStyle(
                 bgcolor=ft.Colors.BLUE_400,
                 color=ft.Colors.WHITE,

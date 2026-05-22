@@ -3,6 +3,7 @@ from dataclasses import replace
 import flet as ft
 from dotenv import load_dotenv
 
+from src.services.app_services import AppServices
 from src.core.screens import Screen
 from src.state.app_state import AppState
 from src.ui.app_layout import AppLayout
@@ -16,9 +17,15 @@ async def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     state = AppState()
+    services = None
 
     async def set_token(new_token: str):
+        nonlocal services, state
         new_state = replace(state, token=new_token)
+        state = new_state
+
+        services = AppServices.create(new_token, set_state)
+
         await set_state(new_state)
 
     async def set_state(new_state):
@@ -29,12 +36,12 @@ async def main(page: ft.Page):
     async def render_page():
         page.clean()
 
-        if state.token is not None:
+        if state.token is not None and services is not None:
             page.add(
                 AppLayout(
                     state=state,
                     page=page,
-                    set_state=set_state,
+                    services=services,
                 )
             )
 
@@ -53,7 +60,7 @@ async def main(page: ft.Page):
 
     page.on_route_change = on_route_change
     if not page.route:
-        page.go(f"/{Screen.ACCOUNT}")
+        page.go(f"/{Screen.SERVERS}")
     else:
         await render_page()
 

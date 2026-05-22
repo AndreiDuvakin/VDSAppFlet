@@ -1,64 +1,90 @@
-from typing import Callable
-
 import flet as ft
 
-from src.api.account_client import AccountClient
-from src.api.notification_client import NotificationClient
-from src.api.servers_client import ServersClient
-from src.api.ssh_keys_client import SSHKeysClient
 from src.core.screens import Screen, SCREENS
-from src.services.account_service import AccountService
-from src.services.notification_service import NotificationService
-from src.services.servers_service import ServersService
-from src.services.ssh_keys_service import SSHKeysService
+from src.services.app_services import AppServices
 from src.state.app_state import AppState
-from src.ui.pages.account_page.account_page import AccountView
-from src.ui.pages.servers_page.servers_page import ServersView
+from src.ui.pages.account_page.account_page import account_page
+from src.ui.pages.servers_page.servers_page import servers_page
+from src.ui.pages.server_details_page.server_details_page import server_details_page
 
 
 def AppLayout(
         page: ft.Page,
         state: AppState,
-        set_state: Callable,
+        services: AppServices,
 ) -> ft.Control:
     route = page.route.lstrip("/") or Screen.SERVERS.value
+    is_navigation_visible = True
 
-    if route == Screen.ACCOUNT.value:
-        account_client = AccountClient(state.token)
-        account_service = AccountService(account_client, set_state)
-
-        ssh_keys_client = SSHKeysClient(state.token)
-        ssh_keys_service = SSHKeysService(ssh_keys_client, set_state)
-
-        notification_client = NotificationClient(state.token)
-        notification_service = NotificationService(notification_client, set_state)
-
-        content = AccountView(
-            state=state,
-            set_state=set_state,
+    server_ctid = Screen.parse_server_route(page.route)
+    if server_ctid is not None:
+        is_navigation_visible = False
+        content = server_details_page(
             page=page,
-            account_service=account_service,
-            ssh_keys_service=ssh_keys_service,
-            notification_service=notification_service,
+            services=services,
+            state=state,
+            ctid=server_ctid,
+        )
+    elif route == Screen.ACCOUNT.value:
+        content = account_page(
+            state=state,
+            page=page,
+            services=services,
         )
     elif route == Screen.SERVERS.value:
-        servers_client = ServersClient(state.token)
-        servers_service = ServersService(servers_client, set_state)
-
-        content = ServersView(state=state, page=page, service=servers_service)
+        content = servers_page(
+            state=state,
+            page=page,
+            services=services,
+        )
     else:
         content = ft.Text("Страница не найдена", size=24, color="red")
 
-    def go_handler(e):
-        index = int(e.data)
-        screen = SCREENS[index]
-        page.go(screen.value)
+    if is_navigation_visible:
+        def go_handler(e):
+            index = int(e.data)
+            screen = SCREENS[index]
+            page.go(screen.value)
 
-    def get_index():
-        screen_route = str(route).upper()
-        member = Screen[screen_route]
-        index = list(Screen).index(member)
-        return index
+        def get_index():
+            screen_route = str(route).upper()
+            member = Screen[screen_route]
+            index = list(Screen).index(member)
+            return index
+
+        navigation = ft.Container(
+            alignment=ft.Alignment.BOTTOM_CENTER,
+            content=ft.Container(
+                content=ft.NavigationBar(
+                    selected_index=get_index(),
+                    on_change=go_handler,
+                    destinations=[
+                        ft.NavigationBarDestination(
+                            icon=ft.Icons.CLOUD_OUTLINED,
+                            label="Серверы"
+                        ),
+                        ft.NavigationBarDestination(
+                            icon=ft.Icons.ACCOUNT_CIRCLE_OUTLINED,
+                            label="Аккаунт"
+                        ),
+                    ],
+                    bgcolor=ft.Colors.WHITE,
+                ),
+                bgcolor=ft.Colors.WHITE,
+                border_radius=ft.BorderRadius.all(16),
+                clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
+
+                shadow=ft.BoxShadow(
+                    spread_radius=1,
+                    blur_radius=10,
+                    color=ft.Colors.BLACK.with_opacity(0.1, ft.Colors.WHITE),
+                    offset=ft.Offset(0, 2),
+                ),
+            ),
+        )
+
+    else:
+        navigation = ft.Container()
 
     return ft.Column(
         expand=True,
@@ -69,35 +95,6 @@ def AppLayout(
                 margin=ft.Margin.only(top=30)
             ),
 
-            ft.Container(
-                alignment=ft.Alignment.BOTTOM_CENTER,
-                content=ft.Container(
-                    content=ft.NavigationBar(
-                        selected_index=get_index(),
-                        on_change=go_handler,
-                        destinations=[
-                            ft.NavigationBarDestination(
-                                icon=ft.Icons.CLOUD_OUTLINED,
-                                label="Серверы"
-                            ),
-                            ft.NavigationBarDestination(
-                                icon=ft.Icons.ACCOUNT_CIRCLE_OUTLINED,
-                                label="Аккаунт"
-                            ),
-                        ],
-                        bgcolor=ft.Colors.WHITE,
-                    ),
-                    bgcolor=ft.Colors.WHITE,
-                    border_radius=ft.BorderRadius.all(16),
-                    clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
-
-                    shadow=ft.BoxShadow(
-                        spread_radius=1,
-                        blur_radius=10,
-                        color=ft.Colors.BLACK.with_opacity(0.1, ft.Colors.WHITE),
-                        offset=ft.Offset(0, 2),
-                    ),
-                ),
-            ),
+            navigation,
         ]
     )

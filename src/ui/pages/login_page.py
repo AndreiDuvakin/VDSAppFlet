@@ -6,6 +6,7 @@ from src.api.account_client import AccountClient
 from src.services.login_service import LoginService
 from src.state.app_state import AppState
 from src.ui.components.progress_ring import progress_ring
+from src.ui.components.show_simple_dialog import show_simple_dialog
 
 
 async def LoginPage(
@@ -16,36 +17,20 @@ async def LoginPage(
 ) -> ft.Control:
     page.title = 'Вход'
 
-    def show_simple_dialog(title: str, content: ft.Control):
-        cupertino_actions = [
-            ft.CupertinoDialogAction(
-                destructive=True,
-                content="Закрыть",
-                on_click=handle_action_click,
-            ),
-        ]
-        dialog = ft.CupertinoAlertDialog(
-            title=title,
-            content=content,
-            actions=cupertino_actions,
-        )
-        page.show_dialog(dialog)
-
-    def handle_action_click(e):
-        page.pop_dialog()
-
     def handle_token_field_change(e):
         setattr(state, 'temp_token', e.control.value.strip())
 
     token_field = ft.TextField(
         label='Введите токен',
         on_change=handle_token_field_change,
+        password=True,
+        can_reveal_password=True,
     )
 
     async def check_token():
         token_value = state.temp_token
         if not token_value:
-            show_simple_dialog('Внимание', ft.Text('Заполните поле ввода токена'))
+            show_simple_dialog('Внимание', ft.Text('Заполните поле ввода токена'), page)
             return
         account_client = AccountClient(token_value)
         login_service = LoginService(account_client, set_state)
@@ -55,7 +40,7 @@ async def LoginPage(
         return progress_ring()
 
     if state.login.error:
-        show_simple_dialog('Ошибка входа', ft.Text('Неправильный токен'))
+        show_simple_dialog('Ошибка входа', ft.Text('Неправильный токен'), page)
         state.login.error = None
 
     if state.login.info:

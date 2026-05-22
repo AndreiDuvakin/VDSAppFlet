@@ -1,6 +1,6 @@
 import flet as ft
 
-from src.services.account_service import AccountService
+from src.services.app_services import AppServices
 from src.state.app_state import AppState
 from src.ui.components.progress_ring import progress_ring
 
@@ -8,7 +8,7 @@ from src.ui.components.progress_ring import progress_ring
 def profile_tab(
         page: ft.Page,
         state: AppState,
-        service: AccountService,
+        services: AppServices,
 ):
     page.title = 'Данные аккаунта'
 
@@ -23,7 +23,7 @@ def profile_tab(
                     ft.Text(f"Ошибка: {state.account.error}", size=16, color=ft.Colors.RED_400),
                     ft.ElevatedButton(
                         "Повторить",
-                        on_click=lambda _: page.run_task(service.load_account, state),
+                        on_click=lambda _: page.run_task(services.account_service.load_account, state),
                         style=ft.ButtonStyle(color=ft.Colors.WHITE, bgcolor=ft.Colors.BLUE_400),
                     ),
                 ],
