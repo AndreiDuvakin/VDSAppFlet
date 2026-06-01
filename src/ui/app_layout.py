@@ -13,6 +13,8 @@ def AppLayout(
         state: AppState,
         services: AppServices,
 ) -> ft.Control:
+    page.appbar = None
+
     route = page.route.lstrip("/") or Screen.SERVERS.value
     is_navigation_visible = True
 

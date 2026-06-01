@@ -1,61 +1,12 @@
-# Test022026 app
+[🇷🇺 Русский](README_RU.md)
 
-## Run the app
+# Selectel VDS Client Flet
 
-### uv
+## About the project
+Unofficial Android client for managing servers [Selectel VDS](https://vds.selectel.ru). An application based on the Flet library that allows you to work with rented servers directly from your phone. Created for educational purposes to study the Flet library.
 
-Run as a desktop app:
+## Purpose of creation
+A personal project to practice developing cross-platform applications in Python, as well as for convenient access to your Selectel servers.
 
-```
-uv run flet run
-```
-
-Run as a web app:
-
-```
-uv run flet run --web
-```
-
-For more details on running the app, refer to the [Getting Started Guide](https://docs.flet.dev/).
-
-## Build the app
-
-### Android
-
-```
-flet build apk -v
-```
-
-For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://docs.flet.dev/publish/android/).
-
-### iOS
-
-```
-flet build ipa -v
-```
-
-For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://docs.flet.dev/publish/ios/).
-
-### macOS
-
-```
-flet build macos -v
-```
-
-For more details on building macOS package, refer to the [macOS Packaging Guide](https://docs.flet.dev/publish/macos/).
-
-### Linux
-
-```
-flet build linux -v
-```
-
-For more details on building Linux package, refer to the [Linux Packaging Guide](https://docs.flet.dev/publish/linux/).
-
-### Windows
-
-```
-flet build windows -v
-```
-
-For more details on building Windows package, refer to the [Windows Packaging Guide](https://docs.flet.dev/publish/windows/).
+## License
+MIT. See file [LICENSE](LICENSE).

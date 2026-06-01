@@ -48,11 +48,11 @@ class ServersService:
             await self.client.start(ctid)
             new_updating_servers_ctids.remove(ctid)
             await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=None)
+            await self.refresh_servers(state)
         except Exception as e:
             new_updating_servers_ctids.remove(ctid)
-            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))
-        finally:
             await self.refresh_servers(state)
+            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))
 
     async def stop_server(self, state: AppState, ctid: int) -> None:
         new_updating_servers_ctids = state.servers.updating_servers_ctids
@@ -62,11 +62,11 @@ class ServersService:
             await self.client.stop(ctid)
             new_updating_servers_ctids.remove(ctid)
             await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=None)
+            await self.refresh_servers(state)
         except Exception as e:
             new_updating_servers_ctids.remove(ctid)
-            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))
-        finally:
             await self.refresh_servers(state)
+            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))
 
     async def restart_server(self, state: AppState, ctid: int) -> None:
         new_updating_servers_ctids = state.servers.updating_servers_ctids
@@ -76,11 +76,11 @@ class ServersService:
             await self.client.restart(ctid)
             new_updating_servers_ctids.remove(ctid)
             await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=None)
+            await self.refresh_servers(state)
         except Exception as e:
             new_updating_servers_ctids.remove(ctid)
-            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))
-        finally:
             await self.refresh_servers(state)
+            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))
 
     async def add_ssh_key(self, state: AppState, ctid: int, ssh_key_ids: List[int]) -> None:
         new_updating_servers_ctids = state.servers.updating_servers_ctids
@@ -90,8 +90,8 @@ class ServersService:
             await self.client.add_ssh_key(ctid, ssh_key_ids)
             new_updating_servers_ctids.remove(ctid)
             await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=None)
+            await self.refresh_servers(state)
         except Exception as e:
             new_updating_servers_ctids.remove(ctid)
-            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))
-        finally:
             await self.refresh_servers(state)
+            await self._update(state, updating_servers_ctids=new_updating_servers_ctids, loading=False, error=str(e))

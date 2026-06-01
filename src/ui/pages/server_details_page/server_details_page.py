@@ -5,6 +5,7 @@ from src.services.app_services import AppServices
 from src.state.app_state import AppState
 from src.ui.components.show_simple_dialog import show_simple_dialog
 from src.ui.pages.server_details_page.tabs.server_parameters.server_parameters import server_parameters
+from src.ui.components.progress_ring import progress_ring
 
 
 def server_details_page(
@@ -20,6 +21,14 @@ def server_details_page(
             ft.Text(f'Не удалось найти сервер с ID {str(ctid)}', size=20, weight=ft.FontWeight.BOLD),
             page,
         )
+        page.go('/')
+        return ft.Column([])
+
+    if state.servers.loading:
+        return progress_ring()
+
+    if state.servers.error:
+        page.pop_dialog()
         page.go('/')
         return ft.Column([])
 

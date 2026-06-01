@@ -15,6 +15,7 @@ async def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.SYSTEM
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.set_allowed_device_orientations = ft.Orientation.PORTRAIT
 
     state = AppState()
     services = None
@@ -65,4 +66,4 @@ async def main(page: ft.Page):
         await render_page()
 
 
-ft.run(main, view=ft.AppView.WEB_BROWSER, host='0.0.0.0', port=8080)
+ft.run(main) #, view=ft.AppView.WEB_BROWSER, host='0.0.0.0', port=8080)

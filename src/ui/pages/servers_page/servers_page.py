@@ -44,15 +44,24 @@ def servers_page(
             alignment=ft.Alignment.CENTER,
         )
 
+    async def refresh():
+        await services.servers_service.load_servers(state)
+
+
+    page.appbar = ft.AppBar(
+        title=ft.Text("Ваши серверы"),
+        actions=[
+            ft.IconButton(icon=ft.Icons.REFRESH, on_click=refresh),
+        ],
+    )
+
     cards = [
         server_card(page, server, services, state)
         for server in state.servers.items
     ]
 
-    return ft.Column(
+    content = ft.Column(
         [
-            ft.Text("Ваши серверы", size=24, weight=ft.FontWeight.BOLD),
-            ft.Text(f"Всего: {len(state.servers.items)}", color=ft.Colors.GREY_600),
             ft.Divider(),
             ft.ListView(
                 controls=cards,
@@ -63,3 +72,5 @@ def servers_page(
         expand=True,
         spacing=15,
     )
+
+    return content
