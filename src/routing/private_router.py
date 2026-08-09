@@ -2,7 +2,7 @@ import logging
 
 import flet as ft
 
-from core.contexts import AuthContext
+from core.contexts import AppContext
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def protected_route():
     logger.info("Initializing protected route")
 
-    auth = ft.use_context(AuthContext)
+    auth = ft.use_context(AppContext)
     outlet = ft.use_route_outlet()
 
     if not auth.is_authenticated:

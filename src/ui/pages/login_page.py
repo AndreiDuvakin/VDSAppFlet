@@ -2,7 +2,7 @@ import logging
 
 import flet as ft
 
-from core.contexts import AuthContext, ApiClientContext
+from core.contexts import AppContext, ApiClientContext
 
 logger = logging.getLogger(__name__)
 
@@ -12,10 +12,14 @@ def login_page():
     logger.info("Initialisation login_page")
 
     logger.info("Calling contexts for login_page")
-    auth = ft.use_context(AuthContext)
+    app_state = ft.use_context(AppContext)
     api = ft.use_context(ApiClientContext)
     token_ref = ft.use_ref(None)
     page = ft.context.page
+
+    if app_state.is_authenticated:
+        ft.context.page.navigate("/servers")
+        return ft.ProgressRing()
 
     def pop_dialog():
         logger.info(f"pop dialog for login_page")
@@ -41,10 +45,10 @@ def login_page():
         api.set_token(token_str)
 
         try:
-            auth.set_loading(True)
+            app_state.set_is_login_loading(True)
             logger.info("Trying to send auth request")
             account = await api.account_service.get_account()
-            print(account)
+            app_state.login(token_str, account)
         except Exception as e:
             logger.error(f"Error auth request: {str(e)}")
             logger.info("Show error dialog")
@@ -61,7 +65,7 @@ def login_page():
             )
 
         finally:
-            auth.set_loading(False)
+            app_state.set_is_login_loading(False)
             logger.info("Finally auth request")
 
     logger.info("Rendering login_page")
@@ -83,7 +87,7 @@ def login_page():
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-    if auth.is_loading:
+    if app_state.is_login_loading:
         page_content.disabled = True
         page_content.controls.insert(
             3,
