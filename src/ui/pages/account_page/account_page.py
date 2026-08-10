@@ -1,59 +1,63 @@
 import flet as ft
 
-from core.contexts import AppContext
+from core.contexts import AccountPageContext
+from state.account_page_state import AccountPageState
 from ui.pages.account_page.tabs.profile_tab import profile_tab
+from ui.pages.account_page.tabs.ssh_keys_tab.ssh_keys_tab import ssh_keys_tab
 
 
 @ft.component
 def account_page():
-    app_state = ft.use_context(AppContext)
+    account_page_state, _ = ft.use_state(AccountPageState)
 
     def on_tab_changed(e):
-        pass
+        account_page_state.set_current_tab_index(e.control.selected_index)
 
-    return ft.Tabs(
-            selected_index=app_state.account_page_state.current_tab_index,
+    def build_tabs():
+        tabs_content = ft.Column(
+            expand=True,
+            controls=[
+                ft.TabBar(
+                    tabs=[
+                        ft.Tab(label="Профиль", icon=ft.Icons.PERSON),
+                        ft.Tab(label="SSH ключи", icon=ft.Icons.KEY),
+                        ft.Tab(label="Настройка уведомлений", icon=ft.Icons.NOTIFICATIONS),
+                    ]
+                ),
+                ft.TabBarView(
+                    expand=True,
+                    controls=[
+                        ft.Container(
+                            alignment=ft.Alignment.CENTER,
+                            content=profile_tab(),
+                            expand=True,
+                        ),
+                        ft.Container(
+                            alignment=ft.Alignment.CENTER,
+                            content=ssh_keys_tab(),
+                            expand=True,
+                        ),
+                        # ft.Container(
+                        #     alignment=ft.Alignment.CENTER,
+                        #     content=ft.Text("Настройка уведомлений"),
+                        #     expand=True,
+                        # ),
+                    ],
+                ),
+            ],
+        )
+        tabs = ft.Tabs(
+            selected_index=account_page_state.current_tab_index,
             on_change=on_tab_changed,
             length=3,
             expand=True,
-            content=ft.Column(
-                expand=True,
-                controls=[
-                    ft.TabBar(
-                        tabs=[
-                            ft.Tab(label="Профиль", icon=ft.Icons.PERSON),
-                            ft.Tab(label="SSH ключи", icon=ft.Icons.KEY),
-                            ft.Tab(label="Настройка уведомлений", icon=ft.Icons.NOTIFICATIONS),
-                        ]
-                    ),
-                    ft.TabBarView(
-                        expand=True,
-                        controls=[
-                            ft.Container(
-                                alignment=ft.Alignment.CENTER,
-                                content=profile_tab(),
-                                expand=True,
-                            ),
-                            # ft.Container(
-                            #     alignment=ft.Alignment.CENTER,
-                            #     content=ssh_keys_tab(
-                            #         page=page,
-                            #         state=state,
-                            #         services=services,
-                            #     ),
-                            #     expand=True,
-                            # ),
-                            # ft.Container(
-                            #     alignment=ft.Alignment.CENTER,
-                            #     content=notifications_tab(
-                            #         page=page,
-                            #         state=state,
-                            #         services=services,
-                            #     ),
-                            #     expand=True,
-                            # ),
-                        ],
-                    ),
-                ],
-            )
-    )
+            content=tabs_content,
+        )
+
+        if account_page_state.is_loading:
+            tabs.disabled = True
+            tabs_content.controls.insert(1, ft.ProgressBar())
+
+        return tabs
+
+    return AccountPageContext(account_page_state, build_tabs)

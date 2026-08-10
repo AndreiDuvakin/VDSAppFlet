@@ -5,7 +5,7 @@ import flet as ft
 from api.base import ApiClient
 from core.contexts import AppContext, ApiClientContext
 from routing.router import app_router
-from state.auth_state import AppState
+from state.app_state import AppState
 
 logger = logging.getLogger(__name__)
 
@@ -27,5 +27,4 @@ def app():
             ),
         ),
         expand=True,
-
     )

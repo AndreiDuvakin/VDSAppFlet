@@ -3,6 +3,9 @@ import logging
 import flet as ft
 
 from core.contexts import AppContext, ApiClientContext
+from ui.components.show_message_banner import show_message_banner
+from ui.components.progress_ring import progress_ring
+from ui.components.show_simple_dialog import show_simple_dialog
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +22,7 @@ def login_page():
 
     if app_state.is_authenticated:
         ft.context.page.navigate("/servers")
-        return ft.ProgressRing()
-
-    def pop_dialog():
-        logger.info(f"pop dialog for login_page")
-        page.pop_dialog()
+        return progress_ring()
 
     async def lets_auth():
         logger.info(f"lets auth for login_page, getting token")
@@ -31,13 +30,10 @@ def login_page():
 
         if not token_str.strip():
             logger.warning("Token is empty, showing dialog")
-            page.show_dialog(
-                ft.AlertDialog(
-                    modal=True,
-                    title=ft.Text("Пустой токен"),
-                    content=ft.Text("Введите токен"),
-                    actions=[ft.TextButton("Ок", on_click=pop_dialog)],
-                )
+            show_simple_dialog(
+                'Пустой токен',
+                ft.Text("Введите токен"),
+                page,
             )
             return
 
@@ -53,15 +49,9 @@ def login_page():
             logger.error(f"Error auth request: {str(e)}")
             logger.info("Show error dialog")
 
-            action_button_style = ft.ButtonStyle(color=ft.Colors.BLACK)
-
-            page.show_dialog(
-                ft.Banner(
-                    leading=ft.Icon(ft.Icons.INFO_OUTLINED, color=ft.Colors.BLACK),
-                    content=ft.Text("Ошибка аутентификации. Проверьте указанный токен.", color=ft.Colors.BLACK),
-                    actions=[ft.TextButton("Ок", on_click=pop_dialog, style=action_button_style)],
-                    bgcolor=ft.Colors.AMBER_100,
-                )
+            show_message_banner(
+                "Ошибка аутентификации. Проверьте указанный токен.",
+                page,
             )
 
         finally:
