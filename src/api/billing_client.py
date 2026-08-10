@@ -1,0 +1,14 @@
+from dataclass_rest import get
+
+from api.abstract_client import AbstractClient
+from models.billing import GetBillingBalance, GetBillingOperations
+
+
+class BillingClient(AbstractClient):
+    @get('billing/balance')
+    async def get_billing_balance(self) -> GetBillingBalance:
+        pass
+
+    @get('billing/payments')
+    async def get_billing_payments(self) -> GetBillingOperations:
+        pass

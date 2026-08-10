@@ -11,14 +11,22 @@ def nav_bar():
                 nav_link(
                     ft.Icons.HOME,
                     "/servers",
+                    'Серверы'
                 ),
                 nav_link(
                     ft.Icons.ACCOUNT_CIRCLE,
                     "/account",
+                    'Аккаунт'
                 ),
                 nav_link(
-                    ft.Icons.INFO_OUTLINE,
+                    ft.Icons.ACCOUNT_BALANCE_WALLET,
+                    "/billing",
+                    'Баланс',
+                ),
+                nav_link(
+                    ft.Icons.INFO,
                     "/info",
+                    'Информация',
                 )
             ],
             alignment=ft.MainAxisAlignment.SPACE_AROUND,

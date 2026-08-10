@@ -1,9 +1,11 @@
 import logging
 
 from api.account_client import AccountClient
+from api.billing_client import BillingClient
 from api.notification_client import NotificationClient
 from api.ssh_keys_client import SSHKeysClient
 from services.account_service import AccountService
+from services.billing_service import BillingService
 from services.notification_service import NotificationService
 from services.ssh_keys_service import SSHKeysService
 
@@ -27,6 +29,9 @@ class ApiClient:
         self.notification_client = None
         self.notification_service = None
 
+        self.billing_client = None
+        self.billing_service = None
+
     def init_clients(self):
         logger.info('Creating api clients and services')
 
@@ -47,6 +52,10 @@ class ApiClient:
         self.notification_client = NotificationClient(self.token, self.BASE_URL)
         self.notification_service = NotificationService(self.notification_client)
 
+        logger.info('Initializing BillingService and BillingClient')
+        self.billing_client = BillingClient(self.token, self.BASE_URL)
+        self.billing_service = BillingService(self.billing_client)
+
     def delete_clients_and_services(self):
         logger.info('Deleting clients and services')
 
@@ -55,6 +64,12 @@ class ApiClient:
 
         self.ssh_keys_client = None
         self.ssh_keys_service = None
+
+        self.notification_client = None
+        self.notification_service = None
+
+        self.billing_client = None
+        self.billing_service = None
 
     def set_token(self, token: str):
         logger.info('Setting token')

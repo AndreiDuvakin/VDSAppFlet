@@ -3,7 +3,6 @@ from typing import List
 
 import flet as ft
 
-from models.notification import GetNotificationSettings
 from models.ssh_key import GetSSHKey
 
 
