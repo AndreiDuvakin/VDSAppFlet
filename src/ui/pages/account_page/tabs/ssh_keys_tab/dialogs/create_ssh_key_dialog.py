@@ -63,7 +63,7 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
 
         try:
             logger.debug("Trying to create ssh key")
-            account_page_state.set_is_loading(True)
+            account_page_state.set_is_loading_ssh_keys(True)
 
             new_key = PostSSHKey(
                 name=name,
@@ -92,7 +92,7 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
 
         finally:
             logger.info("Finished creating ssh key")
-            account_page_state.set_is_loading(False)
+            account_page_state.set_is_loading_ssh_keys(False)
 
     dialog = ft.AlertDialog(
         title=ft.Text("Добавление SSH ключа"),

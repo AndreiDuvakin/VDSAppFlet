@@ -21,7 +21,7 @@ def nav_bar():
                     "/info",
                 )
             ],
-            alignment=ft.MainAxisAlignment.CENTER,
+            alignment=ft.MainAxisAlignment.SPACE_AROUND,
         ),
         bgcolor=ft.Colors.SURFACE_BRIGHT,
         padding=10,

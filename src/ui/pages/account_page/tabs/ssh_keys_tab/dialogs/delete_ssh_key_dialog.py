@@ -13,7 +13,7 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
     async def confirm_delete(e):
         try:
             logger.info("trying to delete ssh key")
-            account_page_state.set_is_loading(True)
+            account_page_state.set_is_loading_ssh_keys(True)
             await api_client.ssh_keys_service.delete_ssh_key_by_id(key.id)
 
         except Exception as e:
@@ -36,7 +36,7 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
 
         finally:
             logger.info("finally delete ssh key")
-            account_page_state.set_is_loading(False)
+            account_page_state.set_is_loading_ssh_keys(False)
 
     def pop_dialog():
         page.pop_dialog()

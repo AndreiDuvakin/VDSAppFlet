@@ -54,12 +54,12 @@ def ssh_keys_tab():
     async def get_ssh_keys():
         try:
             logger.info('Trying to get ssh keys')
-            account_page_state.set_is_loading(True)
+            account_page_state.set_is_loading_ssh_keys(True)
             ssh_keys_list = await api_client.ssh_keys_service.get_ssh_keys()
             logger.info('SSH keys loaded')
             account_page_state.set_ssh_keys(ssh_keys_list)
-        except Exception as error:
-            logger.exception("Error requesting SSH keys: %s", error)
+        except Exception as e:
+            logger.exception(f"Error requesting SSH keys: {str(e)}")
             show_message_banner(
                 "Ошибка получения списка SSH ключей.",
                 page,
@@ -67,9 +67,9 @@ def ssh_keys_tab():
 
         finally:
             logger.info('Finally loading SSH keys')
-            account_page_state.set_is_loading(False)
+            account_page_state.set_is_loading_ssh_keys(False)
 
-    if account_page_state.ssh_keys is None and not account_page_state.is_loading:
+    if account_page_state.ssh_keys is None and not account_page_state.is_loading_ssh_keys:
         logger.info('SSHE keys not loaded, starting loading')
         asyncio.create_task(get_ssh_keys())
 

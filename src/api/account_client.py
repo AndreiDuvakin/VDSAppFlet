@@ -14,4 +14,4 @@ class AccountClient(AiohttpClient):
 
     @get('account')
     async def get_account(self) -> GetAccount:
-        ...
+        pass
