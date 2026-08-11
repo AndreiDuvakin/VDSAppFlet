@@ -12,3 +12,7 @@ class BillingClient(AbstractClient):
     @get('billing/payments')
     async def get_billing_payments(self) -> GetBillingOperations:
         pass
+
+    @get('billing/new_consumption?year={year}')
+    async def get_billing_new_consumption(self, year: int) -> dict:
+        pass

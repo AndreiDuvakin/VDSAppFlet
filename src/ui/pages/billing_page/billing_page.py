@@ -5,8 +5,10 @@ import flet as ft
 
 from core.contexts import ApiClientContext, BillingPageContext
 from state.billing_page_state import BillingPageState
+from ui.components.empty_content import empty_content
 from ui.components.progress_ring import progress_ring
 from ui.components.show_message_banner import show_message_banner
+from ui.pages.billing_page.tabs.payment_operations_tab import payment_operations_tab
 from ui.pages.billing_page.tabs.consumption_operations_tab import consumption_operations_tab
 
 logger = logging.getLogger(__name__)
@@ -44,28 +46,10 @@ def billing_page():
 
     elif billing_page_state.balance is None:
         logger.info("Billing balance not present")
-        return ft.Column(
-            [
-                ft.Container(
-                    content=ft.Column(
-                        [
-                            ft.Icon(ft.Icons.ACCOUNT_BALANCE_WALLET, size=64, color=ft.Colors.GREY_400),
-                            ft.Text("Нет данных о балансе", size=18, weight=ft.FontWeight.BOLD),
-                            ft.Text(
-                                "Возможно при загрузке произошла ошибка",
-                                size=14,
-                                color=ft.Colors.GREY_500,
-                                text_align=ft.TextAlign.CENTER,
-                            ),
-                        ],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                        spacing=10,
-                    ),
-                    expand=True,
-                    alignment=ft.Alignment.CENTER,
-                ),
-            ],
-            expand=True,
+        return empty_content(
+            ft.Icons.ACCOUNT_BALANCE_WALLET,
+            "Нет данных о балансе",
+            "Возможно при загрузке произошла ошибка",
         )
 
     def on_tab_changed(e):
@@ -86,14 +70,14 @@ def billing_page():
                     controls=[
                         ft.Container(
                             alignment=ft.Alignment.CENTER,
+                            content=payment_operations_tab(),
+                            expand=True,
+                        ),
+                        ft.Container(
+                            alignment=ft.Alignment.CENTER,
                             content=consumption_operations_tab(),
                             expand=True,
                         ),
-                        # ft.Container(
-                        #     alignment=ft.Alignment.CENTER,
-                        #     content=ssh_keys_tab(),
-                        #     expand=True,
-                        # ),
                     ],
                 ),
             ],

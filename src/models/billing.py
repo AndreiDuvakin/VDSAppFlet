@@ -45,3 +45,12 @@ class GetBillingOperations:
     items: List[BillingOperation] = field(
         default_factory=list,
     )
+
+
+@dataclass
+class BillingUsage:
+    period: datetime
+    resource_id: str
+    plan: str
+    count: int
+    summ: int

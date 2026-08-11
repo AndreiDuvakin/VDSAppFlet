@@ -5,6 +5,7 @@ import flet as ft
 
 from core.contexts import AccountPageContext, ApiClientContext
 from models.notification import PostNotificationSettings
+from ui.components.empty_content import empty_content
 from ui.components.show_message_banner import show_message_banner
 
 logger = logging.getLogger(__name__)
@@ -93,29 +94,12 @@ def notifications_tab():
         asyncio.create_task(get_notification_settings())
 
     if account_page_state.notification_settings is None:
+
         logger.info("Notification settings not present")
-        return ft.Column(
-            [
-                ft.Container(
-                    content=ft.Column(
-                        [
-                            ft.Icon(ft.Icons.NOTIFICATION_IMPORTANT, size=64, color=ft.Colors.GREY_400),
-                            ft.Text("Нет данных об уведомлениях", size=18, weight=ft.FontWeight.BOLD),
-                            ft.Text(
-                                "Возможно при загрузке произошла ошибка",
-                                size=14,
-                                color=ft.Colors.GREY_500,
-                                text_align=ft.TextAlign.CENTER,
-                            ),
-                        ],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                        spacing=10,
-                    ),
-                    expand=True,
-                    alignment=ft.Alignment.CENTER,
-                ),
-            ],
-            expand=True,
+        return empty_content(
+            ft.Icons.NOTIFICATION_IMPORTANT,
+            "Нет данных об уведомлениях",
+            "Возможно при загрузке произошла ошибка",
         )
 
     logger.info("Notification settings loaded, displaying")

@@ -4,6 +4,7 @@ import logging
 import flet as ft
 
 from core.contexts import AccountPageContext, ApiClientContext
+from ui.components.empty_content import empty_content
 from ui.components.show_message_banner import show_message_banner
 from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.create_ssh_key_dialog import create_ssh_key_dialog
 from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.delete_ssh_key_dialog import delete_ssh_key_dialog
@@ -76,29 +77,17 @@ def ssh_keys_tab():
     if not account_page_state.ssh_keys:
         logger.info('SSH keys is loaded, but it is empty')
 
+        empty_content_component = empty_content(
+            ft.Icons.VPN_KEY,
+            "Нет SSH ключей",
+            "Добавьте публичный SSH ключ для доступа к серверам",
+        )
+
         return ft.Column(
             [
                 add_button,
-                ft.Container(
-                    content=ft.Column(
-                        [
-                            ft.Icon(ft.Icons.VPN_KEY, size=64, color=ft.Colors.GREY_400),
-                            ft.Text("Нет SSH ключей", size=18, weight=ft.FontWeight.BOLD),
-                            ft.Text(
-                                "Добавьте публичный SSH ключ для доступа к серверам",
-                                size=14,
-                                color=ft.Colors.GREY_500,
-                                text_align=ft.TextAlign.CENTER,
-                            ),
-                        ],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                        spacing=10,
-                    ),
-                    expand=True,
-                    alignment=ft.Alignment.CENTER,
-                ),
+                empty_content_component,
             ],
-            expand=True,
         )
 
     logger.info("SSH keys loaded and present")
