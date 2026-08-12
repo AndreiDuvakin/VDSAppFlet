@@ -3,7 +3,7 @@ import logging
 
 import flet as ft
 
-from core.common import get_years_list_for_consumption_period
+from ui.pages.billing_page.common import get_years_list_for_consumption_period
 from core.contexts import AppContext, BillingPageContext, ApiClientContext
 from ui.components.empty_content import empty_content
 from ui.components.progress_ring import progress_ring

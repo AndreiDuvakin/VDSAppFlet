@@ -1,6 +1,6 @@
 import flet as ft
 
-from core.common import format_money, get_resource_name
+from ui.pages.billing_page.common import format_money, get_resource_name
 from models.billing import BillingUsage
 
 

@@ -1,6 +1,6 @@
 import flet as ft
 
-from core.common import format_operation_price
+from ui.pages.billing_page.common import format_operation_price
 from models.billing import BillingOperation
 
 

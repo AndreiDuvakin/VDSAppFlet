@@ -6,8 +6,6 @@ from typing import List, Mapping
 from models.billing import BillingOperation, BillingUsage
 
 
-# TODO: Разгрузить common в core
-
 def group_operations_by_year_month_sync(
         billing_operations: list[BillingOperation],
 ) -> dict[int, dict[int, list[BillingOperation]]]:

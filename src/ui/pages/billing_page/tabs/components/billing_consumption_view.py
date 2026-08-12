@@ -1,6 +1,6 @@
 import flet as ft
 
-from core.common import get_resource_word, format_money
+from ui.pages.billing_page.common import format_money, get_resource_word
 from core.constants import MONTH_NAMES
 from models.billing import BillingUsage
 from ui.pages.billing_page.tabs.components.consumption_tile import create_consumption_tile

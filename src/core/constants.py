@@ -1,11 +1,3 @@
-from dataclasses import dataclass
-
-
-@dataclass
-class Pages:
-    servers = 0
-
-
 MONTH_NAMES = {
     1: 'Январь',
     2: 'Февраль',
@@ -19,4 +11,18 @@ MONTH_NAMES = {
     10: 'Октябрь',
     11: 'Ноябрь',
     12: 'Декабрь',
+}
+
+PLANS = {
+    'small': '512 МБ RAM, 1 ядро CPU, 20 ГБ SSD, 1 ТБ трафика',
+    'medium': '1 ГБ RAM, 1 ядро CPU, 30 ГБ SSD, 2 ТБ трафика',
+    'large': '2 ГБ RAM, 2 ядра CPU, 40 ГБ SSD, 3 TБ трафика',
+    'huge': '4 ГБ RAM, 2 ядра CPU, 60 ГБ SSD, 4 TБ трафика',
+    'monster': '8 ГБ RAM, 4 ядра CPU, 80 ГБ SSD, 5 TБ трафика',
+}
+
+SERVER_STATUSES = {
+    'started': 'Запущен',
+    'stopped': 'Остановлен',
+    'billing': 'Заблокирован',
 }

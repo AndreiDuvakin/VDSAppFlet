@@ -8,7 +8,7 @@ from ui.pages.account_page.account_page import account_page
 from ui.pages.billing_page.billing_page import billing_page
 from ui.pages.info_page import info_page
 from ui.pages.login_page import login_page
-from ui.pages.servers_page import servers_page
+from ui.pages.servers_page.servers_page import servers_page
 
 logger = logging.getLogger(__name__)
 

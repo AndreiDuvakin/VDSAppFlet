@@ -3,6 +3,12 @@ from dataclasses import dataclass
 
 
 @dataclass
+class ServerSSHKey:
+    id: int
+    name: str
+
+
+@dataclass
 class SSHKey(ABC):
     key: str
     name: str

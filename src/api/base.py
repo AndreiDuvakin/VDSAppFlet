@@ -3,10 +3,12 @@ import logging
 from api.account_client import AccountClient
 from api.billing_client import BillingClient
 from api.notification_client import NotificationClient
+from api.servers_client import ServersClient
 from api.ssh_keys_client import SSHKeysClient
 from services.account_service import AccountService
 from services.billing_service import BillingService
 from services.notification_service import NotificationService
+from services.servers_service import ServersService
 from services.ssh_keys_service import SSHKeysService
 
 logger = logging.getLogger(__name__)
@@ -18,61 +20,71 @@ class ApiClient:
     def __init__(self):
         logger.info('Initializing ApiClient')
 
-        self.token = None
+        self._token = None
 
-        self.account_client = None
+        self._account_client = None
         self.account_service = None
 
-        self.ssh_keys_client = None
+        self._ssh_keys_client = None
         self.ssh_keys_service = None
 
-        self.notification_client = None
+        self._notification_client = None
         self.notification_service = None
 
-        self.billing_client = None
+        self._billing_client = None
         self.billing_service = None
+
+        self._servers_client = None
+        self.servers_service = None
 
     def init_clients(self):
         logger.info('Creating api clients and services')
 
-        if not isinstance(self.token, str):
+        if not isinstance(self._token, str):
             logger.warning('Fail initializing: Token must be a string')
             self.delete_clients_and_services()
             raise TypeError('Token must be a string')
 
         logger.info('Initializing AccountService and AccountClient')
-        self.account_client = AccountClient(self.token, self.BASE_URL)
-        self.account_service = AccountService(self.account_client)
+        self._account_client = AccountClient(self._token, self.BASE_URL)
+        self.account_service = AccountService(self._account_client)
 
         logger.info('Initializing SSHKeysService and SSHKeysClient')
-        self.ssh_keys_client = SSHKeysClient(self.token, self.BASE_URL)
-        self.ssh_keys_service = SSHKeysService(self.ssh_keys_client)
+        self._ssh_keys_client = SSHKeysClient(self._token, self.BASE_URL)
+        self.ssh_keys_service = SSHKeysService(self._ssh_keys_client)
 
         logger.info('Initializing NotificationService and NotificationClient')
-        self.notification_client = NotificationClient(self.token, self.BASE_URL)
-        self.notification_service = NotificationService(self.notification_client)
+        self._notification_client = NotificationClient(self._token, self.BASE_URL)
+        self.notification_service = NotificationService(self._notification_client)
 
         logger.info('Initializing BillingService and BillingClient')
-        self.billing_client = BillingClient(self.token, self.BASE_URL)
-        self.billing_service = BillingService(self.billing_client)
+        self._billing_client = BillingClient(self._token, self.BASE_URL)
+        self.billing_service = BillingService(self._billing_client)
+
+        logger.info('Initializing ServersService and ServersClient')
+        self._servers_client = ServersClient(self._token, self.BASE_URL)
+        self.servers_service = ServersService(self._servers_client)
 
     def delete_clients_and_services(self):
         logger.info('Deleting clients and services')
 
-        self.account_client = None
+        self._account_client = None
         self.account_service = None
 
-        self.ssh_keys_client = None
+        self._ssh_keys_client = None
         self.ssh_keys_service = None
 
-        self.notification_client = None
+        self._notification_client = None
         self.notification_service = None
 
-        self.billing_client = None
+        self._billing_client = None
         self.billing_service = None
+
+        self._servers_client = None
+        self.servers_service = None
 
     def set_token(self, token: str):
         logger.info('Setting token')
 
-        self.token = token
+        self._token = token
         self.init_clients()

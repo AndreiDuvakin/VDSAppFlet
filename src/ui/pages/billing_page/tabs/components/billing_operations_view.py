@@ -1,6 +1,6 @@
 import flet as ft
 
-from core.common import get_operation_word
+from ui.pages.billing_page.common import get_operation_word
 from core.constants import MONTH_NAMES
 from models.billing import BillingOperation
 from ui.pages.billing_page.tabs.components.operation_tile import create_operation_tile

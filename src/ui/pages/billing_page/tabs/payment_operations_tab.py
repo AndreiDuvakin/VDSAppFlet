@@ -3,7 +3,7 @@ import logging
 
 import flet as ft
 
-from core.common import group_operations_by_year_month
+from ui.pages.billing_page.common import group_operations_by_year_month
 from core.contexts import BillingPageContext, ApiClientContext
 from ui.components.empty_content import empty_content
 from ui.components.progress_ring import progress_ring

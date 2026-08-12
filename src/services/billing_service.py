@@ -1,9 +1,8 @@
 import logging
-from typing import List
 
 from api.billing_client import BillingClient
-from core.common import parse_billing_usage, group_usage_by_period
 from models.billing import GetBillingBalance, GetBillingOperations, BillingUsage
+from ui.pages.billing_page.common import parse_billing_usage, group_usage_by_period
 
 logger = logging.getLogger(__name__)
 

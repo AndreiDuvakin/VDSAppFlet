@@ -1,9 +1,11 @@
 import logging
 from dataclasses import dataclass, field
+from typing import List
 
 import flet as ft
 
 from models.account import GetAccount
+from models.server import GetServer
 from state.account_page_state import AccountPageState
 
 logger = logging.getLogger(__name__)
@@ -14,6 +16,7 @@ logger = logging.getLogger(__name__)
 class AppState:
     is_authenticated: bool = False
     account: GetAccount | None = None
+    servers: List[GetServer] | None = None
     token: str = ""
 
     is_login_loading: bool = False
@@ -21,6 +24,9 @@ class AppState:
     account_page_state: AccountPageState = field(
         default_factory=AccountPageState
     )
+
+    def set_servers_list(self, servers_list: List[GetServer]):
+        self.servers = servers_list
 
     def set_is_login_loading(self, is_login_loading: bool):
         self.is_login_loading = is_login_loading
