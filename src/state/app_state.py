@@ -25,6 +25,22 @@ class AppState:
         default_factory=AccountPageState
     )
 
+    def get_server_by_id(self, ctid: int) -> GetServer | None:
+        if self.servers is None:
+            return None
+
+        server = list(
+            filter(
+                lambda server: server.ctid == ctid,
+                self.servers,
+            )
+        )
+
+        if server:
+            return server[0]
+
+        return None
+
     def set_servers_list(self, servers_list: List[GetServer]):
         self.servers = servers_list
 

@@ -20,8 +20,8 @@ def server_card(
     api_client = ft.use_context(ApiClientContext)
     page = ft.context.page
 
-    async def open_details(e):
-        pass
+    def open_details(e):
+        page.navigate(f'/server/{server.ctid}')
 
     async def open_menu(e):
         await menu.open()

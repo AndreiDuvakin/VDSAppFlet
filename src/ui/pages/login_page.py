@@ -22,7 +22,6 @@ def login_page():
 
     if app_state.is_authenticated:
         ft.context.page.navigate("/servers")
-        return progress_ring()
 
     async def lets_auth():
         logger.info(f"lets auth for login_page, getting token")

@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 
 from core.constants import SERVER_STATUSES, PLANS
 from models.ssh_key import ServerSSHKey
@@ -12,7 +13,39 @@ class ServerAddress:
 
 
 @dataclass
-class Server:
+class ServerStatus:
+    status: str
+
+    @property
+    def status_text(self) -> str:
+        if self.status == "started":
+            return "Запущен"
+
+        elif self.status == "stopped":
+            return "Остановлен"
+
+        elif self.status == "billing":
+            return "Заблокирован (баланс)"
+
+        return self.status.capitalize()
+
+    @property
+    def status_color(self):
+        if self.status == "started":
+            return "green"
+
+        elif self.status == "stopped":
+            return "orange"
+
+        return "red"
+
+    @property
+    def is_power_on(self) -> bool:
+        return self.status == "started"
+
+
+@dataclass
+class Server(ServerStatus):
     hostname: str
     locked: bool
     location: str
@@ -20,7 +53,6 @@ class Server:
     active: bool
     keys: list[ServerSSHKey]
     public_address: ServerAddress
-    status: str
     made_from: str
     ctid: int
     name: str
@@ -42,37 +74,26 @@ class Server:
         return self.public_address.address if self.public_address else "—"
 
     @property
-    def status_text(self) -> str:
-        if self.status == "started":
-            return "Запущен"
-
-        elif self.status == "stopped":
-            return "Остановлен"
-
-        elif self.status == "billing":
-            return "Заблокирован (баланс)"
-
-        return self.status.capitalize()
-
-    @property
     def made_from_os(self) -> str:
         return self.made_from.split('_')[0]
-
-    @property
-    def status_color(self):
-        if self.status == "started":
-            return "green"
-
-        elif self.status == "stopped":
-            return "orange"
-
-        return "red"
-
-    @property
-    def is_power_on(self) -> bool:
-        return self.status == "started"
 
 
 @dataclass
 class GetServer(Server):
     pass
+
+
+@dataclass
+class ServerLog(ServerStatus):
+    id: int
+    date: datetime
+
+
+@dataclass
+class GetServerLog(GetServer):
+    pass
+
+
+@dataclass
+class RenameServer:
+    name: str
