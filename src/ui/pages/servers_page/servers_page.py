@@ -22,13 +22,13 @@ def servers_page():
 
     async def get_servers_list():
         try:
-            logger.info(f"Getting servers list")
+            logger.info("Getting servers list")
             servers_page_state.set_is_servers_loading(True)
 
             servers = await api_client.servers_service.get_servers()
             app_state.set_servers_list(servers)
 
-            logger.info(f"Servers list loaded")
+            logger.info("Servers list loaded")
 
         except Exception as e:
             logger.error(f"Error getting servers list: {e}")
@@ -38,7 +38,7 @@ def servers_page():
             )
 
         finally:
-            logger.info(f"Getting servers list finished")
+            logger.info("Getting servers list finished")
             servers_page_state.set_is_servers_loading(False)
 
     async def refresh_servers():
@@ -48,7 +48,7 @@ def servers_page():
 
             app_state.set_servers_list(fresh_servers)
 
-            logger.info(f"Auto-refresh servers updated")
+            logger.info("Auto-refresh servers updated")
 
         except Exception as e:
             logger.error(f"Auto-refresh error: {e}")
@@ -86,14 +86,11 @@ def servers_page():
     if app_state.servers is None:
         return empty_content(
             ft.Icons.CLOUD_OFF,
-            'Нет серверов для отображения',
-            'Возможно они не были загружены',
+            "Нет серверов для отображения",
+            "Возможно они не были загружены",
         )
 
-    cards = [
-        server_card(server, refresh_servers)
-        for server in app_state.servers
-    ]
+    cards = [server_card(server, refresh_servers) for server in app_state.servers]
 
     page_content = ft.Column(
         [
@@ -116,10 +113,7 @@ def servers_page():
                 ft.CupertinoSlidingSegmentedButton(
                     # selected_index=selected_index,
                     # on_change=handle_select_year,
-                    controls=[
-                        ft.Text(str(tag.name))
-                        for tag in app_state.tags
-                    ],
+                    controls=[ft.Text(str(tag.name)) for tag in app_state.tags],
                 ),
             ],
             scroll=ft.ScrollMode.AUTO,

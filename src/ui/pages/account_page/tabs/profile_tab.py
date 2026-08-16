@@ -18,7 +18,9 @@ def profile_tab():
         content=ft.Row(
             [
                 ft.CircleAvatar(
-                    content=ft.Text(full_name[0].upper() if full_name != "Не указано" else "?"),
+                    content=ft.Text(
+                        full_name[0].upper() if full_name != "Не указано" else "?"
+                    ),
                     color=ft.Colors.WHITE,
                     bgcolor=ft.Colors.BLUE_400,
                     radius=35,
@@ -56,15 +58,23 @@ def profile_tab():
                 content=ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Основная информация", size=18, weight=ft.FontWeight.BOLD),
+                            ft.Text(
+                                "Основная информация",
+                                size=18,
+                                weight=ft.FontWeight.BOLD,
+                            ),
                             ft.Divider(),
                             ft.ListTile(
-                                leading=ft.Icon(ft.Icons.EMAIL, color=ft.Colors.BLUE_400),
+                                leading=ft.Icon(
+                                    ft.Icons.EMAIL, color=ft.Colors.BLUE_400
+                                ),
                                 title=ft.Text("Email", weight=ft.FontWeight.W_500),
                                 subtitle=ft.Text(account.email or "Не указан"),
                             ),
                             ft.ListTile(
-                                leading=ft.Icon(ft.Icons.PHONE, color=ft.Colors.BLUE_400),
+                                leading=ft.Icon(
+                                    ft.Icons.PHONE, color=ft.Colors.BLUE_400
+                                ),
                                 title=ft.Text("Телефон", weight=ft.FontWeight.W_500),
                                 subtitle=ft.Text(account.mobile or "Не указан"),
                             ),
@@ -75,30 +85,45 @@ def profile_tab():
                 ),
                 elevation=2,
             ),
-
             ft.Card(
                 content=ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text("Информация об аккаунте", size=18, weight=ft.FontWeight.BOLD),
+                            ft.Text(
+                                "Информация об аккаунте",
+                                size=18,
+                                weight=ft.FontWeight.BOLD,
+                            ),
                             ft.Divider(),
                             ft.ListTile(
-                                leading=ft.Icon(ft.Icons.CALENDAR_MONTH, color=ft.Colors.BLUE_400),
-                                title=ft.Text("Дата активации", weight=ft.FontWeight.W_500),
+                                leading=ft.Icon(
+                                    ft.Icons.CALENDAR_MONTH, color=ft.Colors.BLUE_400
+                                ),
+                                title=ft.Text(
+                                    "Дата активации", weight=ft.FontWeight.W_500
+                                ),
                                 subtitle=ft.Text(account.str_actdate or "Не указана"),
                             ),
                             ft.ListTile(
-                                leading=ft.Icon(ft.Icons.BUSINESS, color=ft.Colors.BLUE_400),
-                                title=ft.Text("Тип клиента", weight=ft.FontWeight.W_500),
+                                leading=ft.Icon(
+                                    ft.Icons.BUSINESS, color=ft.Colors.BLUE_400
+                                ),
+                                title=ft.Text(
+                                    "Тип клиента", weight=ft.FontWeight.W_500
+                                ),
                                 subtitle=ft.Text(client_type),
                             ),
                             ft.ListTile(
-                                leading=ft.Icon(ft.Icons.PUBLIC, color=ft.Colors.BLUE_400),
+                                leading=ft.Icon(
+                                    ft.Icons.PUBLIC, color=ft.Colors.BLUE_400
+                                ),
                                 title=ft.Text("Страна", weight=ft.FontWeight.W_500),
                                 subtitle=ft.Text(account.country or "Не указана"),
                             ),
                             ft.ListTile(
-                                leading=ft.Icon(ft.Icons.LANGUAGE, color=ft.Colors.BLUE_400),
+                                leading=ft.Icon(
+                                    ft.Icons.LANGUAGE, color=ft.Colors.BLUE_400
+                                ),
                                 title=ft.Text("Локаль", weight=ft.FontWeight.W_500),
                                 subtitle=ft.Text(account.locale or "Не указана"),
                             ),
@@ -114,10 +139,7 @@ def profile_tab():
     )
 
     content = ft.Column(
-        [
-            header,
-            info_rows
-        ],
+        [header, info_rows],
         spacing=10,
         scroll=ft.ScrollMode.AUTO,
         expand=True,

@@ -5,6 +5,6 @@ from models.price import GetPrice
 
 
 class PriceClient(AbstractClient):
-    @get('billing/prices')
+    @get("billing/prices")
     async def get_price(self) -> GetPrice:
         pass

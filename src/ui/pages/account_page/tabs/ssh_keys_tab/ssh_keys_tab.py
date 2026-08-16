@@ -6,8 +6,12 @@ import flet as ft
 from core.contexts import AccountPageContext, ApiClientContext
 from ui.components.empty_content import empty_content
 from ui.components.show_message_banner import show_message_banner
-from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.create_ssh_key_dialog import create_ssh_key_dialog
-from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.delete_ssh_key_dialog import delete_ssh_key_dialog
+from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.create_ssh_key_dialog import (
+    create_ssh_key_dialog,
+)
+from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.delete_ssh_key_dialog import (
+    delete_ssh_key_dialog,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +58,10 @@ def ssh_keys_tab():
 
     async def get_ssh_keys():
         try:
-            logger.info('Trying to get ssh keys')
+            logger.info("Trying to get ssh keys")
             account_page_state.set_is_loading_ssh_keys(True)
             ssh_keys_list = await api_client.ssh_keys_service.get_ssh_keys()
-            logger.info('SSH keys loaded')
+            logger.info("SSH keys loaded")
             account_page_state.set_ssh_keys(ssh_keys_list)
         except Exception as e:
             logger.exception(f"Error requesting SSH keys: {str(e)}")
@@ -67,15 +71,18 @@ def ssh_keys_tab():
             )
 
         finally:
-            logger.info('Finally loading SSH keys')
+            logger.info("Finally loading SSH keys")
             account_page_state.set_is_loading_ssh_keys(False)
 
-    if account_page_state.ssh_keys is None and not account_page_state.is_loading_ssh_keys:
-        logger.info('SSHE keys not loaded, starting loading')
+    if (
+        account_page_state.ssh_keys is None
+        and not account_page_state.is_loading_ssh_keys
+    ):
+        logger.info("SSHE keys not loaded, starting loading")
         asyncio.create_task(get_ssh_keys())
 
     if not account_page_state.ssh_keys:
-        logger.info('SSH keys is loaded, but it is empty')
+        logger.info("SSH keys is loaded, but it is empty")
 
         empty_content_component = empty_content(
             ft.Icons.VPN_KEY,
@@ -102,13 +109,24 @@ def ssh_keys_tab():
                         [
                             ft.Row(
                                 [
-                                    ft.Icon(ft.Icons.VPN_KEY, color=ft.Colors.BLUE_400, size=24),
-                                    ft.Text(key.name, size=16, weight=ft.FontWeight.BOLD, expand=True),
+                                    ft.Icon(
+                                        ft.Icons.VPN_KEY,
+                                        color=ft.Colors.BLUE_400,
+                                        size=24,
+                                    ),
+                                    ft.Text(
+                                        key.name,
+                                        size=16,
+                                        weight=ft.FontWeight.BOLD,
+                                        expand=True,
+                                    ),
                                     ft.IconButton(
                                         icon=ft.Icons.DELETE_OUTLINE,
                                         icon_color=ft.Colors.RED_400,
                                         tooltip="Удалить ключ",
-                                        on_click=lambda e, key=key: show_delete_ssh_key_dialog(key),
+                                        on_click=lambda e: show_delete_ssh_key_dialog(
+                                            key,
+                                        ),
                                     ),
                                 ],
                                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,

@@ -7,7 +7,7 @@ from models.billing import BillingOperation, BillingUsage
 
 
 def group_operations_by_year_month_sync(
-        billing_operations: list[BillingOperation],
+    billing_operations: list[BillingOperation],
 ) -> dict[int, dict[int, list[BillingOperation]]]:
     grouped: dict[
         int,
@@ -15,11 +15,7 @@ def group_operations_by_year_month_sync(
     ] = defaultdict(lambda: defaultdict(list))
 
     for operation in billing_operations:
-        grouped[
-            operation.created.year
-        ][
-            operation.created.month
-        ].append(operation)
+        grouped[operation.created.year][operation.created.month].append(operation)
 
     for months in grouped.values():
         for operations in months.values():
@@ -44,7 +40,7 @@ def group_operations_by_year_month_sync(
 
 
 async def group_operations_by_year_month(
-        billing_operations: list[BillingOperation],
+    billing_operations: list[BillingOperation],
 ) -> dict[int, dict[int, list[BillingOperation]]]:
     return await asyncio.to_thread(
         group_operations_by_year_month_sync,
@@ -52,7 +48,7 @@ async def group_operations_by_year_month(
     )
 
 
-def format_operation_price(operation: BillingOperation, sign='+') -> str:
+def format_operation_price(operation: BillingOperation, sign="+") -> str:
     price = int(operation.price)
 
     return sign + format_money(price)
@@ -61,39 +57,31 @@ def format_operation_price(operation: BillingOperation, sign='+') -> str:
 def format_money(value: int) -> str:
     rubles = value / 100
 
-    return (
-            f'{rubles:,.2f}'
-            .replace(',', ' ')
-            .replace('.', ',')
-            + ' ₽'
-    )
+    return f"{rubles:,.2f}".replace(",", " ").replace(".", ",") + " ₽"
 
 
 def get_resource_word(count: int) -> str:
     if count % 10 == 1 and count % 100 != 11:
-        return 'ресурс'
+        return "ресурс"
 
-    if (
-            2 <= count % 10 <= 4
-            and not 12 <= count % 100 <= 14
-    ):
-        return 'ресурса'
+    if 2 <= count % 10 <= 4 and not 12 <= count % 100 <= 14:
+        return "ресурса"
 
-    return 'ресурсов'
+    return "ресурсов"
 
 
 def get_operation_word(count: int) -> str:
     if count % 10 == 1 and count % 100 != 11:
-        return 'операция'
+        return "операция"
 
     if 2 <= count % 10 <= 4 and not 12 <= count % 100 <= 14:
-        return 'операции'
+        return "операции"
 
-    return 'операций'
+    return "операций"
 
 
 def get_years_list_for_consumption_period(
-        start_date: datetime.date,
+    start_date: datetime.date,
 ) -> List[int]:
     current_date = datetime.date.today()
 
@@ -109,7 +97,7 @@ def get_years_list_for_consumption_period(
 
 
 def parse_billing_usage(
-        response: Mapping[str, dict],
+    response: Mapping[str, dict],
 ) -> List[BillingUsage]:
     result: List[BillingUsage] = []
 
@@ -118,7 +106,7 @@ def parse_billing_usage(
 
         for resource_id, resource_data in resources.items():
             for plan, usage in resource_data.items():
-                if plan == 'summ':
+                if plan == "summ":
                     continue
 
                 result.append(
@@ -126,8 +114,8 @@ def parse_billing_usage(
                         period=period,
                         resource_id=str(resource_id),
                         plan=plan,
-                        count=int(usage['count']),
-                        summ=int(usage['summ']),
+                        count=int(usage["count"]),
+                        summ=int(usage["summ"]),
                     )
                 )
 
@@ -142,18 +130,12 @@ def parse_billing_usage(
 
 
 def group_usage_by_period(
-        operations: list[BillingUsage],
+    operations: list[BillingUsage],
 ) -> dict[int, dict[int, list[BillingUsage]]]:
-    grouped = defaultdict(
-        lambda: defaultdict(list)
-    )
+    grouped = defaultdict(lambda: defaultdict(list))
 
     for operation in operations:
-        grouped[
-            operation.period.year
-        ][
-            operation.period.month
-        ].append(operation)
+        grouped[operation.period.year][operation.period.month].append(operation)
 
     return {
         year: {
@@ -177,7 +159,4 @@ def group_usage_by_period(
 
 
 def get_resource_name(usage: BillingUsage) -> str:
-    return (
-        f'Ресурс {usage.resource_id} · '
-        f'{usage.plan}'
-    )
+    return f"Ресурс {usage.resource_id} · " f"{usage.plan}"

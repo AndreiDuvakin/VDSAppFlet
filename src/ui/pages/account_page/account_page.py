@@ -2,7 +2,9 @@ import flet as ft
 
 from core.contexts import AccountPageContext
 from state.account_page_state import AccountPageState
-from ui.pages.account_page.tabs.notifications_tab.notifications_tab import notifications_tab
+from ui.pages.account_page.tabs.notifications_tab.notifications_tab import (
+    notifications_tab,
+)
 from ui.pages.account_page.tabs.profile_tab import profile_tab
 from ui.pages.account_page.tabs.ssh_keys_tab.ssh_keys_tab import ssh_keys_tab
 
@@ -22,7 +24,9 @@ def account_page():
                     tabs=[
                         ft.Tab(label="Профиль", icon=ft.Icons.PERSON),
                         ft.Tab(label="SSH ключи", icon=ft.Icons.KEY),
-                        ft.Tab(label="Настройка уведомлений", icon=ft.Icons.NOTIFICATIONS),
+                        ft.Tab(
+                            label="Настройка уведомлений", icon=ft.Icons.NOTIFICATIONS
+                        ),
                     ]
                 ),
                 ft.TabBarView(
@@ -55,7 +59,10 @@ def account_page():
             content=tabs_content,
         )
 
-        if account_page_state.is_loading_ssh_keys or account_page_state.is_loading_notifications:
+        if (
+            account_page_state.is_loading_ssh_keys
+            or account_page_state.is_loading_notifications
+        ):
             tabs.disabled = True
             tabs_content.controls.insert(1, ft.ProgressBar())
 

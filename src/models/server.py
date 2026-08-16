@@ -29,7 +29,7 @@ class ServerStatus:
             return "Заблокирован (баланс)"
 
         elif self.status == "queued":
-            return 'В очереди'
+            return "В очереди"
 
         return self.status.capitalize()
 
@@ -64,7 +64,7 @@ class Server(ServerStatus):
 
     @cached_property
     def beautiful_location(self) -> str:
-        location = ''
+        location = ""
 
         for i in self.location.upper():
             if i.isalpha():
@@ -89,26 +89,26 @@ class Server(ServerStatus):
 
     @cached_property
     def made_from_os(self) -> str:
-        return self.made_from.split('_')[0]
+        return self.made_from.split("_")[0]
 
     @cached_property
     def iso_image(self) -> str:
         made_from = self.made_from.lower()
 
-        if made_from.startswith('ubuntu'):
-            return 'free-icon-ubuntu-888879.png'
+        if made_from.startswith("ubuntu"):
+            return "free-icon-ubuntu-888879.png"
 
-        if made_from.startswith('debian'):
-            return 'free-icon-linux-246118.png'
+        if made_from.startswith("debian"):
+            return "free-icon-linux-246118.png"
 
-        if made_from.startswith('fedora'):
-            return 'free-icon-cowboy-hat-2790087.png'
+        if made_from.startswith("fedora"):
+            return "free-icon-cowboy-hat-2790087.png"
 
-        return 'free-icon-linux-15465695.png'
+        return "free-icon-linux-15465695.png"
 
     @cached_property
     def beautiful_name(self) -> str:
-        iso_name, version, bit, _, _ = self.made_from.split('_')
+        iso_name, version, bit, _, _ = self.made_from.split("_")
         iso_name = iso_name.capitalize()
         return f"{iso_name} {version} {bit}bit"
 

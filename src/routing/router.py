@@ -46,14 +46,14 @@ def app_router():
                                 path="/billing",
                                 component=billing_page,
                             ),
-                        ]
+                        ],
                     ),
                     ft.Route(
                         path="/server/:ctid",
                         component=server_detail_page,
                     ),
                 ],
-            )
+            ),
         ]
     )
 

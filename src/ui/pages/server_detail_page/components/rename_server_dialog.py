@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 def rename_server_dialog(api_client, refresh_server, server_detail_page_state, page):
     new_name_field = ft.TextField(
-        label=ft.Text('Новое название сервера'),
+        label=ft.Text("Новое название сервера"),
         value=server_detail_page_state.server.name,
     )
 
@@ -23,23 +23,23 @@ def rename_server_dialog(api_client, refresh_server, server_detail_page_state, p
 
         if not new_name:
             show_simple_dialog(
-                'Некорректное название',
-                ft.Text('Заполните поля с новым названием сервера'),
+                "Некорректное название",
+                ft.Text("Заполните поля с новым названием сервера"),
                 page,
             )
             return
 
         if new_name == server_detail_page_state.server.name:
             show_simple_dialog(
-                'Некорректное название',
-                ft.Text('Старое и новое название должны различаться'),
+                "Некорректное название",
+                ft.Text("Старое и новое название должны различаться"),
                 page,
             )
             return
 
         try:
             server_detail_page_state.set_is_server_loading(True)
-            logger.info('Renaming server')
+            logger.info("Renaming server")
 
             new_name = RenameServer(
                 new_name,
@@ -51,16 +51,16 @@ def rename_server_dialog(api_client, refresh_server, server_detail_page_state, p
             )
 
         except Exception as e:
-            logger.error(f'Error rename server: {e}')
+            logger.error(f"Error rename server: {e}")
             show_message_banner(
-                f"Ошибка изменения названия сервера",
+                "Ошибка изменения названия сервера",
                 page,
             )
 
         else:
-            logger.info('Rename server success')
+            logger.info("Rename server success")
             show_message_banner(
-                f"Название сервера изменено",
+                "Название сервера изменено",
                 page,
                 is_error=False,
             )
@@ -70,10 +70,18 @@ def rename_server_dialog(api_client, refresh_server, server_detail_page_state, p
             server_detail_page_state.set_is_server_loading(False)
 
     return ft.AlertDialog(
-        title=ft.Text('Изменение названия сервера'),
+        title=ft.Text("Изменение названия сервера"),
         content=new_name_field,
         actions=[
-            ft.TextButton("Отмена", on_click=pop_dialog, disabled=server_detail_page_state.is_server_loading),
-            ft.FilledButton("Сохранить", on_click=rename_server, disabled=server_detail_page_state.is_server_loading),
+            ft.TextButton(
+                "Отмена",
+                on_click=pop_dialog,
+                disabled=server_detail_page_state.is_server_loading,
+            ),
+            ft.FilledButton(
+                "Сохранить",
+                on_click=rename_server,
+                disabled=server_detail_page_state.is_server_loading,
+            ),
         ],
     )

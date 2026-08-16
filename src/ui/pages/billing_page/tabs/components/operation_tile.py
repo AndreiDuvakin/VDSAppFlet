@@ -6,7 +6,7 @@ from models.billing import BillingOperation
 
 @ft.component
 def create_operation_tile(
-        operation: BillingOperation,
+    operation: BillingOperation,
 ) -> ft.Control:
     is_success = operation.state == 1
 
@@ -17,12 +17,10 @@ def create_operation_tile(
                 color=ft.Colors.GREEN_300,
             ),
             title=ft.Text(
-                operation.desc or 'Операция',
+                operation.desc or "Операция",
                 weight=ft.FontWeight.W_500,
             ),
-            subtitle=ft.Text(
-                operation.created.strftime('%d.%m.%Y, %H:%M')
-            ),
+            subtitle=ft.Text(operation.created.strftime("%d.%m.%Y, %H:%M")),
             trailing=ft.Column(
                 [
                     ft.Text(
@@ -31,11 +29,9 @@ def create_operation_tile(
                         weight=ft.FontWeight.BOLD,
                     ),
                     ft.Text(
-                        'Успешно' if is_success else 'Неизвестно',
+                        "Успешно" if is_success else "Неизвестно",
                         size=12,
-                        color=ft.Colors.GREEN_600
-                        if is_success
-                        else ft.Colors.GREY_500,
+                        color=ft.Colors.GREEN_600 if is_success else ft.Colors.GREY_500,
                     ),
                 ],
                 spacing=2,

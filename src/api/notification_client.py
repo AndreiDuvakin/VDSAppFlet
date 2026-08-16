@@ -5,10 +5,12 @@ from models.notification import GetNotificationSettings, PostNotificationSetting
 
 
 class NotificationClient(AbstractClient):
-    @get('billing/notify')
+    @get("billing/notify")
     async def get_notification_settings(self) -> GetNotificationSettings:
         pass
 
-    @put('billing/notify', send_json=False)
-    async def post_notification_settings(self, body: PostNotificationSettings) -> GetNotificationSettings:
+    @put("billing/notify", send_json=False)
+    async def post_notification_settings(
+        self, body: PostNotificationSettings
+    ) -> GetNotificationSettings:
         pass

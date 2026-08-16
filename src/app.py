@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 # TODO: mypy, flake8, black, poetry
 
+
 @ft.component
 def app():
     logger.info("Creating states for contexts")
@@ -22,7 +23,7 @@ def app():
 
     async def get_price():
         try:
-            logger.info(f"Getting price")
+            logger.info("Getting price")
             app_state.set_is_price_loading(True)
 
             price = await api_client.price_service.get_price()
@@ -30,7 +31,7 @@ def app():
             app_state.set_price(price)
 
         except Exception as e:
-            logger.error(f'Error getting price: {e}')
+            logger.error(f"Error getting price: {e}")
             show_message_banner(
                 "Ошибка получения цен.",
                 page,
@@ -41,7 +42,7 @@ def app():
 
     async def get_tags():
         try:
-            logger.info(f"Getting tags")
+            logger.info("Getting tags")
             app_state.set_is_tags_loading(True)
 
             tags = await api_client.tags_service.get_tags()
@@ -49,7 +50,7 @@ def app():
             app_state.set_tags(tags)
 
         except Exception as e:
-            logger.error(f'Error getting tags: {e}')
+            logger.error(f"Error getting tags: {e}")
             show_message_banner(
                 "Ошибка получения тегов серверов.",
                 page,

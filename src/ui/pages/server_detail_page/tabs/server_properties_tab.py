@@ -9,16 +9,14 @@ def server_properties_tab():
 
     return ft.Column(
         [
-            ft.Text('Имя хоста и теги', weight=ft.FontWeight.BOLD, size=25),
+            ft.Text("Имя хоста и теги", weight=ft.FontWeight.BOLD, size=25),
             ft.Row(
                 [
-                    ft.Text('Имя хоста:'),
+                    ft.Text("Имя хоста:"),
                     ft.Text(server_detail_page_state.server.hostname),
                 ],
                 spacing=10,
             ),
-
-
         ],
         expand=True,
     )

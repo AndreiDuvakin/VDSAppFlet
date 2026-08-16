@@ -42,4 +42,4 @@ class GetPrice:
 
         total_price = round(price.month / 100)
 
-        return f'{total_price} ₽'
+        return f"{total_price} ₽"

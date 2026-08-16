@@ -11,14 +11,14 @@ class CustomHeadersAiohttpMethod(AiohttpMethod):
     async def _pre_process_request(self, request: HttpRequest) -> HttpRequest:
         request.headers["X-Token"] = self.client.token
 
-        if not request.url.startswith('https://'):
+        if not request.url.startswith("https://"):
             request.url = urljoin(self.client.base_url, request.url)
 
         return request
 
     async def _response_body(
-            self,
-            response: ClientResponse,
+        self,
+        response: ClientResponse,
     ) -> Any:
         if response.status == HTTPStatus.NO_CONTENT:
             return None

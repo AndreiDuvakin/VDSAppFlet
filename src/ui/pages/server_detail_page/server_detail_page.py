@@ -7,7 +7,9 @@ from core.contexts import AppContext, ApiClientContext, ServerDetailPageContext
 from state.server_detail_page_state import ServerDetailPageState
 from ui.components.empty_content import empty_content
 from ui.components.show_message_banner import show_message_banner
-from ui.pages.server_detail_page.components.rename_server_dialog import rename_server_dialog
+from ui.pages.server_detail_page.components.rename_server_dialog import (
+    rename_server_dialog,
+)
 from ui.pages.server_detail_page.tabs.server_properties_tab import server_properties_tab
 
 logger = logging.getLogger(__name__)
@@ -16,22 +18,22 @@ logger = logging.getLogger(__name__)
 @ft.component
 def server_detail_page():
     params = ft.use_route_params()
-    ctid = params.get('ctid', None)
+    ctid = params.get("ctid", None)
     page = ft.context.page
 
     def go_back():
-        page.navigate('/servers')
+        page.navigate("/servers")
 
     empty_page_component = ft.Column(
         [
             ft.FilledButton(
-                'Вернутся назад',
+                "Вернутся назад",
                 on_click=go_back,
             ),
             empty_content(
                 ft.Icons.CLOUD_OFF,
-                'Сервер не найден',
-                'Возможно он не был загружен или указан неправильный id',
+                "Сервер не найден",
+                "Возможно он не был загружен или указан неправильный id",
             ),
         ]
     )
@@ -63,11 +65,13 @@ def server_detail_page():
     async def refresh_servers():
         try:
 
-            fresh_server = await api_client.servers_service.get_server(server_detail_page_state.server.ctid)
+            fresh_server = await api_client.servers_service.get_server(
+                server_detail_page_state.server.ctid
+            )
 
             server_detail_page_state.set_server(fresh_server)
 
-            logger.info(f"Auto-refresh server updated")
+            logger.info("Auto-refresh server updated")
 
         except Exception as e:
             logger.error(f"Auto-refresh error: {e}")
@@ -81,7 +85,7 @@ def server_detail_page():
             await asyncio.sleep(10)
 
             if page.route != f"/server/{ctid}":
-                logger.info('Route was changed, breaking refresh')
+                logger.info("Route was changed, breaking refresh")
                 break
 
             if server_detail_page_state.is_server_loading:
@@ -121,7 +125,7 @@ def server_detail_page():
                     icon=ft.Icons.ARROW_BACK,
                     on_click=go_back,
                 ),
-                ft.Text(f'Сервер {server_detail_page_state.server.name}', size=25),
+                ft.Text(f"Сервер {server_detail_page_state.server.name}", size=25),
                 ft.IconButton(
                     ft.Icons.DRIVE_FILE_RENAME_OUTLINE,
                     on_click=show_rename_server_dialog,
@@ -159,27 +163,42 @@ def server_detail_page():
                             [
                                 ft.Row(
                                     [
-                                        ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.BLUE_400),
-                                        ft.Text(server.beautiful_location, weight=ft.FontWeight.W_500, expand=True),
+                                        ft.Icon(
+                                            ft.Icons.LOCATION_ON,
+                                            color=ft.Colors.BLUE_400,
+                                        ),
+                                        ft.Text(
+                                            server.beautiful_location,
+                                            weight=ft.FontWeight.W_500,
+                                            expand=True,
+                                        ),
                                     ],
                                 ),
-
                                 ft.Row(
                                     [
-                                        ft.Icon(ft.Icons.SETTINGS_SYSTEM_DAYDREAM, color=ft.Colors.CYAN_400),
-                                        ft.Text(server.beautiful_name, weight=ft.FontWeight.W_500, expand=True),
+                                        ft.Icon(
+                                            ft.Icons.SETTINGS_SYSTEM_DAYDREAM,
+                                            color=ft.Colors.CYAN_400,
+                                        ),
+                                        ft.Text(
+                                            server.beautiful_name,
+                                            weight=ft.FontWeight.W_500,
+                                            expand=True,
+                                        ),
                                     ],
                                 ),
-
                                 ft.Row(
                                     [
-                                        ft.Icon(ft.Icons.MEMORY, color=ft.Colors.BLUE_GREY_400),
+                                        ft.Icon(
+                                            ft.Icons.MEMORY,
+                                            color=ft.Colors.BLUE_GREY_400,
+                                        ),
                                         plan_description,
                                     ],
                                     spacing=8,
                                 ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 ft.TabBar(

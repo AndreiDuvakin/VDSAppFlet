@@ -7,6 +7,6 @@ from models.tag import GetTag
 
 
 class TagsClient(AbstractClient):
-    @get('scalets/tags/')
+    @get("scalets/tags/")
     async def get_tags(self) -> List[GetTag]:
         pass

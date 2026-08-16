@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 async def main(page: ft.Page):
     logger.info("Settings page properties")
 
-    page.title = 'VDSApp'
+    page.title = "VDSApp"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
@@ -21,7 +21,8 @@ async def main(page: ft.Page):
         await page.set_allowed_device_orientations(
             orientations=[
                 ft.DeviceOrientation.PORTRAIT_UP,
-            ])
+            ]
+        )
 
     logger.info("Render main app component")
 

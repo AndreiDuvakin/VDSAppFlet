@@ -9,7 +9,9 @@ from ui.components.empty_content import empty_content
 from ui.components.progress_ring import progress_ring
 from ui.components.show_message_banner import show_message_banner
 from ui.pages.billing_page.tabs.payment_operations_tab import payment_operations_tab
-from ui.pages.billing_page.tabs.consumption_operations_tab import consumption_operations_tab
+from ui.pages.billing_page.tabs.consumption_operations_tab import (
+    consumption_operations_tab,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -23,10 +25,10 @@ def billing_page():
     async def get_billing_balance():
         try:
             billing_page_state.set_is_loading(True)
-            logger.info(f'Getting billing balance')
+            logger.info("Getting billing balance")
             balance = await api_client.billing_service.get_billing_balance()
             billing_page_state.set_balance(balance.balance)
-            logger.info(f'Balance is loaded')
+            logger.info("Balance is loaded")
 
         except Exception as e:
             logger.exception(f"Error getting billing balance: {e}")
@@ -61,7 +63,10 @@ def billing_page():
             controls=[
                 ft.TabBar(
                     tabs=[
-                        ft.Tab(label="Пополнения", icon=ft.Icons.ACCOUNT_BALANCE_WALLET_OUTLINED),
+                        ft.Tab(
+                            label="Пополнения",
+                            icon=ft.Icons.ACCOUNT_BALANCE_WALLET_OUTLINED,
+                        ),
                         ft.Tab(label="Списания", icon=ft.Icons.RECEIPT_LONG_OUTLINED),
                     ]
                 ),
@@ -100,12 +105,12 @@ def billing_page():
                                 content=ft.Column(
                                     [
                                         ft.Text(
-                                            f'{billing_page_state.balance_rub} ₽',
+                                            f"{billing_page_state.balance_rub} ₽",
                                             size=30,
                                             weight=ft.FontWeight.BOLD,
                                         ),
                                         ft.Text(
-                                            'Текущий баланс вашего аккаунта',
+                                            "Текущий баланс вашего аккаунта",
                                         ),
                                     ],
                                     spacing=10,
@@ -119,7 +124,7 @@ def billing_page():
                     expand=False,
                 ),
                 ft.Divider(),
-                ft.Text('История платежей', size=18, weight=ft.FontWeight.BOLD),
+                ft.Text("История платежей", size=18, weight=ft.FontWeight.BOLD),
                 tabs,
             ],
             expand=True,

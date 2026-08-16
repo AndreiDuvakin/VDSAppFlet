@@ -3,7 +3,9 @@ import flet as ft
 from ui.pages.billing_page.common import format_money, get_resource_word
 from core.constants import MONTH_NAMES
 from models.billing import BillingUsage
-from ui.pages.billing_page.tabs.components.consumption_tile import create_consumption_tile
+from ui.pages.billing_page.tabs.components.consumption_tile import (
+    create_consumption_tile,
+)
 
 
 @ft.component
@@ -13,7 +15,7 @@ def billing_consumption_view(
         dict[int, list[BillingUsage]],
     ],
 ) -> ft.Control:
-    #TODO: сделать отображение названия серверов и тарифов
+    # TODO: сделать отображение названия серверов и тарифов
 
     year_tiles: list[ft.Control] = []
 
@@ -21,10 +23,7 @@ def billing_consumption_view(
         month_tiles: list[ft.Control] = []
 
         for month, usages in months.items():
-            month_total = sum(
-                usage.summ
-                for usage in usages
-            )
+            month_total = sum(usage.summ for usage in usages)
 
             month_tiles.append(
                 ft.ExpansionTile(
@@ -37,9 +36,9 @@ def billing_consumption_view(
                     ),
                     subtitle=ft.Text(
                         (
-                            f'{len(usages)} '
-                            f'{get_resource_word(len(usages))} · '
-                            f'{format_money(month_total)}'
+                            f"{len(usages)} "
+                            f"{get_resource_word(len(usages))} · "
+                            f"{format_money(month_total)}"
                         ),
                     ),
                     leading=ft.Icon(
@@ -47,10 +46,7 @@ def billing_consumption_view(
                     ),
                     controls=[
                         ft.Column(
-                            [
-                                create_consumption_tile(usage)
-                                for usage in usages
-                            ],
+                            [create_consumption_tile(usage) for usage in usages],
                             spacing=4,
                         ),
                     ],
@@ -58,9 +54,7 @@ def billing_consumption_view(
             )
 
         year_total = sum(
-            usage.summ
-            for months_items in months.values()
-            for usage in months_items
+            usage.summ for months_items in months.values() for usage in months_items
         )
 
         year_tiles.append(
@@ -70,13 +64,12 @@ def billing_consumption_view(
                     size=20,
                     weight=ft.FontWeight.BOLD,
                 ),
-                subtitle=ft.Text(
-                    f'Всего за год: {format_money(year_total)}'
-                ),
+                subtitle=ft.Text(f"Всего за год: {format_money(year_total)}"),
                 leading=ft.Icon(
                     ft.Icons.CALENDAR_TODAY_OUTLINED,
                 ),
-                expanded=year == max(
+                expanded=year
+                == max(
                     billing_consumption,
                     default=year,
                 ),

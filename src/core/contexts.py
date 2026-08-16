@@ -14,6 +14,12 @@ logger.info("Initializing contexts")
 
 AppContext: ft.ContextProvider[AppState | None] = ft.create_context(None)
 ApiClientContext: ft.ContextProvider[ApiClient | None] = ft.create_context(None)
-AccountPageContext: ft.ContextProvider[AccountPageState | None] = ft.create_context(None)
-BillingPageContext: ft.ContextProvider[BillingPageState | None] = ft.create_context(None)
-ServerDetailPageContext: ft.ContextProvider[ServerDetailPageState | None] = ft.create_context(None)
+AccountPageContext: ft.ContextProvider[AccountPageState | None] = ft.create_context(
+    None
+)
+BillingPageContext: ft.ContextProvider[BillingPageState | None] = ft.create_context(
+    None
+)
+ServerDetailPageContext: ft.ContextProvider[ServerDetailPageState | None] = (
+    ft.create_context(None)
+)

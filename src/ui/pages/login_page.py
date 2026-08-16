@@ -4,7 +4,6 @@ import flet as ft
 
 from core.contexts import AppContext, ApiClientContext
 from ui.components.show_message_banner import show_message_banner
-from ui.components.progress_ring import progress_ring
 from ui.components.show_simple_dialog import show_simple_dialog
 
 logger = logging.getLogger(__name__)
@@ -24,13 +23,13 @@ def login_page():
         ft.context.page.navigate("/servers")
 
     async def lets_auth():
-        logger.info(f"lets auth for login_page, getting token")
+        logger.info("lets auth for login_page, getting token")
         token_str = token_ref.current.value.strip()
 
         if not token_str.strip():
             logger.warning("Token is empty, showing dialog")
             show_simple_dialog(
-                'Пустой токен',
+                "Пустой токен",
                 ft.Text("Введите токен"),
                 page,
             )
@@ -61,16 +60,19 @@ def login_page():
 
     page_content = ft.Column(
         [
-            ft.Text('VDSApp', size=25, weight=ft.FontWeight.BOLD),
-            ft.Text('Вставьте токен API от вашего аккаунта VDS Selectel', text_align=ft.TextAlign.CENTER),
+            ft.Text("VDSApp", size=25, weight=ft.FontWeight.BOLD),
+            ft.Text(
+                "Вставьте токен API от вашего аккаунта VDS Selectel",
+                text_align=ft.TextAlign.CENTER,
+            ),
             ft.TextField(
-                label='Токен API',
+                label="Токен API",
                 value="",
                 ref=token_ref,
                 password=True,
                 can_reveal_password=True,
             ),
-            ft.FilledButton('Войти', on_click=lets_auth),
+            ft.FilledButton("Войти", on_click=lets_auth),
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

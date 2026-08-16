@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_ssh_key_dialog(page, account_page_state, api_client):
-    logger.info('open create_ssh_key_dialog')
+    logger.info("open create_ssh_key_dialog")
 
     name_field = ft.TextField(
         label="Название ключа",
@@ -73,10 +73,10 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
             pop_dialog()
             new_key = await api_client.ssh_keys_service.create_ssh_key(new_key)
 
-        except Exception as e:
-            logger.error(f'Error creating ssh key: {e}')
+        except Exception as e:  # noqa: F841
+            logger.error(f"Error creating ssh key: {e}")
             show_message_banner(
-                'Ошибка при добавлении ключа',
+                "Ошибка при добавлении ключа",
                 page,
             )
 
@@ -84,7 +84,7 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
             logger.info("SSH key successfully created")
             account_page_state.append_ssh_key(new_key)
             show_message_banner(
-                'Новый ключ успешно добавлен',
+                "Новый ключ успешно добавлен",
                 page,
                 is_error=False,
             )
@@ -108,7 +108,11 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
         ),
         actions=[
             ft.TextButton("Отмена", on_click=pop_dialog),
-            ft.FilledButton("Добавить", on_click=add_key, style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_400)),
+            ft.FilledButton(
+                "Добавить",
+                on_click=add_key,
+                style=ft.ButtonStyle(bgcolor=ft.Colors.BLUE_400),
+            ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
     )

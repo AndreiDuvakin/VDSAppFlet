@@ -8,7 +8,9 @@ from core.contexts import AppContext, BillingPageContext, ApiClientContext
 from ui.components.empty_content import empty_content
 from ui.components.progress_ring import progress_ring
 from ui.components.show_message_banner import show_message_banner
-from ui.pages.billing_page.tabs.components.billing_consumption_view import billing_consumption_view
+from ui.pages.billing_page.tabs.components.billing_consumption_view import (
+    billing_consumption_view,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +24,7 @@ def consumption_operations_tab():
 
     years_list = ft.use_memo(
         lambda: get_years_list_for_consumption_period(app_state.account.info.actdate),
-        [app_state.account.info.actdate]
+        [app_state.account.info.actdate],
     )
     selected_index = billing_page_state.current_year_consumption_index
 
@@ -35,12 +37,16 @@ def consumption_operations_tab():
 
             await asyncio.sleep(2)
 
-            billing_consumption = await api_client.billing_service.get_billing_new_consumption(selected_year)
+            billing_consumption = (
+                await api_client.billing_service.get_billing_new_consumption(
+                    selected_year
+                )
+            )
             billing_page_state.set_billing_consumption(billing_consumption)
 
             logger.info("Billing consumption loaded")
         except Exception as e:
-            logger.error(f'Error getting billing consumption: {e}')
+            logger.error(f"Error getting billing consumption: {e}")
             show_message_banner(
                 "Ошибка получения списка операций списания.",
                 page,
@@ -67,10 +73,7 @@ def consumption_operations_tab():
             ft.CupertinoSlidingSegmentedButton(
                 selected_index=selected_index,
                 on_change=handle_select_year,
-                controls=[
-                    ft.Text(str(year))
-                    for year in years_list
-                ],
+                controls=[ft.Text(str(year)) for year in years_list],
             ),
         ],
         scroll=ft.ScrollMode.AUTO,
@@ -89,7 +92,10 @@ def consumption_operations_tab():
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-    if not billing_page_state.billing_consumption and not billing_page_state.is_billing_consumption_loading:
+    if (
+        not billing_page_state.billing_consumption
+        and not billing_page_state.is_billing_consumption_loading
+    ):
         on_select_year(selected_index)
 
     if not years_list or not billing_page_state.billing_consumption:
@@ -107,7 +113,7 @@ def consumption_operations_tab():
                     billing_page_state.billing_consumption,
                 ),
                 expand=True,
-            )
+            ),
         ],
         expand=True,
         alignment=ft.MainAxisAlignment.START,

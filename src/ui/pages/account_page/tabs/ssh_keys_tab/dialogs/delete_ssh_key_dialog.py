@@ -17,10 +17,10 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
             pop_dialog()
             await api_client.ssh_keys_service.delete_ssh_key_by_id(key.id)
 
-        except Exception as e:
-            logger.error(f'Error deleting ssh key: {e}')
+        except Exception as e:  # noqa: F841
+            logger.error(f"Error deleting ssh key: {e}")
             show_message_banner(
-                'Ошибка при удалении ключа',
+                "Ошибка при удалении ключа",
                 page,
             )
 
@@ -28,7 +28,7 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
             logger.info("ssh key deleted")
             account_page_state.set_ssh_keys(None)
             show_message_banner(
-                'SSH ключ успешно удален',
+                "SSH ключ успешно удален",
                 page,
                 is_error=False,
             )
@@ -42,10 +42,15 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
 
     dialog = ft.AlertDialog(
         title=ft.Text("Удаление SSH ключа"),
-        content=ft.Text(f"Вы уверены, что хотите удалить ключ '{key.name}'?\nЭто действие нельзя отменить."),
+        content=ft.Text(
+            f"Вы уверены, что хотите удалить ключ '{key.name}'?\n"
+            "Это действие нельзя отменить."
+        ),
         actions=[
             ft.TextButton("Отмена", on_click=pop_dialog),
-            ft.FilledButton("Удалить", on_click=confirm_delete, color=ft.Colors.RED_400),
+            ft.FilledButton(
+                "Удалить", on_click=confirm_delete, color=ft.Colors.RED_400
+            ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
     )

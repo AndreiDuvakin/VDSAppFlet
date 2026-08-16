@@ -9,11 +9,11 @@ logger = logging.getLogger(__name__)
 
 class TagsService:
     def __init__(self, tags_client: TagsClient):
-        logger.info('Initializing TagsService')
+        logger.info("Initializing TagsService")
 
         self._client = tags_client
 
     async def get_tags(self) -> List[GetTag]:
-        logger.info('Getting tags')
+        logger.info("Getting tags")
 
         return await self._client.get_tags()

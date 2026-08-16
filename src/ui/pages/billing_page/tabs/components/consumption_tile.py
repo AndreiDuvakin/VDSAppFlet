@@ -6,7 +6,7 @@ from models.billing import BillingUsage
 
 @ft.component
 def create_consumption_tile(
-        usage: BillingUsage,
+    usage: BillingUsage,
 ) -> ft.Control:
     return ft.Card(
         content=ft.ListTile(
@@ -18,9 +18,7 @@ def create_consumption_tile(
                 get_resource_name(usage),
                 weight=ft.FontWeight.W_500,
             ),
-            subtitle=ft.Text(
-                f'Количество: {usage.count}'
-            ),
+            subtitle=ft.Text(f"Количество: {usage.count}"),
             trailing=ft.Text(
                 format_money(usage.summ),
                 color=ft.Colors.RED_600,

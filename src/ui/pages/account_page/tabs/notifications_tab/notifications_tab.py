@@ -23,9 +23,13 @@ def notifications_tab():
         try:
             logger.info("Getting notification settings")
             account_page_state.set_is_loading_notifications(True)
-            notification_settings = await api_client.notification_service.get_notification_settings()
+            notification_settings = (
+                await api_client.notification_service.get_notification_settings()
+            )
             logger.info("Notification settings loaded")
-            account_page_state.set_notification_balance(notification_settings.notify_balance)
+            account_page_state.set_notification_balance(
+                notification_settings.notify_balance
+            )
 
         except Exception as e:
             logger.exception(f"Error requesting notification settings: {str(e)}")
@@ -58,7 +62,9 @@ def notifications_tab():
                 notify_balance=new_rub,
             )
 
-            await api_client.notification_service.post_notification_settings(new_notification_settings)
+            await api_client.notification_service.post_notification_settings(
+                new_notification_settings
+            )
 
             logger.info("Notification settings saved")
 
@@ -71,7 +77,7 @@ def notifications_tab():
                 page,
             )
 
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             logger.info(f"Error saving notification settings: {str(e)}")
             show_message_banner(
                 "Ошибка сохранения настроек уведомлений.",
@@ -89,12 +95,14 @@ def notifications_tab():
             logger.info("Saving notification settings finnaly")
             account_page_state.set_is_loading_notifications(False)
 
-    if account_page_state.notification_settings is None and not account_page_state.is_loading_notifications:
+    if (
+        account_page_state.notification_settings is None
+        and not account_page_state.is_loading_notifications
+    ):
         logger.info("Notification settings not loaded, starting loading")
         asyncio.create_task(get_notification_settings())
 
     if account_page_state.notification_settings is None:
-
         logger.info("Notification settings not present")
         return empty_content(
             ft.Icons.NOTIFICATION_IMPORTANT,
@@ -109,7 +117,7 @@ def notifications_tab():
     is_active_notifications = current_value_rub != 0
 
     switch_button = ft.Switch(
-        label='Уведомлять при остатке',
+        label="Уведомлять при остатке",
         value=is_active_notifications,
         on_change=switch_notifications,
     )
@@ -138,7 +146,11 @@ def notifications_tab():
             ft.Container(
                 content=ft.Row(
                     [
-                        ft.Icon(ft.Icons.NOTIFICATIONS_ACTIVE, size=32, color=ft.Colors.BLUE_400),
+                        ft.Icon(
+                            ft.Icons.NOTIFICATIONS_ACTIVE,
+                            size=32,
+                            color=ft.Colors.BLUE_400,
+                        ),
                         ft.Text(
                             "Уведомления об исчерпании баланса",
                             size=18,
@@ -153,9 +165,7 @@ def notifications_tab():
                 ),
                 margin=ft.Margin.only(bottom=10),
             ),
-
             switch_button,
-
             ft.Text(
                 "Когда баланс вашего аккаунта станет ниже указанного порога "
                 "на вашу электронную почту будет отправлено уведомление.",
@@ -163,12 +173,9 @@ def notifications_tab():
                 selectable=True,
                 color=ft.Colors.GREY_700,
             ),
-
             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-
             balance_input,
             save_button,
-
         ],
         expand=True,
         scroll=ft.ScrollMode.AUTO,

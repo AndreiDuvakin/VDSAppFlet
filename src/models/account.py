@@ -38,7 +38,9 @@ class AccountInfo:
             "2": "Юридическое лицо",
             "3": "Физическое лицо (нерезидент)",
         }
-        return type_map.get(self.face_id, "Не указано") if self.face_id else "Не указано"
+        return (
+            type_map.get(self.face_id, "Не указано") if self.face_id else "Не указано"
+        )
 
 
 @dataclass

@@ -7,14 +7,14 @@ from models.ssh_key import GetSSHKey, PostSSHKey
 
 
 class SSHKeysClient(AbstractClient):
-    @get('sshkeys')
+    @get("sshkeys")
     async def get_ssh_keys(self) -> List[GetSSHKey]:
         pass
 
-    @post('sshkeys')
+    @post("sshkeys")
     async def create_ssh_key(self, body: PostSSHKey) -> GetSSHKey:
         pass
 
-    @delete('sshkeys/{key_id}')
+    @delete("sshkeys/{key_id}")
     async def delete_ssh_key_by_id(self, key_id: int) -> None:
         pass

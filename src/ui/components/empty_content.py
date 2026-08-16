@@ -3,9 +3,9 @@ import flet as ft
 
 @ft.component
 def empty_content(
-        icon,
-        title,
-        text,
+    icon,
+    title,
+    text,
 ):
     return ft.Column(
         [

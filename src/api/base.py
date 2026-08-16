@@ -19,10 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 class ApiClient:
-    BASE_URL = 'https://api.vscale.io/v1/'
+    BASE_URL = "https://api.vscale.io/v1/"
 
     def __init__(self):
-        logger.info('Initializing ApiClient')
+        logger.info("Initializing ApiClient")
 
         self._token = None
 
@@ -48,43 +48,43 @@ class ApiClient:
         self.tags_service = None
 
     def init_clients(self):
-        logger.info('Creating api clients and services')
+        logger.info("Creating api clients and services")
 
         if not isinstance(self._token, str):
-            logger.warning('Fail initializing: Token must be a string')
+            logger.warning("Fail initializing: Token must be a string")
             self.delete_clients_and_services()
-            raise TypeError('Token must be a string')
+            raise TypeError("Token must be a string")
 
-        logger.info('Initializing AccountService and AccountClient')
+        logger.info("Initializing AccountService and AccountClient")
         self._account_client = AccountClient(self._token, self.BASE_URL)
         self.account_service = AccountService(self._account_client)
 
-        logger.info('Initializing SSHKeysService and SSHKeysClient')
+        logger.info("Initializing SSHKeysService and SSHKeysClient")
         self._ssh_keys_client = SSHKeysClient(self._token, self.BASE_URL)
         self.ssh_keys_service = SSHKeysService(self._ssh_keys_client)
 
-        logger.info('Initializing NotificationService and NotificationClient')
+        logger.info("Initializing NotificationService and NotificationClient")
         self._notification_client = NotificationClient(self._token, self.BASE_URL)
         self.notification_service = NotificationService(self._notification_client)
 
-        logger.info('Initializing BillingService and BillingClient')
+        logger.info("Initializing BillingService and BillingClient")
         self._billing_client = BillingClient(self._token, self.BASE_URL)
         self.billing_service = BillingService(self._billing_client)
 
-        logger.info('Initializing ServersService and ServersClient')
+        logger.info("Initializing ServersService and ServersClient")
         self._servers_client = ServersClient(self._token, self.BASE_URL)
         self.servers_service = ServersService(self._servers_client)
 
-        logger.info('Initializing PriceService and PriceClient')
+        logger.info("Initializing PriceService and PriceClient")
         self._price_client = PriceClient(self._token, self.BASE_URL)
         self.price_service = PriceService(self._price_client)
 
-        logger.info('Initializing TagsService and TagsClient')
+        logger.info("Initializing TagsService and TagsClient")
         self._tags_client = TagsClient(self._token, self.BASE_URL)
         self.tags_service = TagsService(self._tags_client)
 
     def delete_clients_and_services(self):
-        logger.info('Deleting clients and services')
+        logger.info("Deleting clients and services")
 
         self._account_client = None
         self.account_service = None
@@ -108,7 +108,7 @@ class ApiClient:
         self.tags_service = None
 
     def set_token(self, token: str):
-        logger.info('Setting token')
+        logger.info("Setting token")
 
         self._token = token
         self.init_clients()

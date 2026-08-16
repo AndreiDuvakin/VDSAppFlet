@@ -29,7 +29,9 @@ class BillingPageState:
     def set_is_billing_consumption_loading(self, is_loading: bool):
         self.is_billing_consumption_loading = is_loading
 
-    def set_billing_consumption(self, billing_consumption: dict[int, dict[int, list[BillingUsage]]]):
+    def set_billing_consumption(
+        self, billing_consumption: dict[int, dict[int, list[BillingUsage]]]
+    ):
         self.billing_consumption = billing_consumption
 
     def set_current_tab_index(self, index: int):
@@ -47,5 +49,7 @@ class BillingPageState:
     def set_balance(self, balance: int):
         self.balance = balance
 
-    def set_billing_payments(self, billing_payments: dict[int, dict[int, list[BillingOperation]]]):
+    def set_billing_payments(
+        self, billing_payments: dict[int, dict[int, list[BillingOperation]]]
+    ):
         self.billing_payments = billing_payments
