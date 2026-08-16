@@ -44,7 +44,7 @@ def rename_server_dialog(api_client, refresh_server, server_detail_page_state, p
             new_name = RenameServer(
                 new_name,
             )
-
+            pop_dialog()
             await api_client.servers_service.rename_server(
                 server_detail_page_state.server.ctid,
                 new_name,
@@ -52,7 +52,6 @@ def rename_server_dialog(api_client, refresh_server, server_detail_page_state, p
 
         except Exception as e:
             logger.error(f'Error rename server: {e}')
-            pop_dialog()
             show_message_banner(
                 f"Ошибка изменения названия сервера",
                 page,
@@ -60,7 +59,6 @@ def rename_server_dialog(api_client, refresh_server, server_detail_page_state, p
 
         else:
             logger.info('Rename server success')
-            pop_dialog()
             show_message_banner(
                 f"Название сервера изменено",
                 page,

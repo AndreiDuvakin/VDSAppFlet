@@ -65,7 +65,17 @@ def servers_page():
 
             await refresh_servers()
 
-    ft.on_mounted(lambda: asyncio.create_task(auto_refresh()))
+    refresh_task: asyncio.Task | None = None
+
+    def start_auto_refresh():
+        nonlocal refresh_task
+        refresh_task = asyncio.create_task(auto_refresh())
+
+    def stop_auto_refresh():
+        if refresh_task is not None and not refresh_task.done():
+            refresh_task.cancel()
+
+    ft.use_effect(start_auto_refresh, [], stop_auto_refresh)
 
     if servers_page_state.is_servers_loading:
         return progress_ring()
@@ -85,7 +95,7 @@ def servers_page():
         for server in app_state.servers
     ]
 
-    return ft.Column(
+    page_content = ft.Column(
         [
             ft.Divider(),
             ft.ListView(
@@ -97,3 +107,29 @@ def servers_page():
         expand=True,
         spacing=15,
     )
+
+    print(app_state.tags)
+
+    if app_state.tags:
+        segment_button = ft.Row(
+            [
+                ft.CupertinoSlidingSegmentedButton(
+                    # selected_index=selected_index,
+                    # on_change=handle_select_year,
+                    controls=[
+                        ft.Text(str(tag.name))
+                        for tag in app_state.tags
+                    ],
+                ),
+            ],
+            scroll=ft.ScrollMode.AUTO,
+            alignment=ft.MainAxisAlignment.CENTER,
+            vertical_alignment=ft.CrossAxisAlignment.START,
+        )
+
+        page_content.controls.insert(
+            0,
+            segment_button,
+        )
+
+    return page_content

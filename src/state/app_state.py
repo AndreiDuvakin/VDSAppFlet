@@ -5,7 +5,9 @@ from typing import List
 import flet as ft
 
 from models.account import GetAccount
+from models.price import GetPrice
 from models.server import GetServer
+from models.tag import GetTag
 from state.account_page_state import AccountPageState
 
 logger = logging.getLogger(__name__)
@@ -16,14 +18,32 @@ logger = logging.getLogger(__name__)
 class AppState:
     is_authenticated: bool = False
     account: GetAccount | None = None
+
     servers: List[GetServer] | None = None
+    tags: List[GetTag] | None = None
+
+    price: GetPrice | None = None
     token: str = ""
 
     is_login_loading: bool = False
+    is_price_loading: bool = False
+    is_tags_loading: bool = False
 
     account_page_state: AccountPageState = field(
-        default_factory=AccountPageState
+        default_factory=AccountPageState,
     )
+
+    def set_price(self, price: GetPrice):
+        self.price = price
+
+    def set_tags(self, tags: List[GetTag]):
+        self.tags = tags
+
+    def set_is_tags_loading(self, is_tags_loading: bool):
+        self.is_tags_loading = is_tags_loading
+
+    def set_is_price_loading(self, is_price_loading: bool):
+        self.is_price_loading = is_price_loading
 
     def get_server_by_id(self, ctid: int) -> GetServer | None:
         if self.servers is None:

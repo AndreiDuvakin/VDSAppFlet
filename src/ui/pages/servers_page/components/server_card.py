@@ -3,7 +3,7 @@ from typing import Callable
 
 import flet as ft
 
-from core.contexts import ApiClientContext
+from core.contexts import ApiClientContext, AppContext
 from models.server import GetServer
 from state.server_card_state import ServerCardState
 from ui.components.show_message_banner import show_message_banner
@@ -18,6 +18,7 @@ def server_card(
 ):
     server_card_state, _ = ft.use_state(ServerCardState)
     api_client = ft.use_context(ApiClientContext)
+    app_state = ft.use_context(AppContext)
     page = ft.context.page
 
     def open_details(e):
@@ -135,6 +136,25 @@ def server_card(
         ]
         )
 
+    if app_state.price is None:
+        price_block = ft.ProgressRing()
+
+    else:
+        price = app_state.price.get_month_price_beautiful(server.rplan)
+
+        if price is None:
+            price_block = ft.ProgressRing()
+
+        else:
+            price_block = ft.Text(price, size=15)
+
+    plan_description = ft.Row(
+        [
+            ft.Text(server.plan_description, size=15),
+            price_block,
+        ]
+    )
+
     card_column = ft.Column(
         [
             ft.Row(
@@ -169,40 +189,48 @@ def server_card(
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             ),
 
-            ft.Divider(height=1),
+            ft.Divider(
+                height=1) if not server_card_state.is_server_loading and server.status != 'queued' else ft.ProgressBar(),
 
             ft.Row(
                 [
-                    ft.Icon(ft.Icons.LANGUAGE, color=ft.Colors.BLUE_400),
-                    ft.Text("Публичный IP:", color=ft.Colors.GREY_200),
-                    ft.Text(server.public_ip, weight=ft.FontWeight.W_500, expand=True)
-                ],
-                spacing=8,
-            ),
+                    ft.Image(
+                        server.iso_image,
+                        width=50,
+                        height=50,
+                    ),
+                    ft.Column(
+                        [
+                            ft.Row(
+                                [
+                                    ft.Icon(ft.Icons.LANGUAGE, color=ft.Colors.BLUE_400),
+                                    ft.Text("Публичный IP:", color=ft.Colors.GREY_200),
+                                    ft.Text(server.public_ip, weight=ft.FontWeight.W_500, expand=True)
+                                ],
+                                spacing=8,
+                            ),
 
-            ft.Row(
-                [
-                    ft.Icon(ft.Icons.SETTINGS_SYSTEM_DAYDREAM, color=ft.Colors.CYAN_400),
-                    ft.Text(server.made_from_os, weight=ft.FontWeight.W_500, expand=True),
+                            ft.Row(
+                                [
+                                    ft.Icon(ft.Icons.SETTINGS_SYSTEM_DAYDREAM, color=ft.Colors.CYAN_400),
+                                    ft.Text(server.beautiful_name, weight=ft.FontWeight.W_500, expand=True),
+                                ]
+                            ),
+
+                            ft.Row(
+                                [
+                                    ft.Icon(ft.Icons.MEMORY, color=ft.Colors.BLUE_GREY_400),
+                                    plan_description,
+                                ],
+                                spacing=8,
+                            ),
+                        ]
+                    )
                 ]
-            ),
-
-            ft.Row(
-                [
-                    ft.Icon(ft.Icons.MEMORY, color=ft.Colors.BLUE_GREY_400),
-                    ft.Text(server.plan_description, size=15, overflow=ft.TextOverflow.ELLIPSIS)
-                ],
-                spacing=8,
-            ),
+            )
         ],
         spacing=10,
     )
-
-    if server_card_state.is_server_loading:
-        card_column.controls.insert(
-            0,
-            ft.ProgressBar(),
-        )
 
     card_content = ft.GestureDetector(
         on_tap=open_details,

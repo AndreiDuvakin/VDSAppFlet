@@ -14,11 +14,11 @@ MONTH_NAMES = {
 }
 
 PLANS = {
-    'small': '512 МБ RAM, 1 ядро CPU, 20 ГБ SSD, 1 ТБ трафика',
-    'medium': '1 ГБ RAM, 1 ядро CPU, 30 ГБ SSD, 2 ТБ трафика',
-    'large': '2 ГБ RAM, 2 ядра CPU, 40 ГБ SSD, 3 TБ трафика',
-    'huge': '4 ГБ RAM, 2 ядра CPU, 60 ГБ SSD, 4 TБ трафика',
-    'monster': '8 ГБ RAM, 4 ядра CPU, 80 ГБ SSD, 5 TБ трафика',
+    'small': '512 МБ RAM, 1 CPU, 20 ГБ SSD',
+    'medium': '1 ГБ RAM, 1 CPU, 30 ГБ SSD',
+    'large': '2 ГБ RAM, 2 CPU, 40 ГБ SSD',
+    'huge': '4 ГБ RAM, 2 CPU, 60 ГБ SSD',
+    'monster': '8 ГБ RAM, 4 CPU, 80 ГБ SSD',
 }
 
 SERVER_STATUSES = {

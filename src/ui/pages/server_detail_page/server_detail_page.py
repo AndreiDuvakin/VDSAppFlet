@@ -8,6 +8,7 @@ from state.server_detail_page_state import ServerDetailPageState
 from ui.components.empty_content import empty_content
 from ui.components.show_message_banner import show_message_banner
 from ui.pages.server_detail_page.components.rename_server_dialog import rename_server_dialog
+from ui.pages.server_detail_page.tabs.server_properties_tab import server_properties_tab
 
 logger = logging.getLogger(__name__)
 
@@ -48,12 +49,12 @@ def server_detail_page():
     server_detail_page_state, _ = ft.use_state(ServerDetailPageState)
     api_client = ft.use_context(ApiClientContext)
 
-    if server_detail_page_state.server is None:
-        server = ft.use_memo(
-            lambda: app_state.get_server_by_id(ctid),
-            [ctid]
-        )
+    server = ft.use_memo(
+        lambda: app_state.get_server_by_id(ctid),
+        [ctid, app_state.servers],
+    )
 
+    if server_detail_page_state.server is None:
         if server is None:
             return empty_page_component
 
@@ -81,7 +82,6 @@ def server_detail_page():
 
             if page.route != f"/server/{ctid}":
                 logger.info('Route was changed, breaking refresh')
-                set_refreshing(False)
                 break
 
             if server_detail_page_state.is_server_loading:
@@ -92,14 +92,17 @@ def server_detail_page():
     def on_tab_changed(e):
         server_detail_page_state.set_current_tab_index(e.control.selected_index)
 
-    ft.on_mounted(lambda: asyncio.create_task(auto_refresh()))
+    refresh_task: asyncio.Task | None = None
 
-    refreshing, set_refreshing = ft.use_state(False)
+    def start_auto_refresh():
+        nonlocal refresh_task
+        refresh_task = asyncio.create_task(auto_refresh())
 
-    if not refreshing:
-        print('CREATING RESRESH TASK')
-        asyncio.create_task(auto_refresh())
-        set_refreshing(True)
+    def stop_auto_refresh():
+        if refresh_task is not None and not refresh_task.done():
+            refresh_task.cancel()
+
+    ft.use_effect(start_auto_refresh, [ctid], stop_auto_refresh)
 
     def show_rename_server_dialog():
         page.show_dialog(
@@ -127,9 +130,58 @@ def server_detail_page():
             ],
         )
 
+        if app_state.price is None:
+            price_block = ft.ProgressRing()
+
+        else:
+            price = app_state.price.get_month_price_beautiful(server.rplan)
+
+            if price is None:
+                price_block = ft.ProgressRing()
+
+            else:
+                price_block = ft.Text(price, size=15)
+
+        plan_description = ft.Row(
+            [
+                ft.Text(server.plan_description, size=15),
+                price_block,
+            ]
+        )
+
         tabs_content = ft.Column(
             [
                 page_bar,
+                ft.Row(
+                    [
+                        ft.Image(server.iso_image, width=80, height=80),
+                        ft.Column(
+                            [
+                                ft.Row(
+                                    [
+                                        ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.BLUE_400),
+                                        ft.Text(server.beautiful_location, weight=ft.FontWeight.W_500, expand=True),
+                                    ],
+                                ),
+
+                                ft.Row(
+                                    [
+                                        ft.Icon(ft.Icons.SETTINGS_SYSTEM_DAYDREAM, color=ft.Colors.CYAN_400),
+                                        ft.Text(server.beautiful_name, weight=ft.FontWeight.W_500, expand=True),
+                                    ],
+                                ),
+
+                                ft.Row(
+                                    [
+                                        ft.Icon(ft.Icons.MEMORY, color=ft.Colors.BLUE_GREY_400),
+                                        plan_description,
+                                    ],
+                                    spacing=8,
+                                ),
+                            ],
+                        )
+                    ],
+                ),
                 ft.TabBar(
                     tabs=[
                         ft.Tab(label="Параметры сервера", icon=ft.Icons.DNS),
@@ -143,6 +195,7 @@ def server_detail_page():
                         ft.Container(
                             alignment=ft.Alignment.CENTER,
                             expand=True,
+                            content=server_properties_tab(),
                         ),
                         ft.Container(
                             alignment=ft.Alignment.CENTER,
@@ -159,6 +212,12 @@ def server_detail_page():
             alignment=ft.MainAxisAlignment.START,
         )
 
+        if server_detail_page_state.is_server_loading:
+            tabs_content.controls.insert(
+                1,
+                ft.ProgressBar(),
+            )
+
         tabs = ft.Tabs(
             selected_index=server_detail_page_state.current_tab_index,
             on_change=on_tab_changed,
@@ -166,12 +225,6 @@ def server_detail_page():
             expand=True,
             content=tabs_content,
         )
-
-        if server_detail_page_state.is_server_loading:
-            tabs_content.controls.insert(
-                1,
-                ft.ProgressBar(),
-            )
 
         return ft.Column(
             [

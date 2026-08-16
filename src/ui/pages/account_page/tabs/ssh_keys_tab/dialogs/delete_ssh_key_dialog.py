@@ -14,11 +14,11 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
         try:
             logger.info("trying to delete ssh key")
             account_page_state.set_is_loading_ssh_keys(True)
+            pop_dialog()
             await api_client.ssh_keys_service.delete_ssh_key_by_id(key.id)
 
         except Exception as e:
             logger.error(f'Error deleting ssh key: {e}')
-            pop_dialog()
             show_message_banner(
                 'Ошибка при удалении ключа',
                 page,
@@ -27,7 +27,6 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
         else:
             logger.info("ssh key deleted")
             account_page_state.set_ssh_keys(None)
-            pop_dialog()
             show_message_banner(
                 'SSH ключ успешно удален',
                 page,

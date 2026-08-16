@@ -70,11 +70,11 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
                 key=key,
             )
 
+            pop_dialog()
             new_key = await api_client.ssh_keys_service.create_ssh_key(new_key)
 
         except Exception as e:
             logger.error(f'Error creating ssh key: {e}')
-            pop_dialog()
             show_message_banner(
                 'Ошибка при добавлении ключа',
                 page,
@@ -82,7 +82,6 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
 
         else:
             logger.info("SSH key successfully created")
-            pop_dialog()
             account_page_state.append_ssh_key(new_key)
             show_message_banner(
                 'Новый ключ успешно добавлен',

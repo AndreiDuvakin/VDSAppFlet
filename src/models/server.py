@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from functools import cached_property
 
-from core.constants import SERVER_STATUSES, PLANS
+from core.constants import PLANS
 from models.ssh_key import ServerSSHKey
 
 
@@ -27,6 +28,9 @@ class ServerStatus:
         elif self.status == "billing":
             return "Заблокирован (баланс)"
 
+        elif self.status == "queued":
+            return 'В очереди'
+
         return self.status.capitalize()
 
     @property
@@ -34,7 +38,7 @@ class ServerStatus:
         if self.status == "started":
             return "green"
 
-        elif self.status == "stopped":
+        elif self.status == "stopped" or self.status == "queued":
             return "orange"
 
         return "red"
@@ -58,24 +62,55 @@ class Server(ServerStatus):
     name: str
     private_address: dict = field(default_factory=dict)
 
-    @property
+    @cached_property
+    def beautiful_location(self) -> str:
+        location = ''
+
+        for i in self.location.upper():
+            if i.isalpha():
+                location += i
+
+        return location
+
+    @cached_property
     def active_description(self) -> str:
         return "Работает" if self.active else "Не работает"
 
-    @property
+    @cached_property
     def plan_description(self) -> str:
         return PLANS.get(
             self.rplan,
             f"Неизвестный тариф: {self.rplan}",
         )
 
-    @property
+    @cached_property
     def public_ip(self) -> str:
         return self.public_address.address if self.public_address else "—"
 
-    @property
+    @cached_property
     def made_from_os(self) -> str:
         return self.made_from.split('_')[0]
+
+    @cached_property
+    def iso_image(self) -> str:
+        made_from = self.made_from.lower()
+
+        if made_from.startswith('ubuntu'):
+            return 'free-icon-ubuntu-888879.png'
+
+        if made_from.startswith('debian'):
+            return 'free-icon-linux-246118.png'
+
+        if made_from.startswith('fedora'):
+            return 'free-icon-cowboy-hat-2790087.png'
+
+        return 'free-icon-linux-15465695.png'
+
+    @cached_property
+    def beautiful_name(self) -> str:
+        iso_name, version, bit, _, _ = self.made_from.split('_')
+        iso_name = iso_name.capitalize()
+        return f"{iso_name} {version} {bit}bit"
 
 
 @dataclass

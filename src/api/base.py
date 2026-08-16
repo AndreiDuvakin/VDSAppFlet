@@ -3,13 +3,17 @@ import logging
 from api.account_client import AccountClient
 from api.billing_client import BillingClient
 from api.notification_client import NotificationClient
+from api.price_client import PriceClient
 from api.servers_client import ServersClient
 from api.ssh_keys_client import SSHKeysClient
+from api.tags_client import TagsClient
 from services.account_service import AccountService
 from services.billing_service import BillingService
 from services.notification_service import NotificationService
+from services.price_service import PriceService
 from services.servers_service import ServersService
 from services.ssh_keys_service import SSHKeysService
+from services.tags_service import TagsService
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +40,12 @@ class ApiClient:
 
         self._servers_client = None
         self.servers_service = None
+
+        self._price_client = None
+        self.price_service = None
+
+        self._tags_client = None
+        self.tags_service = None
 
     def init_clients(self):
         logger.info('Creating api clients and services')
@@ -65,6 +75,14 @@ class ApiClient:
         self._servers_client = ServersClient(self._token, self.BASE_URL)
         self.servers_service = ServersService(self._servers_client)
 
+        logger.info('Initializing PriceService and PriceClient')
+        self._price_client = PriceClient(self._token, self.BASE_URL)
+        self.price_service = PriceService(self._price_client)
+
+        logger.info('Initializing TagsService and TagsClient')
+        self._tags_client = TagsClient(self._token, self.BASE_URL)
+        self.tags_service = TagsService(self._tags_client)
+
     def delete_clients_and_services(self):
         logger.info('Deleting clients and services')
 
@@ -82,6 +100,12 @@ class ApiClient:
 
         self._servers_client = None
         self.servers_service = None
+
+        self._price_client = None
+        self.price_service = None
+
+        self._tags_client = None
+        self.tags_service = None
 
     def set_token(self, token: str):
         logger.info('Setting token')
