@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import flet as ft
 
-from models.server import GetServer
+from src.models.server import GetServer
 
 
 @dataclass

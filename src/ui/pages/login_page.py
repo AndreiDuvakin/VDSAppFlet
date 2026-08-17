@@ -2,9 +2,9 @@ import logging
 
 import flet as ft
 
-from core.contexts import AppContext, ApiClientContext
-from ui.components.show_message_banner import show_message_banner
-from ui.components.show_simple_dialog import show_simple_dialog
+from src.core.contexts import ApiClientContext, AppContext
+from src.ui.components.show_message_banner import show_message_banner
+from src.ui.components.show_simple_dialog import show_simple_dialog
 
 logger = logging.getLogger(__name__)
 

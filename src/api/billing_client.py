@@ -1,7 +1,7 @@
 from dataclass_rest import get
 
-from api.abstract_client import AbstractClient
-from models.billing import GetBillingBalance, GetBillingOperations
+from src.api.abstract_client import AbstractClient
+from src.models.billing import GetBillingBalance, GetBillingOperations
 
 
 class BillingClient(AbstractClient):

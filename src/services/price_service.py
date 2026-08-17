@@ -1,7 +1,7 @@
 import logging
 
-from api.price_client import PriceClient
-from models.price import GetPrice
+from src.api.price_client import PriceClient
+from src.models.price import GetPrice
 
 logger = logging.getLogger(__name__)
 

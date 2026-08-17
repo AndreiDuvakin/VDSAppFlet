@@ -3,15 +3,15 @@ import logging
 
 import flet as ft
 
-from core.contexts import ApiClientContext, BillingPageContext
-from state.billing_page_state import BillingPageState
-from ui.components.empty_content import empty_content
-from ui.components.progress_ring import progress_ring
-from ui.components.show_message_banner import show_message_banner
-from ui.pages.billing_page.tabs.payment_operations_tab import payment_operations_tab
-from ui.pages.billing_page.tabs.consumption_operations_tab import (
+from src.core.contexts import ApiClientContext, BillingPageContext
+from src.state.billing_page_state import BillingPageState
+from src.ui.components.empty_content import empty_content
+from src.ui.components.progress_ring import progress_ring
+from src.ui.components.show_message_banner import show_message_banner
+from src.ui.pages.billing_page.tabs.consumption_operations_tab import (
     consumption_operations_tab,
 )
+from src.ui.pages.billing_page.tabs.payment_operations_tab import payment_operations_tab
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ def billing_page():
             content=tabs_content,
         )
 
-        page_content = ft.Column(
+        return ft.Column(
             [
                 ft.Row(
                     [
@@ -130,8 +130,6 @@ def billing_page():
             expand=True,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
-
-        return page_content
 
     return BillingPageContext(
         billing_page_state,

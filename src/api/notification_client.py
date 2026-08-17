@@ -1,7 +1,7 @@
 from dataclass_rest import get, put
 
-from api.abstract_client import AbstractClient
-from models.notification import GetNotificationSettings, PostNotificationSettings
+from src.api.abstract_client import AbstractClient
+from src.models.notification import GetNotificationSettings, PostNotificationSettings
 
 
 class NotificationClient(AbstractClient):

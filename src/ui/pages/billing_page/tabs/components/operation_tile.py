@@ -1,7 +1,7 @@
 import flet as ft
 
-from ui.pages.billing_page.common import format_operation_price
-from models.billing import BillingOperation
+from src.models.billing import BillingOperation
+from src.ui.pages.billing_page.common import format_operation_price
 
 
 @ft.component

@@ -3,13 +3,13 @@ import logging
 
 import flet as ft
 
-from core.contexts import AccountPageContext, ApiClientContext
-from ui.components.empty_content import empty_content
-from ui.components.show_message_banner import show_message_banner
-from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.create_ssh_key_dialog import (
+from src.core.contexts import AccountPageContext, ApiClientContext
+from src.ui.components.empty_content import empty_content
+from src.ui.components.show_message_banner import show_message_banner
+from src.ui.pages.account_page.tabs.ssh_keys_tab.dialogs.create_ssh_key_dialog import (
     create_ssh_key_dialog,
 )
-from ui.pages.account_page.tabs.ssh_keys_tab.dialogs.delete_ssh_key_dialog import (
+from src.ui.pages.account_page.tabs.ssh_keys_tab.dialogs.delete_ssh_key_dialog import (
     delete_ssh_key_dialog,
 )
 
@@ -75,8 +75,8 @@ def ssh_keys_tab():
             account_page_state.set_is_loading_ssh_keys(False)
 
     if (
-        account_page_state.ssh_keys is None
-        and not account_page_state.is_loading_ssh_keys
+            account_page_state.ssh_keys is None
+            and not account_page_state.is_loading_ssh_keys
     ):
         logger.info("SSHE keys not loaded, starting loading")
         asyncio.create_task(get_ssh_keys())
@@ -124,9 +124,8 @@ def ssh_keys_tab():
                                         icon=ft.Icons.DELETE_OUTLINE,
                                         icon_color=ft.Colors.RED_400,
                                         tooltip="Удалить ключ",
-                                        on_click=lambda e: show_delete_ssh_key_dialog(
-                                            key,
-                                        ),
+                                        on_click=lambda e, k=key:
+                                        show_delete_ssh_key_dialog(k),
                                     ),
                                 ],
                                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,

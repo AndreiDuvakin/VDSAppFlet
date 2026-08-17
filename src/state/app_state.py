@@ -1,14 +1,13 @@
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List
 
 import flet as ft
 
-from models.account import GetAccount
-from models.price import GetPrice
-from models.server import GetServer
-from models.tag import GetTag
-from state.account_page_state import AccountPageState
+from src.models.account import GetAccount
+from src.models.price import GetPrice
+from src.models.server import GetServer
+from src.models.tag import GetTag
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +27,6 @@ class AppState:
     is_login_loading: bool = False
     is_price_loading: bool = False
     is_tags_loading: bool = False
-
-    account_page_state: AccountPageState = field(
-        default_factory=AccountPageState,
-    )
 
     def set_price(self, price: GetPrice):
         self.price = price

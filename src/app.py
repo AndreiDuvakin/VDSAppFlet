@@ -3,11 +3,11 @@ import logging
 
 import flet as ft
 
-from api.base import ApiClient
-from core.contexts import AppContext, ApiClientContext
-from routing.router import app_router
-from state.app_state import AppState
-from ui.components.show_message_banner import show_message_banner
+from src.api.base import ApiClient
+from src.core.contexts import ApiClientContext, AppContext
+from src.routing.router import app_router
+from src.state.app_state import AppState
+from src.ui.components.show_message_banner import show_message_banner
 
 logger = logging.getLogger(__name__)
 
@@ -62,8 +62,8 @@ def app():
     if app_state.price is None and not app_state.is_price_loading and app_state.token:
         asyncio.create_task(get_price())
 
-    if app_state.tags is None and not app_state.is_tags_loading and app_state.token:
-        asyncio.create_task(get_tags())
+    # if app_state.tags is None and not app_state.is_tags_loading and app_state.token:
+    #     asyncio.create_task(get_tags())
 
     logger.info("Returning app_router with contexts")
 

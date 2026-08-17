@@ -1,7 +1,7 @@
 import flet as ft
 
-from ui.pages.billing_page.common import format_money, get_resource_name
-from models.billing import BillingUsage
+from src.models.billing import BillingUsage
+from src.ui.pages.billing_page.common import format_money, get_resource_name
 
 
 @ft.component

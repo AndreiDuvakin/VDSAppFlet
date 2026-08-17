@@ -1,6 +1,6 @@
 import flet as ft
 
-from ui.components.nav_bar import nav_bar
+from src.ui.components.nav_bar import nav_bar
 
 
 @ft.component

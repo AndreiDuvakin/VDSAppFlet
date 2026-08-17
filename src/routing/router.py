@@ -2,14 +2,14 @@ import logging
 
 import flet as ft
 
-from routing.private_router import protected_route
-from ui.layouts.app_layout import app_layout
-from ui.pages.account_page.account_page import account_page
-from ui.pages.billing_page.billing_page import billing_page
-from ui.pages.info_page import info_page
-from ui.pages.login_page import login_page
-from ui.pages.server_detail_page.server_detail_page import server_detail_page
-from ui.pages.servers_page.servers_page import servers_page
+from src.routing.private_router import protected_route
+from src.ui.layouts.app_layout import app_layout
+from src.ui.pages.account_page.account_page import account_page
+from src.ui.pages.billing_page.billing_page import billing_page
+from src.ui.pages.info_page import info_page
+from src.ui.pages.login_page import login_page
+from src.ui.pages.server_detail_page.server_detail_page import server_detail_page
+from src.ui.pages.servers_page.servers_page import servers_page
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 def app_router():
     logger.info("Returning main app router")
 
-    main_router = ft.Router(
+    return ft.Router(
         [
             ft.Route(
                 path="/auth",
@@ -56,5 +56,3 @@ def app_router():
             ),
         ]
     )
-
-    return main_router

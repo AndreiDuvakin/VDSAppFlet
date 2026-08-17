@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import flet as ft
 
-from models.billing import BillingOperation, BillingUsage
+from src.models.billing import BillingOperation, BillingUsage
 
 
 @dataclass

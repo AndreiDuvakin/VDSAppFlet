@@ -1,8 +1,8 @@
 import logging
 from typing import List
 
-from api.tags_client import TagsClient
-from models.tag import GetTag
+from src.api.tags_client import TagsClient
+from src.models.tag import GetTag
 
 logger = logging.getLogger(__name__)
 

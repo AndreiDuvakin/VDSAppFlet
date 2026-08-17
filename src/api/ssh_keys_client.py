@@ -1,9 +1,9 @@
 from typing import List
 
-from dataclass_rest import get, post, delete
+from dataclass_rest import delete, get, post
 
-from api.abstract_client import AbstractClient
-from models.ssh_key import GetSSHKey, PostSSHKey
+from src.api.abstract_client import AbstractClient
+from src.models.ssh_key import GetSSHKey, PostSSHKey
 
 
 class SSHKeysClient(AbstractClient):

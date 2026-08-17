@@ -1,7 +1,7 @@
 from dataclass_rest import get
 
-from api.abstract_client import AbstractClient
-from models.price import GetPrice
+from src.api.abstract_client import AbstractClient
+from src.models.price import GetPrice
 
 
 class PriceClient(AbstractClient):

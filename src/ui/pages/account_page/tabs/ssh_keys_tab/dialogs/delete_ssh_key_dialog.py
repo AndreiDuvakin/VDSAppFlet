@@ -2,7 +2,7 @@ import logging
 
 import flet as ft
 
-from ui.components.show_message_banner import show_message_banner
+from src.ui.components.show_message_banner import show_message_banner
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
     def pop_dialog():
         page.pop_dialog()
 
-    dialog = ft.AlertDialog(
+    return ft.AlertDialog(
         title=ft.Text("Удаление SSH ключа"),
         content=ft.Text(
             f"Вы уверены, что хотите удалить ключ '{key.name}'?\n"
@@ -54,5 +54,3 @@ def delete_ssh_key_dialog(key, page, account_page_state, api_client):
         ],
         actions_alignment=ft.MainAxisAlignment.END,
     )
-
-    return dialog

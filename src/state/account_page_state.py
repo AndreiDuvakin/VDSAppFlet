@@ -3,7 +3,7 @@ from typing import List
 
 import flet as ft
 
-from models.ssh_key import GetSSHKey
+from src.models.ssh_key import GetSSHKey
 
 
 @dataclass

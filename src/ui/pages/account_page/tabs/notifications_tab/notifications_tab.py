@@ -3,10 +3,10 @@ import logging
 
 import flet as ft
 
-from core.contexts import AccountPageContext, ApiClientContext
-from models.notification import PostNotificationSettings
-from ui.components.empty_content import empty_content
-from ui.components.show_message_banner import show_message_banner
+from src.core.contexts import AccountPageContext, ApiClientContext
+from src.models.notification import PostNotificationSettings
+from src.ui.components.empty_content import empty_content
+from src.ui.components.show_message_banner import show_message_banner
 
 logger = logging.getLogger(__name__)
 

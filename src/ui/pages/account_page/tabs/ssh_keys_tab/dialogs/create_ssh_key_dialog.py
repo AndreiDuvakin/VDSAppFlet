@@ -2,9 +2,9 @@ import logging
 
 import flet as ft
 
-from models.ssh_key import PostSSHKey
-from ui.components.show_message_banner import show_message_banner
-from ui.components.show_simple_dialog import show_simple_dialog
+from src.models.ssh_key import PostSSHKey
+from src.ui.components.show_message_banner import show_message_banner
+from src.ui.components.show_simple_dialog import show_simple_dialog
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +93,7 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
             logger.info("Finished creating ssh key")
             account_page_state.set_is_loading_ssh_keys(False)
 
-    dialog = ft.AlertDialog(
+    return ft.AlertDialog(
         title=ft.Text("Добавление SSH ключа"),
         content=ft.Column(
             [
@@ -116,5 +116,3 @@ def create_ssh_key_dialog(page, account_page_state, api_client):
         ],
         actions_alignment=ft.MainAxisAlignment.END,
     )
-
-    return dialog

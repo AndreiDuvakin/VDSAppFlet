@@ -1,19 +1,19 @@
 import logging
 
-from api.account_client import AccountClient
-from api.billing_client import BillingClient
-from api.notification_client import NotificationClient
-from api.price_client import PriceClient
-from api.servers_client import ServersClient
-from api.ssh_keys_client import SSHKeysClient
-from api.tags_client import TagsClient
-from services.account_service import AccountService
-from services.billing_service import BillingService
-from services.notification_service import NotificationService
-from services.price_service import PriceService
-from services.servers_service import ServersService
-from services.ssh_keys_service import SSHKeysService
-from services.tags_service import TagsService
+from src.api.account_client import AccountClient
+from src.api.billing_client import BillingClient
+from src.api.notification_client import NotificationClient
+from src.api.price_client import PriceClient
+from src.api.servers_client import ServersClient
+from src.api.ssh_keys_client import SSHKeysClient
+from src.api.tags_client import TagsClient
+from src.services.account_service import AccountService
+from src.services.billing_service import BillingService
+from src.services.notification_service import NotificationService
+from src.services.price_service import PriceService
+from src.services.servers_service import ServersService
+from src.services.ssh_keys_service import SSHKeysService
+from src.services.tags_service import TagsService
 
 logger = logging.getLogger(__name__)
 

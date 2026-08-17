@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from functools import cached_property
 
-from core.constants import PLANS
-from models.ssh_key import ServerSSHKey
+from src.core.constants import PLANS
+from src.models.ssh_key import ServerSSHKey
 
 
 @dataclass
@@ -22,13 +22,13 @@ class ServerStatus:
         if self.status == "started":
             return "Запущен"
 
-        elif self.status == "stopped":
+        if self.status == "stopped":
             return "Остановлен"
 
-        elif self.status == "billing":
+        if self.status == "billing":
             return "Заблокирован (баланс)"
 
-        elif self.status == "queued":
+        if self.status == "queued":
             return "В очереди"
 
         return self.status.capitalize()
@@ -38,7 +38,7 @@ class ServerStatus:
         if self.status == "started":
             return "green"
 
-        elif self.status == "stopped" or self.status == "queued":
+        if self.status == "stopped" or self.status == "queued":
             return "orange"
 
         return "red"

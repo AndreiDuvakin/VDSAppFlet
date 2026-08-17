@@ -2,8 +2,8 @@ from typing import List
 
 from dataclass_rest import get, patch
 
-from api.abstract_client import AbstractClient
-from models.server import GetServer, GetServerLog, RenameServer
+from src.api.abstract_client import AbstractClient
+from src.models.server import GetServer, GetServerLog, RenameServer
 
 
 class ServersClient(AbstractClient):

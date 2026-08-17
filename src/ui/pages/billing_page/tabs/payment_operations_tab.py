@@ -3,12 +3,12 @@ import logging
 
 import flet as ft
 
-from ui.pages.billing_page.common import group_operations_by_year_month
-from core.contexts import BillingPageContext, ApiClientContext
-from ui.components.empty_content import empty_content
-from ui.components.progress_ring import progress_ring
-from ui.components.show_message_banner import show_message_banner
-from ui.pages.billing_page.tabs.components.billing_operations_view import (
+from src.core.contexts import ApiClientContext, BillingPageContext
+from src.ui.components.empty_content import empty_content
+from src.ui.components.progress_ring import progress_ring
+from src.ui.components.show_message_banner import show_message_banner
+from src.ui.pages.billing_page.common import group_operations_by_year_month
+from src.ui.pages.billing_page.tabs.components.billing_operations_view import (
     billing_operations_view,
 )
 

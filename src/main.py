@@ -2,8 +2,8 @@ import logging
 
 import flet as ft
 
-from app import app
-from core.logging_config import setup_logging
+from src.app import app
+from src.core.logging_config import setup_logging
 
 setup_logging(log_level="INFO", log_file=None)
 

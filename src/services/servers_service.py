@@ -1,8 +1,8 @@
 import logging
 from typing import List
 
-from api.servers_client import ServersClient
-from models.server import GetServer, GetServerLog, RenameServer
+from src.api.servers_client import ServersClient
+from src.models.server import GetServer, GetServerLog, RenameServer
 
 logger = logging.getLogger(__name__)
 

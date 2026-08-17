@@ -1,7 +1,7 @@
 import logging
 
-from api.notification_client import NotificationClient
-from models.notification import GetNotificationSettings, PostNotificationSettings
+from src.api.notification_client import NotificationClient
+from src.models.notification import GetNotificationSettings, PostNotificationSettings
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 import flet as ft
 
-from core.contexts import AppContext
+from src.core.contexts import AppContext
 
 
 @ft.component
@@ -138,11 +138,9 @@ def profile_tab():
         spacing=15,
     )
 
-    content = ft.Column(
+    return ft.Column(
         [header, info_rows],
         spacing=10,
         scroll=ft.ScrollMode.AUTO,
         expand=True,
     )
-
-    return content

@@ -1,6 +1,6 @@
 import flet as ft
 
-from core.contexts import ServerDetailPageContext
+from src.core.contexts import ServerDetailPageContext
 
 
 @ft.component

@@ -1,6 +1,6 @@
 import flet as ft
 
-from ui.components.nav_link import nav_link
+from src.ui.components.nav_link import nav_link
 
 
 @ft.component

@@ -2,8 +2,8 @@ from typing import List
 
 from dataclass_rest import get
 
-from api.abstract_client import AbstractClient
-from models.tag import GetTag
+from src.api.abstract_client import AbstractClient
+from src.models.tag import GetTag
 
 
 class TagsClient(AbstractClient):

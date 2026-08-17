@@ -1,7 +1,7 @@
 import logging
 
-from api.account_client import AccountClient
-from models.account import GetAccount
+from src.api.account_client import AccountClient
+from src.models.account import GetAccount
 
 logger = logging.getLogger(__name__)
 

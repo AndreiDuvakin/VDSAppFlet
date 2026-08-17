@@ -3,7 +3,7 @@ import datetime
 from collections import defaultdict
 from typing import List, Mapping
 
-from models.billing import BillingOperation, BillingUsage
+from src.models.billing import BillingOperation, BillingUsage
 
 
 def group_operations_by_year_month_sync(

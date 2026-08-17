@@ -1,7 +1,7 @@
 import logging
 
-from api.ssh_keys_client import SSHKeysClient
-from models.ssh_key import GetSSHKey, PostSSHKey
+from src.api.ssh_keys_client import SSHKeysClient
+from src.models.ssh_key import GetSSHKey, PostSSHKey
 
 logger = logging.getLogger(__name__)
 

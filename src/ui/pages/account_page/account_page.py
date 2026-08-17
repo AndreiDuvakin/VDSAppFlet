@@ -1,12 +1,12 @@
 import flet as ft
 
-from core.contexts import AccountPageContext
-from state.account_page_state import AccountPageState
-from ui.pages.account_page.tabs.notifications_tab.notifications_tab import (
+from src.core.contexts import AccountPageContext
+from src.state.account_page_state import AccountPageState
+from src.ui.pages.account_page.tabs.notifications_tab.notifications_tab import (
     notifications_tab,
 )
-from ui.pages.account_page.tabs.profile_tab import profile_tab
-from ui.pages.account_page.tabs.ssh_keys_tab.ssh_keys_tab import ssh_keys_tab
+from src.ui.pages.account_page.tabs.profile_tab import profile_tab
+from src.ui.pages.account_page.tabs.ssh_keys_tab.ssh_keys_tab import ssh_keys_tab
 
 
 @ft.component

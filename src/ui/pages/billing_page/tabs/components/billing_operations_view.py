@@ -1,17 +1,19 @@
 import flet as ft
 
-from ui.pages.billing_page.common import get_operation_word
-from core.constants import MONTH_NAMES
-from models.billing import BillingOperation
-from ui.pages.billing_page.tabs.components.operation_tile import create_operation_tile
+from src.core.constants import MONTH_NAMES
+from src.models.billing import BillingOperation
+from src.ui.pages.billing_page.common import get_operation_word
+from src.ui.pages.billing_page.tabs.components.operation_tile import (
+    create_operation_tile,
+)
 
 
 @ft.component
 def billing_operations_view(
-    grouped_operations: dict[
-        int,
-        dict[int, list[BillingOperation]],
-    ],
+        grouped_operations: dict[
+            int,
+            dict[int, list[BillingOperation]],
+        ],
 ):
     year_tiles = []
 
@@ -19,7 +21,6 @@ def billing_operations_view(
         month_tiles = []
 
         for month_idx, (month, operations) in enumerate(months.items()):
-
             month_tiles.append(
                 ft.ExpansionTile(
                     title=ft.Text(

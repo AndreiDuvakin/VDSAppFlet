@@ -3,14 +3,16 @@ import logging
 
 import flet as ft
 
-from core.contexts import AppContext, ApiClientContext, ServerDetailPageContext
-from state.server_detail_page_state import ServerDetailPageState
-from ui.components.empty_content import empty_content
-from ui.components.show_message_banner import show_message_banner
-from ui.pages.server_detail_page.components.rename_server_dialog import (
+from src.core.contexts import ApiClientContext, AppContext, ServerDetailPageContext
+from src.state.server_detail_page_state import ServerDetailPageState
+from src.ui.components.empty_content import empty_content
+from src.ui.components.show_message_banner import show_message_banner
+from src.ui.pages.server_detail_page.components.rename_server_dialog import (
     rename_server_dialog,
 )
-from ui.pages.server_detail_page.tabs.server_properties_tab import server_properties_tab
+from src.ui.pages.server_detail_page.tabs.server_properties_tab import (
+    server_properties_tab,
+)
 
 logger = logging.getLogger(__name__)
 

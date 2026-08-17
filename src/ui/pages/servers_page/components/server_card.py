@@ -3,10 +3,10 @@ from typing import Callable
 
 import flet as ft
 
-from core.contexts import ApiClientContext, AppContext
-from models.server import GetServer
-from state.server_card_state import ServerCardState
-from ui.components.show_message_banner import show_message_banner
+from src.core.contexts import ApiClientContext, AppContext
+from src.models.server import GetServer
+from src.state.server_card_state import ServerCardState
+from src.ui.components.show_message_banner import show_message_banner
 
 logger = logging.getLogger(__name__)
 
