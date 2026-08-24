@@ -10,7 +10,7 @@ class Tag:
 @dataclass
 class GetTag(Tag):
     id: int
-    domains: List[str]
+    scalets: List[int]
 
 
 @dataclass

@@ -1,5 +1,5 @@
-import logging
 from dataclasses import dataclass
+import logging
 from typing import List
 
 import flet as ft

@@ -62,8 +62,8 @@ def app():
     if app_state.price is None and not app_state.is_price_loading and app_state.token:
         asyncio.create_task(get_price())
 
-    # if app_state.tags is None and not app_state.is_tags_loading and app_state.token:
-    #     asyncio.create_task(get_tags())
+    if app_state.tags is None and not app_state.is_tags_loading and app_state.token:
+        asyncio.create_task(get_tags())
 
     logger.info("Returning app_router with contexts")
 

@@ -218,7 +218,7 @@ def server_card(
                                     ft.Icon(
                                         ft.Icons.LANGUAGE, color=ft.Colors.BLUE_400
                                     ),
-                                    ft.Text("Публичный IP:", color=ft.Colors.GREY_200),
+                                    ft.Text("Публичный IP:"),
                                     ft.Text(
                                         server.public_ip,
                                         weight=ft.FontWeight.W_500,

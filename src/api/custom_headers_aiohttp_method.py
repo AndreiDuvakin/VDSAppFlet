@@ -3,7 +3,6 @@ from typing import Any
 from urllib.parse import urljoin
 
 from aiohttp import ClientResponse
-
 from dataclass_rest.http.aiohttp import AiohttpMethod
 from dataclass_rest.http_request import HttpRequest
 

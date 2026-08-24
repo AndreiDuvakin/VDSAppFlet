@@ -90,11 +90,34 @@ def servers_page():
             "Возможно они не были загружены",
         )
 
-    cards = [server_card(server, refresh_servers) for server in app_state.servers]
+    servers_list = app_state.servers
+
+    if servers_page_state.selected_tag_index:
+        try:
+            selected_tag = app_state.tags[servers_page_state.selected_tag_index - 1]
+            servers_list = list(
+                filter(
+                    lambda server: server.ctid in selected_tag.scalets,
+                    servers_list,
+                )
+            )
+
+            if not servers_list:
+                raise Exception(
+                    f"The server with tag {selected_tag.name} was not found."
+                )
+
+        except Exception as e:
+            logger.error(f"Error getting selected tag: {e}")
+            show_message_banner(
+                "Ошибка выбора тега.",
+                page,
+            )
+
+    cards = [server_card(server, refresh_servers) for server in servers_list]
 
     page_content = ft.Column(
         [
-            ft.Divider(),
             ft.ListView(
                 controls=cards,
                 expand=True,
@@ -105,25 +128,37 @@ def servers_page():
         spacing=15,
     )
 
-    print(app_state.tags)
+    def handle_select_tag(e: ft.Event[ft.CupertinoSlidingSegmentedButton]):
+        selected_index = e.control.selected_index
+        servers_page_state.set_selected_tag_index(selected_index)
 
     if app_state.tags:
+        tags = [ft.Text(str(tag.name)) for tag in app_state.tags]
+
+        tags.insert(0, ft.Text("Все"))
+
         segment_button = ft.Row(
             [
+                ft.Text("Теги серверов:"),
                 ft.CupertinoSlidingSegmentedButton(
-                    # selected_index=selected_index,
-                    # on_change=handle_select_year,
-                    controls=[ft.Text(str(tag.name)) for tag in app_state.tags],
+                    selected_index=servers_page_state.selected_tag_index,
+                    on_change=handle_select_tag,
+                    controls=tags,
                 ),
             ],
+            spacing=15,
             scroll=ft.ScrollMode.AUTO,
             alignment=ft.MainAxisAlignment.CENTER,
-            vertical_alignment=ft.CrossAxisAlignment.START,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
         page_content.controls.insert(
             0,
             segment_button,
+        )
+        page_content.controls.insert(
+            1,
+            ft.Divider(),
         )
 
     return page_content

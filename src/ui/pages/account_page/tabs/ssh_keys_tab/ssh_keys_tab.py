@@ -75,8 +75,8 @@ def ssh_keys_tab():
             account_page_state.set_is_loading_ssh_keys(False)
 
     if (
-            account_page_state.ssh_keys is None
-            and not account_page_state.is_loading_ssh_keys
+        account_page_state.ssh_keys is None
+        and not account_page_state.is_loading_ssh_keys
     ):
         logger.info("SSHE keys not loaded, starting loading")
         asyncio.create_task(get_ssh_keys())
@@ -124,8 +124,9 @@ def ssh_keys_tab():
                                         icon=ft.Icons.DELETE_OUTLINE,
                                         icon_color=ft.Colors.RED_400,
                                         tooltip="Удалить ключ",
-                                        on_click=lambda e, k=key:
-                                        show_delete_ssh_key_dialog(k),
+                                        on_click=lambda e, k=key: show_delete_ssh_key_dialog(
+                                            k
+                                        ),
                                     ),
                                 ],
                                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,

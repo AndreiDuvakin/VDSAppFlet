@@ -10,10 +10,10 @@ from src.ui.pages.billing_page.tabs.components.operation_tile import (
 
 @ft.component
 def billing_operations_view(
-        grouped_operations: dict[
-            int,
-            dict[int, list[BillingOperation]],
-        ],
+    grouped_operations: dict[
+        int,
+        dict[int, list[BillingOperation]],
+    ],
 ):
     year_tiles = []
 

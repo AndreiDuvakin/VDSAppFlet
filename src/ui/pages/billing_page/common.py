@@ -1,6 +1,6 @@
 import asyncio
-import datetime
 from collections import defaultdict
+import datetime
 from typing import List, Mapping
 
 from src.models.billing import BillingOperation, BillingUsage

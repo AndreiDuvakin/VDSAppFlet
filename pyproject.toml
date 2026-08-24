@@ -3,7 +3,7 @@ name = "vdsapp"
 version = "0.1.0"
 description = "Unofficial client for managing Selectel VDS servers. An application based on the Flet library that allows you to work with rented servers directly from your phone. Created for educational purposes."
 readme = "README.md"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.12,<3.14"
 authors = [
     { name = "Duvakin Andrei", email = "andrei@duvakin.ru" }
 ]
@@ -52,6 +52,16 @@ per-file-ignores = [
     "__init__.py:F401",
 ]
 
+# flake8-import-order
+import-order-style = "google"
+application-import-names = ["src.api", "src.core", "src.models", "src.routing", "src.services", "src.state", "src.ui", "src.app"]
+
+# flake8-bugbear
+extend-select = ["B"]
+
+# flake8-return
+ignore = ["R504"]
+
 [tool.black]
 line-length = 88
 target-version = ["py310", "py311", "py312", "py313"]
@@ -65,12 +75,4 @@ exclude = '''
 )/
 '''
 
-# flake8-import-order
-import-order-style = "google"
-application-import-names = ["src.api", "src.core", "src.models", "src.routing", "src.services", "src.state", "src.ui"]
 
-# flake8-bugbear
-extend-select = ["B"]
-
-# flake8-return
-ignore = ["R504"]

@@ -1,5 +1,4 @@
-from adaptix import ExtraSkip, Retort, name_mapping
-
+from adaptix import ExtraSkip, name_mapping, Retort
 from dataclass_rest.http.aiohttp import AiohttpClient
 
 from src.api.custom_headers_aiohttp_method import CustomHeadersAiohttpMethod
