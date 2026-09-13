@@ -3,7 +3,7 @@ import logging
 
 import flet as ft
 
-from src.controllers.servers_page_controller import ServersPageController
+from src.controllers.servers_page.servers_page_controller import ServersPageController
 from src.core.contexts import ApiClientContext, AppContext
 from src.state.load_state import LoadState
 from src.state.servers_page_state import ServersPageState
@@ -23,17 +23,12 @@ def servers_page():
     api_client = ft.use_context(ApiClientContext)
     page = ft.context.page
 
-    is_page_active = ft.use_memo(
-        lambda: page.route == "/servers",
-        [page.route],
-    )
-
     servers_page_controller = ServersPageController(
         app_state,
         servers_page_state,
         api_client.servers_service,
         lambda message: show_message_banner(message, page),
-        is_page_active,
+        lambda: page.route == "/servers",
     )
 
     refresh_task: asyncio.Task | None = None

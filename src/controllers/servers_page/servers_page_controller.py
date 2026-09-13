@@ -14,7 +14,7 @@ class ServersPageController:
     def __init__(
         self,
         app_state: AppState,
-        servers_page_state: type[ServersPageState],
+        servers_page_state: ServersPageState,
         servers_api_client: ServersService,
         on_error: Callable[[str], None],
         is_page_active: Callable[[], bool],
@@ -68,7 +68,7 @@ class ServersPageController:
             while True:
                 await asyncio.sleep(15)
 
-                if not self._is_page_active:
+                if not self._is_page_active():
                     break
 
                 if (

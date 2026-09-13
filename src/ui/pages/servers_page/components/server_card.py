@@ -3,8 +3,10 @@ from typing import Callable
 
 import flet as ft
 
+from src.controllers.servers_page.server_card_controller import ServerCardController
 from src.core.contexts import ApiClientContext, AppContext
 from src.models.server import GetServer
+from src.state.load_state import LoadState
 from src.state.server_card_state import ServerCardState
 from src.ui.components.show_message_banner import show_message_banner
 
@@ -27,81 +29,15 @@ def server_card(
     async def open_menu(e):
         await menu.open()
 
-    async def stop_server(e):
-        try:
-            server_card_state.set_is_server_loading(True)
-
-            await api_client.servers_service.stop_server(server.ctid)
-
-        except Exception as e:  # noqa: F841
-            logger.error(f"Error stopping server: {e}")
-            show_message_banner(
-                f"Ошибка остановки сервера {server.name}",
-                page,
-            )
-
-        else:
-            logger.info(f"Server {server.ctid} stopped")
-            show_message_banner(
-                f"Сервер {server.name} был остановлен",
-                page,
-                is_error=False,
-            )
-            await refresh_servers()
-
-        finally:
-            server_card_state.set_is_server_loading(False)
-
-    async def start_server(e):
-        try:
-            logger.info("Starting server")
-            server_card_state.set_is_server_loading(True)
-
-            await api_client.servers_service.start_server(server.ctid)
-
-        except Exception as e:  # noqa: F841
-            logger.error(f"Error starting server: {e}")
-            show_message_banner(
-                f"Ошибка запуска сервера {server.name}",
-                page,
-            )
-
-        else:
-            logger.debug(f"Server {server.ctid} started")
-            show_message_banner(
-                f"Сервер {server.name} был запущен",
-                page,
-                is_error=False,
-            )
-            await refresh_servers()
-
-        finally:
-            server_card_state.set_is_server_loading(False)
-
-    async def restart_server(e):
-        try:
-            server_card_state.set_is_server_loading(True)
-
-            await api_client.servers_service.restart_server(server.ctid)
-
-        except Exception as e:  # noqa: F841
-            logger.error(f"Error restarting server: {e}")
-            show_message_banner(
-                f"Ошибка перезагрузки сервера {server.name}",
-                page,
-            )
-
-        else:
-            logger.info("Server restarted")
-            show_message_banner(
-                f"Сервер {server.name} был перезагружен",
-                page,
-                is_error=False,
-            )
-            await refresh_servers()
-
-        finally:
-            server_card_state.set_is_server_loading(False)
+    server_card_controller = ServerCardController(
+        server_card_state,
+        api_client.servers_service,
+        app_state,
+        server,
+        refresh_servers,
+        lambda message: show_message_banner(message, page, False),
+        lambda message: show_message_banner(message, page),
+    )
 
     menu = ft.ContextMenu(
         items=[],
@@ -117,12 +53,12 @@ def server_card(
                 ft.PopupMenuItem(
                     icon=ft.Icons.AUTORENEW,
                     content="Перезагрузить",
-                    on_click=restart_server,
+                    on_click=server_card_controller.restart_server,
                 ),
                 ft.PopupMenuItem(
                     icon=ft.Icons.POWER_SETTINGS_NEW,
                     content="Выключить",
-                    on_click=stop_server,
+                    on_click=server_card_controller.stop_server,
                 ),
             ]
         )
@@ -133,7 +69,7 @@ def server_card(
                 ft.PopupMenuItem(
                     icon=ft.Icons.POWER_SETTINGS_NEW,
                     content="Включить",
-                    on_click=start_server,
+                    on_click=server_card_controller.start_server,
                 ),
             ]
         )
@@ -201,7 +137,11 @@ def server_card(
             ),
             (
                 ft.Divider(height=1)
-                if not server_card_state.is_server_loading and server.status != "queued"
+                if (
+                    not server_card_state.server_loading_status.value
+                    == LoadState.LOADING.value
+                    and server.status != "queued"
+                )
                 else ft.ProgressBar()
             ),
             ft.Row(
