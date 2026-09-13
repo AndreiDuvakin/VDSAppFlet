@@ -54,7 +54,7 @@ per-file-ignores = [
 
 # flake8-import-order
 import-order-style = "google"
-application-import-names = ["src.api", "src.core", "src.models", "src.routing", "src.services", "src.state", "src.ui", "src.app"]
+application-import-names = ["src.api", "src.core", "src.models", "src.routing", "src.services", "src.state", "src.ui", "src.app", "src.controllers"]
 
 # flake8-bugbear
 extend-select = ["B"]

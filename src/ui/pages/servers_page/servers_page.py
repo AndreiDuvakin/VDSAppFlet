@@ -3,9 +3,12 @@ import logging
 
 import flet as ft
 
+from src.controllers.servers_page_controller import ServersPageController
 from src.core.contexts import ApiClientContext, AppContext
+from src.state.load_state import LoadState
 from src.state.servers_page_state import ServersPageState
 from src.ui.components.empty_content import empty_content
+from src.ui.components.error_content import error_content
 from src.ui.components.progress_ring import progress_ring
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.pages.servers_page.components.server_card import server_card
@@ -20,56 +23,24 @@ def servers_page():
     api_client = ft.use_context(ApiClientContext)
     page = ft.context.page
 
-    async def get_servers_list():
-        try:
-            logger.info("Getting servers list")
-            servers_page_state.set_is_servers_loading(True)
+    is_page_active = ft.use_memo(
+        lambda: page.route == "/servers",
+        [page.route],
+    )
 
-            servers = await api_client.servers_service.get_servers()
-            app_state.set_servers_list(servers)
-
-            logger.info("Servers list loaded")
-
-        except Exception as e:
-            logger.error(f"Error getting servers list: {e}")
-            show_message_banner(
-                "Ошибка получения списка серверов.",
-                page,
-            )
-
-        finally:
-            logger.info("Getting servers list finished")
-            servers_page_state.set_is_servers_loading(False)
-
-    async def refresh_servers():
-        try:
-
-            fresh_servers = await api_client.servers_service.get_servers()
-
-            app_state.set_servers_list(fresh_servers)
-
-            logger.info("Auto-refresh servers updated")
-
-        except Exception as e:
-            logger.error(f"Auto-refresh error: {e}")
-
-    async def auto_refresh():
-        while True:
-            await asyncio.sleep(10)
-
-            if page.route != "/servers":
-                break
-
-            if not app_state.servers or servers_page_state.is_servers_loading:
-                continue
-
-            await refresh_servers()
+    servers_page_controller = ServersPageController(
+        app_state,
+        servers_page_state,
+        api_client,
+        lambda message: show_message_banner(message, page),
+        is_page_active,
+    )
 
     refresh_task: asyncio.Task | None = None
 
     def start_auto_refresh():
         nonlocal refresh_task
-        refresh_task = asyncio.create_task(auto_refresh())
+        refresh_task = asyncio.create_task(servers_page_controller.auto_refresh())
 
     def stop_auto_refresh():
         if refresh_task is not None and not refresh_task.done():
@@ -77,11 +48,22 @@ def servers_page():
 
     ft.use_effect(start_auto_refresh, [], stop_auto_refresh)
 
-    if servers_page_state.is_servers_loading:
+    if servers_page_state.servers_loading_status.value == LoadState.LOADING.value:
         return progress_ring()
 
-    if app_state.servers is None and not servers_page_state.is_servers_loading:
-        asyncio.create_task(get_servers_list())
+    if servers_page_state.servers_loading_status.value == LoadState.ERROR.value:
+        return error_content(
+            "Не удалось загрузить серверы",
+            "Проверьте подключение к интернету или попробуйте ещё раз.",
+            servers_page_controller.repeat_loading_servers,
+        )
+
+    if (
+        app_state.servers is None
+        and not servers_page_state.servers_loading_status.value == LoadState.LOADING
+        and not servers_page_state.servers_loading_status.value == LoadState.ERROR
+    ):
+        asyncio.create_task(servers_page_controller.get_servers_list())
 
     if app_state.servers is None:
         return empty_content(
@@ -90,31 +72,19 @@ def servers_page():
             "Возможно они не были загружены",
         )
 
-    servers_list = app_state.servers
+    servers_list = ft.use_memo(
+        servers_page_controller.get_servers_list_by_tag,
+        [
+            app_state.servers,
+            servers_page_state.selected_tag_index,
+            app_state.tags,
+        ],
+    )
 
-    if servers_page_state.selected_tag_index:
-        try:
-            selected_tag = app_state.tags[servers_page_state.selected_tag_index - 1]
-            servers_list = list(
-                filter(
-                    lambda server: server.ctid in selected_tag.scalets,
-                    servers_list,
-                )
-            )
-
-            if not servers_list:
-                raise Exception(
-                    f"The server with tag {selected_tag.name} was not found."
-                )
-
-        except Exception as e:
-            logger.error(f"Error getting selected tag: {e}")
-            show_message_banner(
-                "Ошибка выбора тега.",
-                page,
-            )
-
-    cards = [server_card(server, refresh_servers) for server in servers_list]
+    cards = [
+        server_card(server, servers_page_controller.refresh_servers)
+        for server in servers_list
+    ]
 
     page_content = ft.Column(
         [

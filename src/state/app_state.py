@@ -40,6 +40,12 @@ class AppState:
     def set_is_price_loading(self, is_price_loading: bool):
         self.is_price_loading = is_price_loading
 
+    def get_tags_by_server_ctid(self, ctid: int) -> List[GetTag]:
+        if not self.tags:
+            return []
+
+        return [tag for tag in self.tags if ctid in tag.scalets]
+
     def get_server_by_id(self, ctid: int) -> GetServer | None:
         if self.servers is None:
             return None
