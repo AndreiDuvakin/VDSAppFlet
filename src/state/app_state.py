@@ -8,6 +8,7 @@ from src.models.account import GetAccount
 from src.models.price import GetPrice
 from src.models.server import GetServer
 from src.models.tag import GetTag
+from src.state.load_state import LoadState
 
 logger = logging.getLogger(__name__)
 
@@ -24,21 +25,26 @@ class AppState:
     price: GetPrice | None = None
     token: str = ""
 
+    login_loading_status: LoadState = LoadState.IDLE
+    price_loading_status: LoadState = LoadState.IDLE
+    tags_loading_status: LoadState = LoadState.IDLE
+
     is_login_loading: bool = False
-    is_price_loading: bool = False
-    is_tags_loading: bool = False
+
+    def set_login_loading_status(self, status: LoadState):
+        self.login_loading_status = status
+
+    def set_price_loading_status(self, status: LoadState):
+        self.price_loading_status = status
+
+    def set_tags_loading_status(self, status: LoadState):
+        self.tags_loading_status = status
 
     def set_price(self, price: GetPrice):
         self.price = price
 
     def set_tags(self, tags: List[GetTag]):
         self.tags = tags
-
-    def set_is_tags_loading(self, is_tags_loading: bool):
-        self.is_tags_loading = is_tags_loading
-
-    def set_is_price_loading(self, is_price_loading: bool):
-        self.is_price_loading = is_price_loading
 
     def get_tags_by_server_ctid(self, ctid: int) -> List[GetTag]:
         if not self.tags:

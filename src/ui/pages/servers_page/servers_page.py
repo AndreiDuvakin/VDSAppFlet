@@ -31,7 +31,7 @@ def servers_page():
     servers_page_controller = ServersPageController(
         app_state,
         servers_page_state,
-        api_client,
+        api_client.servers_service,
         lambda message: show_message_banner(message, page),
         is_page_active,
     )
@@ -39,6 +39,7 @@ def servers_page():
     refresh_task: asyncio.Task | None = None
 
     def start_auto_refresh():
+        logger.info("Start auto-refresh servers list")
         nonlocal refresh_task
         refresh_task = asyncio.create_task(servers_page_controller.auto_refresh())
 
@@ -60,9 +61,9 @@ def servers_page():
 
     if (
         app_state.servers is None
-        and not servers_page_state.servers_loading_status.value == LoadState.LOADING
-        and not servers_page_state.servers_loading_status.value == LoadState.ERROR
+        and servers_page_state.servers_loading_status.value == LoadState.IDLE.value
     ):
+        logger.info("On-mount servers loading starting")
         asyncio.create_task(servers_page_controller.get_servers_list())
 
     if app_state.servers is None:

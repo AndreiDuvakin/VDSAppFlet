@@ -2,7 +2,7 @@ import asyncio
 import logging
 from typing import Callable
 
-from src.api.base import ApiClient
+from src.services.servers_service import ServersService
 from src.state.app_state import AppState
 from src.state.load_state import LoadState
 from src.state.servers_page_state import ServersPageState
@@ -15,13 +15,13 @@ class ServersPageController:
         self,
         app_state: AppState,
         servers_page_state: type[ServersPageState],
-        api_client: ApiClient,
+        servers_api_client: ServersService,
         on_error: Callable[[str], None],
         is_page_active: Callable[[], bool],
     ):
         self._app_state = app_state
         self._servers_page_state = servers_page_state
-        self._api_client = api_client
+        self._servers_api_client = servers_api_client
         self._on_error = on_error
         self._is_page_active = is_page_active
 
@@ -30,7 +30,7 @@ class ServersPageController:
             logger.info("Getting servers list")
             self._servers_page_state.set_servers_loading_status(LoadState.LOADING)
 
-            servers = await self._api_client.servers_service.get_servers()
+            servers = await self._servers_api_client.get_servers()
             self._app_state.set_servers_list(servers)
 
             logger.info("Servers list loaded")
@@ -49,7 +49,7 @@ class ServersPageController:
     async def refresh_servers(self) -> None:
         try:
 
-            fresh_servers = await self._api_client.servers_service.get_servers()
+            fresh_servers = await self._servers_api_client.get_servers()
 
             self._app_state.set_servers_list(fresh_servers)
 
@@ -64,8 +64,9 @@ class ServersPageController:
 
     async def auto_refresh(self):
         try:
+            logger.info("Auto-refresh servers list is started")
             while True:
-                await asyncio.sleep(10)
+                await asyncio.sleep(15)
 
                 if not self._is_page_active:
                     break
@@ -105,4 +106,5 @@ class ServersPageController:
             return servers_list
 
     async def repeat_loading_servers(self) -> None:
+        logger.info("Repeat loading servers list is started")
         await self.get_servers_list()

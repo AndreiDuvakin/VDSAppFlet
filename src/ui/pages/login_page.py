@@ -2,7 +2,9 @@ import logging
 
 import flet as ft
 
+from src.controllers.login_page_controller import LoginPageController
 from src.core.contexts import ApiClientContext, AppContext
+from src.state.load_state import LoadState
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.components.show_simple_dialog import show_simple_dialog
 
@@ -22,39 +24,19 @@ def login_page():
     if app_state.is_authenticated:
         ft.context.page.navigate("/servers")
 
-    async def lets_auth():
-        logger.info("lets auth for login_page, getting token")
-        token_str = token_ref.current.value.strip()
+    async def let_auth():
+        await login_page_controller.lets_auth(token_ref)
 
-        if not token_str.strip():
-            logger.warning("Token is empty, showing dialog")
-            show_simple_dialog(
-                "Пустой токен",
-                ft.Text("Введите токен"),
-                page,
-            )
-            return
-
-        logger.info("Token is not empty, set token to auth state")
-        api.set_token(token_str)
-
-        try:
-            app_state.set_is_login_loading(True)
-            logger.info("Trying to send auth request")
-            account = await api.account_service.get_account()
-            app_state.login(token_str, account)
-        except Exception as e:
-            logger.error(f"Error auth request: {str(e)}")
-            logger.info("Show error dialog")
-
-            show_message_banner(
-                "Ошибка аутентификации. Проверьте указанный токен.",
-                page,
-            )
-
-        finally:
-            app_state.set_is_login_loading(False)
-            logger.info("Finally auth request")
+    login_page_controller = LoginPageController(
+        app_state,
+        api,
+        lambda title, message: show_simple_dialog(
+            title,
+            ft.Text(message),
+            page,
+        ),
+        lambda message: show_message_banner(message, page),
+    )
 
     logger.info("Rendering login_page")
 
@@ -72,13 +54,13 @@ def login_page():
                 password=True,
                 can_reveal_password=True,
             ),
-            ft.FilledButton("Войти", on_click=lets_auth),
+            ft.FilledButton("Войти", on_click=let_auth),
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-    if app_state.is_login_loading:
+    if app_state.login_loading_status.value == LoadState.LOADING.value:
         page_content.disabled = True
         page_content.controls.insert(
             3,
