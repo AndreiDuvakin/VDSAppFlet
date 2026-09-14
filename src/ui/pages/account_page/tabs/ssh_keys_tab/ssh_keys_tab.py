@@ -124,7 +124,7 @@ def ssh_keys_tab():
                                         icon=ft.Icons.DELETE_OUTLINE,
                                         icon_color=ft.Colors.RED_400,
                                         tooltip="Удалить ключ",
-                                        on_click=lambda e, k=key: show_delete_ssh_key_dialog(
+                                        on_click=lambda e, k=key: show_delete_ssh_key_dialog(  # noqa:E501
                                             k
                                         ),
                                     ),

@@ -1,5 +1,6 @@
 [project]
-name = "vdsapp"
+name = "VDSApp"
+artifact = "VDSApp"
 version = "0.1.0"
 description = "Unofficial client for managing Selectel VDS servers. An application based on the Flet library that allows you to work with rented servers directly from your phone. Created for educational purposes."
 readme = "README.md"
@@ -8,14 +9,13 @@ authors = [
     { name = "Duvakin Andrei", email = "andrei@duvakin.ru" }
 ]
 dependencies = [
-    "flet[all] (>=0.86.5,<0.87.0)",
+    "flet (>=0.86.5,<0.87.0)",
     "dataclass-rest (>=0.5.0,<0.6.0)",
     "aiohttp (>=3.14.3,<4.0.0)"
 ]
 
 [dependency-groups]
 dev = [
-    "flet-cli>=0.86.5",
     "flet-desktop>=0.86.5",
     "flet-web>=0.86.5",
     "flet[test]>=0.86.5",
@@ -28,13 +28,54 @@ dev = [
 ]
 
 [tool.flet]
-org = "com.numerum"
+org = "com.duvakin"
+bundle_id = "com.duvakin.vdsapp"
+build_number = 1 # TODO: Изменить версию
 product = "vdsapp"
 company = "Andrei Duvakin"
 copyright = "Copyright (C) 2026 by Andrei Duvakin"
 
+[tool.flet.boot_screen.flet]
+theme_mode = "auto"
+bgcolor_light = "#ffffff"
+bgcolor_dark = "#000000"
+spinner_color_light = "blue"
+spinner_color_dark = "yellow"
+spinner_size = 30
+text_color_light = "#000000"
+text_color_dark = "#ffffff"
+prepare_message = "Подготовка приложения к запуску"
+startup_message = "Запуск приложения"
+
 [tool.flet.app]
-path = "src"
+path = "."
+module = "main"
+exclude = [
+    ".venv",
+    "venv",
+    "env",
+    ".git",
+    ".github",
+    ".gitignore",
+    "__pycache__",
+    "*.pyc",
+    "*.pyo",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "build",
+    "dist",
+    "*.egg-info",
+    ".idea",
+    ".vscode",
+    "*.log",
+    "*.db",
+    "*.sqlite3",
+    "tests",
+    "docs",
+    "poetry.lock",
+    "README.md",
+]
 
 [tool.poetry]
 package-mode = false
@@ -54,7 +95,7 @@ per-file-ignores = [
 
 # flake8-import-order
 import-order-style = "google"
-application-import-names = ["src.api", "src.core", "src.models", "src.routing", "src.services", "src.state", "src.ui", "src.app", "src.controllers"]
+application-import-names = ["src.api", "src.core", "src.models", "src.routing", "src.services", "src.state", "src.ui", "src.app", "src.controllers", "main"]
 
 # flake8-bugbear
 extend-select = ["B"]
