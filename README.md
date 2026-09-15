@@ -1,69 +1,81 @@
-# Vdsapp app
+# Selectel VDS Client Flet
 
-## Run the app
+## О проекте
 
-### uv
+Неофициальный мобильный клиент для управления серверами
+[Selectel VDS](https://vds.selectel.ru).
 
-Run as a desktop app:
+Приложение разработано на Python с использованием библиотеки Flet и
+предназначено для работы с арендованными серверами Selectel с мобильного
+устройства.
 
-```bash
-uv run flet run
-```
+Проект создан в учебных целях для изучения библиотеки Flet, разработки
+кроссплатформенных приложений и практики взаимодействия с REST API.
 
-Run as a web app:
+## Цель создания
 
-```bash
-uv run flet run --web
-```
+Личный некоммерческий проект для практики разработки кроссплатформенных
+приложений на языке Python, а также для удобного доступа автора к своим
+серверам Selectel.
 
-For more details on running the app, refer to the [Getting Started Guide](https://flet.dev/docs/).
+Проект не является коммерческим продуктом, не предоставляет услуги
+хостинга и не предназначен для перепродажи услуг Selectel.
 
-## Build the app
+## Неофициальный статус
 
-### Android
+Данный проект не является официальным продуктом Selectel, не разработан,
+не поддерживается и не одобрен компанией Selectel.
 
-```bash
-flet build apk -v
-```
+Название Selectel, название Selectel VDS, а также соответствующие логотипы
+и товарные знаки принадлежат их правообладателям и используются только для
+описания совместимости и назначения приложения.
 
-For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://flet.dev/docs/publish/android/).
+Автор проекта не связан с компанией Selectel и не представляет её интересы.
+Упоминание Selectel не означает наличия партнёрских, лицензионных,
+агентских или иных деловых отношений между автором проекта и Selectel.
 
-### iOS
+## Отказ от гарантий и ответственности
 
-```bash
-flet build ipa -v
-```
+Приложение распространяется по принципу «как есть» (`AS IS`) и без каких-либо
+явных или подразумеваемых гарантий.
 
-For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://flet.dev/docs/publish/ios/).
+Автор не гарантирует:
 
-### macOS
+- корректную и бесперебойную работу приложения;
+- совместимость приложения с текущей или будущими версиями API Selectel;
+- сохранность данных, настроек и состояния серверов;
+- доступность серверов или сервисов Selectel;
+- отсутствие ошибок, уязвимостей и потери данных.
 
-```bash
-flet build macos -v
-```
+Использование приложения осуществляется исключительно на страх и риск
+конечного пользователя. Пользователь самостоятельно отвечает за последствия
+использования приложения, включая операции с виртуальными серверами,
+сетевыми настройками, ключами доступа, данными и другой инфраструктурой.
 
-For more details on building macOS package, refer to the [macOS Packaging Guide](https://flet.dev/docs/publish/macos/).
+Перед выполнением потенциально опасных операций рекомендуется создавать
+резервные копии и проверять результат операции через официальную панель
+управления Selectel.
 
-### Linux
+Автор не несёт ответственности за прямые или косвенные убытки, простой
+серверов, потерю данных, нарушение доступности сервисов или иные последствия,
+возникшие в результате использования либо невозможности использования
+приложения.
 
-```bash
-flet build linux -v
-```
+Я просто буду рад если приложение принесет кому-то пользу.
 
-For more details on building Linux package, refer to the [Linux Packaging Guide](https://flet.dev/docs/publish/linux/).
+## Контакты
 
-### Windows
+По любым вопросам вы можете написать мне:  
+Email:   
+* [andrei@duvakin.ru](mailto:andrei@duvakin.ru)
+* [andreiduvakin@gmail.com](mailto:andreiduvakin@gmail.com)  
 
-```bash
-flet build windows -v
-```
+Сайт:
+https://andrei.numerum.team/
 
-For more details on building Windows package, refer to the [Windows Packaging Guide](https://flet.dev/docs/publish/windows/).
+## Лицензия
 
-### Web
+Проект распространяется под лицензией MIT. См. файл [LICENSE](LICENSE).
 
-```bash
-flet build web -v
-```
-
-For more details on building Web app, refer to the [Web Packaging Guide](https://flet.dev/docs/publish/web/).
+Лицензия MIT также предусматривает предоставление программного обеспечения
+«как есть», без гарантий.
