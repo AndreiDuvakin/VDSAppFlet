@@ -1,4 +1,3 @@
-import asyncio
 from collections import defaultdict
 import datetime
 from typing import List, Mapping
@@ -37,15 +36,6 @@ def group_operations_by_year_month_sync(
             reverse=True,
         )
     }
-
-
-async def group_operations_by_year_month(
-    billing_operations: list[BillingOperation],
-) -> dict[int, dict[int, list[BillingOperation]]]:
-    return await asyncio.to_thread(
-        group_operations_by_year_month_sync,
-        billing_operations,
-    )
 
 
 def format_operation_price(operation: BillingOperation, sign="+") -> str:

@@ -3,11 +3,12 @@ import logging
 
 import flet as ft
 
-from src.core.contexts import ApiClientContext, BillingPageContext
+from src.controllers.billing_page_controller import BillingPageController
+from src.core.contexts import BillingPageContext
+from src.state.load_state import LoadState
 from src.ui.components.empty_content import empty_content
+from src.ui.components.error_content import error_content
 from src.ui.components.progress_ring import progress_ring
-from src.ui.components.show_message_banner import show_message_banner
-from src.ui.pages.billing_page.common import group_operations_by_year_month
 from src.ui.pages.billing_page.tabs.components.billing_operations_view import (
     billing_operations_view,
 )
@@ -16,47 +17,30 @@ logger = logging.getLogger(__name__)
 
 
 @ft.component
-def payment_operations_tab():
+def payment_operations_tab(
+    billing_page_controller: BillingPageController,
+):
     billing_page_state = ft.use_context(BillingPageContext)
-    api_client = ft.use_context(ApiClientContext)
-
-    page = ft.context.page
-
-    async def get_billing_payments():
-        try:
-            logger.info("Getting billing payments")
-            billing_page_state.set_is_billing_payment_loading(True)
-
-            billing_payments = await api_client.billing_service.get_billing_payments()
-
-            parsed_billing_payments = await group_operations_by_year_month(
-                billing_payments.items,
-            )
-
-            logger.info("Billing payments loaded")
-            billing_page_state.set_billing_payments(
-                parsed_billing_payments,
-            )
-
-        except Exception:
-            logger.exception("Error getting billing payments")
-
-            show_message_banner(
-                "Ошибка получения списка операций пополнений.",
-                page,
-            )
-
-        finally:
-            billing_page_state.set_is_billing_payment_loading(False)
 
     if (
         billing_page_state.billing_payments is None
-        and not billing_page_state.is_billing_payment_loading
+        and not billing_page_state.billing_payment_loading_status.value
+        == LoadState.LOADING.value
     ):
-        asyncio.create_task(get_billing_payments())
+        asyncio.create_task(billing_page_controller.get_billing_payments())
 
-    if billing_page_state.is_billing_payment_loading:
+    if (
+        billing_page_state.billing_payment_loading_status.value
+        == LoadState.LOADING.value
+    ):
         return progress_ring()
+
+    if billing_page_state.billing_payment_loading_status.value == LoadState.ERROR.value:
+        return error_content(
+            "Не удалось загрузить список операций",
+            "Проверьте подключение к интернету или попробуйте ещё раз.",
+            billing_page_controller.repeat_get_billing_payments,
+        )
 
     if billing_page_state.billing_payments is None:
         logger.info("Billing payments not present")

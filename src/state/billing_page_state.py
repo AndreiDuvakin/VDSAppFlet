@@ -3,13 +3,16 @@ from dataclasses import dataclass
 import flet as ft
 
 from src.models.billing import BillingOperation, BillingUsage
+from src.state.load_state import LoadState
 
 
 @dataclass
 @ft.observable
 class BillingPageState:
-    is_loading: bool = False
-    is_billing_payment_loading: bool = False
+    balance_loading_status: LoadState = LoadState.IDLE
+    billing_payment_loading_status: LoadState = LoadState.IDLE
+    billing_consumption_loading_status: LoadState = LoadState.IDLE
+
     is_billing_consumption_loading: bool = False
 
     balance: int | None = None
@@ -26,6 +29,15 @@ class BillingPageState:
 
         return round(self.balance / 100, 2)
 
+    def set_balance_loading_status(self, loading_status: LoadState):
+        self.balance_loading_status = loading_status
+
+    def set_billing_payment_loading_status(self, loading_status: LoadState):
+        self.billing_payment_loading_status = loading_status
+
+    def set_billing_consumption_loading_status(self, loading_status: LoadState):
+        self.billing_consumption_loading_status = loading_status
+
     def set_is_billing_consumption_loading(self, is_loading: bool):
         self.is_billing_consumption_loading = is_loading
 
@@ -39,12 +51,6 @@ class BillingPageState:
 
     def set_current_year_index(self, index: int):
         self.current_year_consumption_index = index
-
-    def set_is_loading(self, is_loading: bool):
-        self.is_loading = is_loading
-
-    def set_is_billing_payment_loading(self, is_billing_payment_loading: bool):
-        self.is_billing_payment_loading = is_billing_payment_loading
 
     def set_balance(self, balance: int):
         self.balance = balance

@@ -3,9 +3,12 @@ import logging
 
 import flet as ft
 
+from src.controllers.billing_page_controller import BillingPageController
 from src.core.contexts import ApiClientContext, BillingPageContext
 from src.state.billing_page_state import BillingPageState
+from src.state.load_state import LoadState
 from src.ui.components.empty_content import empty_content
+from src.ui.components.error_content import error_content
 from src.ui.components.progress_ring import progress_ring
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.pages.billing_page.tabs.consumption_operations_tab import (
@@ -22,31 +25,29 @@ def billing_page():
     api_client = ft.use_context(ApiClientContext)
     page = ft.context.page
 
-    async def get_billing_balance():
-        try:
-            billing_page_state.set_is_loading(True)
-            logger.info("Getting billing balance")
-            balance = await api_client.billing_service.get_billing_balance()
-            billing_page_state.set_balance(balance.balance)
-            logger.info("Balance is loaded")
+    billing_page_controller = BillingPageController(
+        api_client.billing_service,
+        billing_page_state,
+        lambda message, is_error=False: show_message_banner(message, page, is_error),
+    )
 
-        except Exception as e:
-            logger.exception(f"Error getting billing balance: {e}")
-            show_message_banner(
-                "Ошибка получения баланса.",
-                page,
-            )
-
-        finally:
-            billing_page_state.set_is_loading(False)
-
-    if billing_page_state.is_loading:
+    if billing_page_state.balance_loading_status.value == LoadState.LOADING.value:
         return progress_ring()
 
-    if billing_page_state.balance is None and not billing_page_state.is_loading:
-        asyncio.create_task(get_billing_balance())
+    if (
+        billing_page_state.balance is None
+        and billing_page_state.balance_loading_status.value == LoadState.IDLE.value
+    ):
+        asyncio.create_task(billing_page_controller.get_billing_balance())
 
-    elif billing_page_state.balance is None:
+    if billing_page_state.balance_loading_status.value == LoadState.ERROR.value:
+        return error_content(
+            "Не удалось загрузить текущий баланс",
+            "Проверьте подключение к интернету или попробуйте ещё раз.",
+            billing_page_controller.repeat_get_billing_balance,
+        )
+
+    if billing_page_state.balance is None:
         logger.info("Billing balance not present")
         return empty_content(
             ft.Icons.ACCOUNT_BALANCE_WALLET,
@@ -75,12 +76,12 @@ def billing_page():
                     controls=[
                         ft.Container(
                             alignment=ft.Alignment.CENTER,
-                            content=payment_operations_tab(),
+                            content=payment_operations_tab(billing_page_controller),
                             expand=True,
                         ),
                         ft.Container(
                             alignment=ft.Alignment.CENTER,
-                            content=consumption_operations_tab(),
+                            content=consumption_operations_tab(billing_page_controller),
                             expand=True,
                         ),
                     ],

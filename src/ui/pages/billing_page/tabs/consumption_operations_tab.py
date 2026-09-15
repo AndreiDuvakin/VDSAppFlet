@@ -3,10 +3,12 @@ import logging
 
 import flet as ft
 
-from src.core.contexts import ApiClientContext, AppContext, BillingPageContext
+from src.controllers.billing_page_controller import BillingPageController
+from src.core.contexts import AppContext, BillingPageContext
+from src.state.load_state import LoadState
 from src.ui.components.empty_content import empty_content
+from src.ui.components.error_content import error_content
 from src.ui.components.progress_ring import progress_ring
-from src.ui.components.show_message_banner import show_message_banner
 from src.ui.pages.billing_page.common import get_years_list_for_consumption_period
 from src.ui.pages.billing_page.tabs.components.billing_consumption_view import (
     billing_consumption_view,
@@ -16,11 +18,12 @@ logger = logging.getLogger(__name__)
 
 
 @ft.component
-def consumption_operations_tab():
+def consumption_operations_tab(
+    billing_page_controller: BillingPageController,
+):
     app_state = ft.use_context(AppContext)
     billing_page_state = ft.use_context(BillingPageContext)
-    api_client = ft.use_context(ApiClientContext)
-    page = ft.context.page
+    selected_year_index, set_selected_year_index = ft.use_state(None)
 
     years_list = ft.use_memo(
         lambda: get_years_list_for_consumption_period(app_state.account.info.actdate),
@@ -28,37 +31,24 @@ def consumption_operations_tab():
     )
     selected_index = billing_page_state.current_year_consumption_index
 
-    async def get_billing_consumption(index):
-        try:
-            logger.info("Getting billing consumption")
-            billing_page_state.set_is_billing_consumption_loading(True)
-
-            selected_year = years_list[index]
-
-            await asyncio.sleep(2)
-
-            billing_consumption = (
-                await api_client.billing_service.get_billing_new_consumption(
-                    selected_year
-                )
+    async def repeat_get_billing_consumption():
+        if selected_year_index is None:
+            billing_page_controller.show_message_banner(
+                "Невозможно повторить загрузку: год не выбран",
+                True,
             )
-            billing_page_state.set_billing_consumption(billing_consumption)
+            return
 
-            logger.info("Billing consumption loaded")
-        except Exception as e:
-            logger.error(f"Error getting billing consumption: {e}")
-            show_message_banner(
-                "Ошибка получения списка операций списания.",
-                page,
-            )
-
-        finally:
-            logger.info("Getting billing consumption finished")
-            billing_page_state.set_is_billing_consumption_loading(False)
+        await get_billing_consumption(selected_year_index)
 
     def handle_select_year(e):
         index = e.control.selected_index
+        set_selected_year_index(index)
         on_select_year(index)
+
+    async def get_billing_consumption(index):
+        selected_year = years_list[index]
+        await billing_page_controller.get_billing_consumption(selected_year)
 
     def on_select_year(index):
         if index is None:
@@ -81,7 +71,10 @@ def consumption_operations_tab():
         vertical_alignment=ft.CrossAxisAlignment.START,
     )
 
-    if billing_page_state.is_billing_consumption_loading:
+    if (
+        billing_page_state.billing_consumption_loading_status.value
+        == LoadState.LOADING.value
+    ):
         return ft.Column(
             [
                 segment_button,
@@ -94,9 +87,20 @@ def consumption_operations_tab():
 
     if (
         not billing_page_state.billing_consumption
-        and not billing_page_state.is_billing_consumption_loading
+        and billing_page_state.billing_consumption_loading_status.value
+        == LoadState.IDLE.value
     ):
         on_select_year(selected_index)
+
+    if (
+        billing_page_state.billing_consumption_loading_status.value
+        == LoadState.ERROR.value
+    ):
+        return error_content(
+            "Не удалось загрузить список операций",
+            "Проверьте подключение к интернету или попробуйте ещё раз.",
+            repeat_get_billing_consumption,
+        )
 
     if not years_list or not billing_page_state.billing_consumption:
         return empty_content(
