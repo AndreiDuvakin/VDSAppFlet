@@ -27,8 +27,3 @@ async def main(page: ft.Page):
     logger.info("Render main app component")
 
     page.render(app)
-
-
-if __name__ == "__main__":
-    logger.info("Starting app")
-    ft.run(main)

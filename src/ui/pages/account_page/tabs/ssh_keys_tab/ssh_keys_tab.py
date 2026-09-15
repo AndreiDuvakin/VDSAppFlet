@@ -3,9 +3,11 @@ import logging
 
 import flet as ft
 
-from src.core.contexts import AccountPageContext, ApiClientContext
+from src.controllers.account_page_controller import AccountPageController
+from src.core.contexts import AccountPageContext
+from src.state.load_state import LoadState
 from src.ui.components.empty_content import empty_content
-from src.ui.components.show_message_banner import show_message_banner
+from src.ui.components.error_content import error_content
 from src.ui.pages.account_page.tabs.ssh_keys_tab.dialogs.create_ssh_key_dialog import (
     create_ssh_key_dialog,
 )
@@ -17,29 +19,26 @@ logger = logging.getLogger(__name__)
 
 
 @ft.component
-def ssh_keys_tab():
+def ssh_keys_tab(
+    account_page_controller: AccountPageController,
+):
     logger.info("Initializing ssh keys tab")
 
     account_page_state = ft.use_context(AccountPageContext)
-    api_client = ft.use_context(ApiClientContext)
     page = ft.context.page
 
     def show_create_ssh_key_dialog():
         page.show_dialog(
             create_ssh_key_dialog(
-                page=page,
-                account_page_state=account_page_state,
-                api_client=api_client,
+                account_page_controller,
             )
         )
 
     def show_delete_ssh_key_dialog(key):
         page.show_dialog(
             delete_ssh_key_dialog(
-                key=key,
-                page=page,
-                account_page_state=account_page_state,
-                api_client=api_client,
+                account_page_controller,
+                key,
             )
         )
 
@@ -56,30 +55,19 @@ def ssh_keys_tab():
         padding=ft.Padding.only(bottom=15),
     )
 
-    async def get_ssh_keys():
-        try:
-            logger.info("Trying to get ssh keys")
-            account_page_state.set_is_loading_ssh_keys(True)
-            ssh_keys_list = await api_client.ssh_keys_service.get_ssh_keys()
-            logger.info("SSH keys loaded")
-            account_page_state.set_ssh_keys(ssh_keys_list)
-        except Exception as e:
-            logger.exception(f"Error requesting SSH keys: {str(e)}")
-            show_message_banner(
-                "Ошибка получения списка SSH ключей.",
-                page,
-            )
-
-        finally:
-            logger.info("Finally loading SSH keys")
-            account_page_state.set_is_loading_ssh_keys(False)
-
     if (
         account_page_state.ssh_keys is None
-        and not account_page_state.is_loading_ssh_keys
+        and account_page_state.ssh_keys_loading_status.value == LoadState.IDLE.value
     ):
-        logger.info("SSHE keys not loaded, starting loading")
-        asyncio.create_task(get_ssh_keys())
+        logger.info("SSH keys not loaded, starting loading")
+        asyncio.create_task(account_page_controller.get_ssh_keys())
+
+    if account_page_state.ssh_keys_loading_status.value == LoadState.ERROR.value:
+        return error_content(
+            "Не удалось загрузить SSH ключи",
+            "Проверьте подключение к интернету или попробуйте ещё раз.",
+            account_page_controller.repeat_loading_ssh_keys,
+        )
 
     if not account_page_state.ssh_keys:
         logger.info("SSH keys is loaded, but it is empty")

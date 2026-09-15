@@ -3,43 +3,22 @@ import logging
 
 import flet as ft
 
-from src.core.contexts import AccountPageContext, ApiClientContext
-from src.models.notification import PostNotificationSettings
+from src.controllers.account_page_controller import AccountPageController
+from src.core.contexts import AccountPageContext
+from src.state.load_state import LoadState
 from src.ui.components.empty_content import empty_content
-from src.ui.components.show_message_banner import show_message_banner
+from src.ui.components.error_content import error_content
 
 logger = logging.getLogger(__name__)
 
 
 @ft.component
-def notifications_tab():
+def notifications_tab(
+    account_page_controller: AccountPageController,
+):
     logger.info("Initializing notifications_tab")
 
     account_page_state = ft.use_context(AccountPageContext)
-    api_client = ft.use_context(ApiClientContext)
-    page = ft.context.page
-
-    async def get_notification_settings():
-        try:
-            logger.info("Getting notification settings")
-            account_page_state.set_is_loading_notifications(True)
-            notification_settings = (
-                await api_client.notification_service.get_notification_settings()
-            )
-            logger.info("Notification settings loaded")
-            account_page_state.set_notification_balance(
-                notification_settings.notify_balance
-            )
-
-        except Exception as e:
-            logger.exception(f"Error requesting notification settings: {str(e)}")
-            show_message_banner(
-                "Ошибка получения настроек уведомлений.",
-                page,
-            )
-
-        finally:
-            account_page_state.set_is_loading_notifications(False)
 
     async def switch_notifications(e):
         if e.control.value:
@@ -49,58 +28,22 @@ def notifications_tab():
             account_page_state.set_notification_balance(0)
 
     async def save_settings(e):
-        logger.info("Saving notification settings")
-        try:
-            account_page_state.set_is_loading_notifications(True)
+        await account_page_controller.save_settings(balance_input.value)
 
-            new_rub = round(float(balance_input.value.replace(",", "."))) * 100
-
-            if new_rub < 0:
-                raise ValueError
-
-            new_notification_settings = PostNotificationSettings(
-                notify_balance=new_rub,
-            )
-
-            await api_client.notification_service.post_notification_settings(
-                new_notification_settings
-            )
-
-            logger.info("Notification settings saved")
-
-            account_page_state.set_notification_balance(new_rub)
-
-        except ValueError:
-            logger.info("Invalid value notification")
-            show_message_banner(
-                "Введите корректное значение пороговой суммы.",
-                page,
-            )
-
-        except Exception as e:  # noqa: F841
-            logger.info(f"Error saving notification settings: {str(e)}")
-            show_message_banner(
-                "Ошибка сохранения настроек уведомлений.",
-                page,
-            )
-
-        else:
-            show_message_banner(
-                "Настройки уведомлений были обновлены.",
-                page,
-                is_error=False,
-            )
-
-        finally:
-            logger.info("Saving notification settings finnaly")
-            account_page_state.set_is_loading_notifications(False)
+    if account_page_state.notifications_loading_status.value == LoadState.ERROR.value:
+        return error_content(
+            "Не удалось загрузить настройки уведомлений",
+            "Проверьте подключение к интернету или попробуйте ещё раз.",
+            account_page_controller.repeat_loading_notifications,
+        )
 
     if (
         account_page_state.notification_settings is None
-        and not account_page_state.is_loading_notifications
+        and account_page_state.notifications_loading_status.value
+        == LoadState.IDLE.value
     ):
         logger.info("Notification settings not loaded, starting loading")
-        asyncio.create_task(get_notification_settings())
+        asyncio.create_task(account_page_controller.get_notification_settings())
 
     if account_page_state.notification_settings is None:
         logger.info("Notification settings not present")
