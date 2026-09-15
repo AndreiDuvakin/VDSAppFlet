@@ -7,6 +7,7 @@ from src.core.contexts import ApiClientContext, AppContext
 from src.state.load_state import LoadState
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.components.show_simple_dialog import show_simple_dialog
+from src.ui.pages.info_page import info_page
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,9 @@ def login_page():
 
     async def let_auth():
         await login_page_controller.lets_auth(token_ref)
+
+    def show_about_info():
+        page.show_dialog(info_sheet)
 
     login_page_controller = LoginPageController(
         app_state,
@@ -55,9 +59,17 @@ def login_page():
                 can_reveal_password=True,
             ),
             ft.FilledButton("Войти", on_click=let_auth),
+            ft.OutlinedButton("Информация", on_click=show_about_info)
+
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    )
+
+    info_sheet = ft.BottomSheet(
+        content=info_page(),
+        fullscreen=True,
+        show_drag_handle=True,
     )
 
     if app_state.login_loading_status.value == LoadState.LOADING.value:

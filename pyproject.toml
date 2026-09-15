@@ -1,6 +1,5 @@
 [project]
 name = "VDSApp"
-artifact = "VDSApp"
 version = "0.1.0"
 description = "Unofficial client for managing Selectel VDS servers. An application based on the Flet library that allows you to work with rented servers directly from your phone. Created for educational purposes."
 readme = "README.md"
@@ -11,7 +10,7 @@ authors = [
 dependencies = [
     "flet (>=0.86.5,<0.87.0)",
     "dataclass-rest (>=0.5.0,<0.6.0)",
-    "aiohttp (>=3.14.3,<4.0.0)"
+    "aiohttp (>=3.14.0, <4.0.0)"
 ]
 
 [dependency-groups]
@@ -29,23 +28,35 @@ dev = [
 
 [tool.flet]
 org = "com.duvakin"
+artifact = "VDSApp"
 bundle_id = "com.duvakin.vdsapp"
-build_number = 1 # TODO: Изменить версию
-product = "vdsapp"
+build_number = 3 # TODO: Изменить версию
+version = "0.0.3"
+product = "VDSApp"
 company = "Andrei Duvakin"
 copyright = "Copyright (C) 2026 by Andrei Duvakin"
+icon_background = "#1a1a2e"
+
+[tool.flet.splash]
+android = true
+ios = true
+web = true
 
 [tool.flet.boot_screen.flet]
 theme_mode = "auto"
 bgcolor_light = "#ffffff"
 bgcolor_dark = "#000000"
-spinner_color_light = "blue"
-spinner_color_dark = "yellow"
+spinner_color_light = "#1a1a2e"
+spinner_color_dark = "#72a4c1ff"
 spinner_size = 30
 text_color_light = "#000000"
 text_color_dark = "#ffffff"
 prepare_message = "Подготовка приложения к запуску"
 startup_message = "Запуск приложения"
+fade_out_duration = 450
+
+[tool.flet.android]
+min_sdk_version = 24
 
 [tool.flet.app]
 path = "."
