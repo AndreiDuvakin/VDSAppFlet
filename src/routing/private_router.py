@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 def protected_route():
     logger.info("Initializing protected route")
 
-    auth = ft.use_context(AppContext)
+    app_state = ft.use_context(AppContext)
 
-    if not auth.is_authenticated:
+    if not app_state.is_authenticated:
         logger.warning("Authentication failed, return to auth page")
         ft.context.page.navigate("/auth")
         return ft.ProgressRing()

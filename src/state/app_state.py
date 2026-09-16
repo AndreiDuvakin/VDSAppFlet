@@ -42,7 +42,9 @@ class AppState:
         await self.secure_storage.set("token", token)
 
     async def clear_storage(self) -> None:
+        print(3333333333333333333333333)
         await self.secure_storage.clear()
+        print(44444444444444444444444444)
 
     def set_token_secure_check_status(self, status: LoadState):
         self.token_secure_check_status = status
@@ -97,7 +99,8 @@ class AppState:
     async def logout(self):
         logger.info("logouting in app")
 
-        await self.clear_storage()
+        self.is_authenticated = False
         self.token = ""
         self.account = None
-        self.is_authenticated = False
+
+        await self.clear_storage()
