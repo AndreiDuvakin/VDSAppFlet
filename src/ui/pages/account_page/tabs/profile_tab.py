@@ -52,6 +52,26 @@ def profile_tab():
         expand=True,
     )
 
+    logout_button = ft.Row(
+        [
+            ft.Button(
+                "Выйти из аккаунта",
+                style=ft.ButtonStyle(
+                    color={
+                        ft.ControlState.DEFAULT: ft.Colors.WHITE,
+                    },
+                    bgcolor={
+                        ft.ControlState.DEFAULT: ft.Colors.RED,
+                    },
+                ),
+                icon=ft.Icons.LOGOUT,
+                expand=True,
+                on_click=app_state.logout,
+            )
+        ],
+        expand=True,
+    )
+
     info_rows = ft.Column(
         [
             ft.Card(
@@ -139,7 +159,11 @@ def profile_tab():
     )
 
     return ft.Column(
-        [header, info_rows],
+        [
+            header,
+            logout_button,
+            info_rows,
+        ],
         spacing=10,
         scroll=ft.ScrollMode.AUTO,
         expand=True,

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 import flet as ft
@@ -5,6 +6,7 @@ import flet as ft
 from src.controllers.login_page_controller import LoginPageController
 from src.core.contexts import ApiClientContext, AppContext
 from src.state.load_state import LoadState
+from src.ui.components.progress_ring import progress_ring
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.components.show_simple_dialog import show_simple_dialog
 from src.ui.pages.info_page import info_page
@@ -26,7 +28,8 @@ def login_page():
         ft.context.page.navigate("/servers")
 
     async def let_auth():
-        await login_page_controller.lets_auth(token_ref)
+        token = token_ref.current.value.strip()
+        await login_page_controller.lets_auth(token)
 
     def show_about_info():
         page.show_dialog(info_sheet)
@@ -40,7 +43,19 @@ def login_page():
             page,
         ),
         lambda message: show_message_banner(message, page),
+        app_state.get_token,
+        app_state.set_token,
     )
+
+    if (
+        app_state.token_secure_check_status.value == LoadState.IDLE.value
+        and not app_state.token
+        and not app_state.login_loading_status.value == LoadState.LOADING.value
+    ):
+        asyncio.create_task(login_page_controller.get_token_from_secure_storage())
+
+    if app_state.token_secure_check_status.value == LoadState.LOADING.value:
+        return progress_ring()
 
     logger.info("Rendering login_page")
 
@@ -59,8 +74,7 @@ def login_page():
                 can_reveal_password=True,
             ),
             ft.FilledButton("Войти", on_click=let_auth),
-            ft.OutlinedButton("Информация", on_click=show_about_info)
-
+            ft.OutlinedButton("О приложении", on_click=show_about_info),
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

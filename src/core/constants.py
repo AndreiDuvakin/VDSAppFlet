@@ -51,8 +51,16 @@ MARKDOWN_README = """# Selectel VDS Client Flet
 Проект не является коммерческим продуктом, не предоставляет услуги
 хостинга и не предназначен для перепродажи услуг Selectel.
 
-Я просто буду рад если вам оно пригодится. Т.к. мне давно не хватало
-мобильного клиента VDS Selectel. Вот я и решил облегчить себе жизнь :)
+Я преследовал три основные цели:  
+1. Разработать приложение на Flet используя декларативных подход
+и стараться придерживаться "чистой" архитектуры насколько это мне позволяет опыт. А также
+свести к минимуму использование нейросетей (т.е. не копировать готовый код, а максимум спрашивать советы)
+2. Создать свое первое полноценное мобильное приложение, которое бы
+хоть немного тянуло на настоящий полноценный продукт (можно сказать в копилку для портфолио)
+3. Мне давно хотелось иметь доступ к моему аккаунту VDS Selectel с мобильного приложения, а не только с сайта
+
+Поэтому данным проектом я закрыл сразу несколько гештальтов, плюс раскрыл для себя 
+возможности использования Flet и теперь лучше понимаю на что он годится (почти на все :з)
 
 ## Неофициальный статус
 
@@ -108,30 +116,8 @@ Email:
 
 ## Лицензия
 
-Проект распространяется под лицензией MIT.
+Проект распространяется под лицензией MIT. См. файл [LICENSE](LICENSE).
 
 Лицензия MIT также предусматривает предоставление программного обеспечения
 «как есть», без гарантий.
-
-MIT License
-
-Copyright (c) 2026 Andrei Duvakin
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 """

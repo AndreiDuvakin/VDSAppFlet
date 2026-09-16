@@ -1,9 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 from typing import List
 
 import flet as ft
+import flet_secure_storage as fss
 
+from src.core.storage_factory import create_secure_storage
 from src.models.account import GetAccount
 from src.models.price import GetPrice
 from src.models.server import GetServer
@@ -16,6 +18,9 @@ logger = logging.getLogger(__name__)
 @ft.observable
 @dataclass
 class AppState:
+    secure_storage: fss.SecureStorage | None = field(
+        default_factory=create_secure_storage
+    )
     is_authenticated: bool = False
     account: GetAccount | None = None
 
@@ -25,11 +30,22 @@ class AppState:
     price: GetPrice | None = None
     token: str = ""
 
+    token_secure_check_status: LoadState = LoadState.IDLE
     login_loading_status: LoadState = LoadState.IDLE
     price_loading_status: LoadState = LoadState.IDLE
     tags_loading_status: LoadState = LoadState.IDLE
 
-    is_login_loading: bool = False
+    async def get_token(self) -> str | None:
+        return await self.secure_storage.get("token")
+
+    async def set_token(self, token) -> None:
+        await self.secure_storage.set("token", token)
+
+    async def clear_storage(self) -> None:
+        await self.secure_storage.clear()
+
+    def set_token_secure_check_status(self, status: LoadState):
+        self.token_secure_check_status = status
 
     def set_login_loading_status(self, status: LoadState):
         self.login_loading_status = status
@@ -71,9 +87,6 @@ class AppState:
     def set_servers_list(self, servers_list: List[GetServer]):
         self.servers = servers_list
 
-    def set_is_login_loading(self, is_login_loading: bool):
-        self.is_login_loading = is_login_loading
-
     def login(self, token, account):
         logger.info("logining in app")
 
@@ -81,9 +94,10 @@ class AppState:
         self.account = account
         self.is_authenticated = True
 
-    def logout(self):
+    async def logout(self):
         logger.info("logouting in app")
 
+        await self.clear_storage()
         self.token = ""
         self.account = None
         self.is_authenticated = False
