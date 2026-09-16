@@ -6,7 +6,6 @@ def create_secure_storage():
         android_options=fss.AndroidOptions(
             reset_on_error=True,
             migrate_on_algorithm_change=True,
-            enforce_biometrics=True,
             key_cipher_algorithm=fss.KeyCipherAlgorithm.AES_GCM_NO_PADDING,
             storage_cipher_algorithm=fss.StorageCipherAlgorithm.AES_GCM_NO_PADDING,
         ),
