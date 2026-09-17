@@ -15,7 +15,6 @@ def billing_consumption_view(
         dict[int, list[BillingUsage]],
     ],
 ) -> ft.Control:
-    # TODO: сделать отображение названия серверов и тарифов
 
     year_tiles: list[ft.Control] = []
 

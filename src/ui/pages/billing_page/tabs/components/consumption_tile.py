@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 @ft.component
 def create_consumption_tile(
-        usage: BillingUsage,
+    usage: BillingUsage,
 ) -> ft.Control:
     app_state = ft.use_context(AppContext)
 
@@ -23,11 +23,11 @@ def create_consumption_tile(
             raise Exception(f"No server found with id {usage.resource_id}")
 
     except Exception as e:
-        logger.error(f'Error getting server: {e}')
+        logger.warning(f"Error getting server: {e}")
         resource_name = get_resource_name(usage)
 
     else:
-        resource_name = f'Сервер {server.name} {server.beautiful_name}'
+        resource_name = f"Сервер {server.name} {server.beautiful_name}"
 
     return ft.Card(
         content=ft.ListTile(

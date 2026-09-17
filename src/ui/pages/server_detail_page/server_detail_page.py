@@ -10,6 +10,7 @@ from src.state.server_detail_page_state import ServerDetailPageState
 from src.ui.components.empty_content import empty_content
 from src.ui.components.error_content import error_content
 from src.ui.components.show_message_banner import show_message_banner
+from src.ui.components.show_simple_dialog import show_simple_dialog
 from src.ui.pages.server_detail_page.components.rename_server_dialog import (
     rename_server_dialog,
 )
@@ -17,7 +18,6 @@ from src.ui.pages.server_detail_page.tabs.server_properties_tab import (
     server_properties_tab,
 )
 from src.ui.widgets.price_widget import price_widget
-from src.ui.components.show_simple_dialog import show_simple_dialog
 
 logger = logging.getLogger(__name__)
 
@@ -90,14 +90,16 @@ def server_detail_page():
                     "Вернутся на главную",
                     icon=ft.Icons.ARROW_BACK,
                     on_click=go_back,
-                )
+                ),
             ],
             expand=True,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             alignment=ft.MainAxisAlignment.CENTER,
         )
 
-    is_server_detail_page_loading = server_detail_page_state.server_loading_status.value == LoadState.LOADING.value
+    is_server_detail_page_loading = (
+        server_detail_page_state.server_loading_status.value == LoadState.LOADING.value
+    )
 
     def on_tab_changed(e):
         server_detail_page_state.set_current_tab_index(e.control.selected_index)

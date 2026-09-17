@@ -4,21 +4,21 @@ from typing import Callable
 
 from src.models.server import RenameServer
 from src.services.servers_service import ServersService
-from src.state.server_detail_page_state import ServerDetailPageState
 from src.state.load_state import LoadState
+from src.state.server_detail_page_state import ServerDetailPageState
 
 logger = logging.getLogger(__name__)
 
 
 class ServerDetailPageController:
     def __init__(
-            self,
-            servers_service: ServersService,
-            server_detail_page_state: ServerDetailPageState,
-            is_page_active: Callable[[], bool],
-            show_message_banner: Callable[[str, bool | None], None],
-            pop_dialog: Callable[[], None],
-            show_simple_dialog: Callable[[str, str], None],
+        self,
+        servers_service: ServersService,
+        server_detail_page_state: ServerDetailPageState,
+        is_page_active: Callable[[], bool],
+        show_message_banner: Callable[[str, bool | None], None],
+        pop_dialog: Callable[[], None],
+        show_simple_dialog: Callable[[str, str], None],
     ):
         self._servers_service = servers_service
         self.server_detail_page_state = server_detail_page_state
@@ -57,16 +57,18 @@ class ServerDetailPageController:
                 break
 
             if (
-                    self.server_detail_page_state.server is None
-                    or self.server_detail_page_state.server_loading_status.value == LoadState.LOADING.value
-                    or self.server_detail_page_state.server_loading_status.value == LoadState.ERROR.value
+                self.server_detail_page_state.server is None
+                or self.server_detail_page_state.server_loading_status.value
+                == LoadState.LOADING.value
+                or self.server_detail_page_state.server_loading_status.value
+                == LoadState.ERROR.value
             ):
                 continue
 
             await self._refresh_server_info()
 
     async def repeat_refresh_server(self):
-        logger.info(f"Repeat auto-refresh server")
+        logger.info("Repeat auto-refresh server")
         self.server_detail_page_state.set_server_loading_status(LoadState.LOADING)
         await self._refresh_server_info()
 
