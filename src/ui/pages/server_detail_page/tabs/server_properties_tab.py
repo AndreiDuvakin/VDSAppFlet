@@ -33,22 +33,9 @@ def server_properties_tab():
                 [
                     ft.Text("Теги:"),
                     *[
-                        ft.Container(
-                            content=ft.Row(
-                                [
-                                    ft.Text(tag.name),
-                                    ft.IconButton(
-                                        ft.Icons.DRIVE_FILE_RENAME_OUTLINE,
-                                    ),
-                                ],
-                                alignment=ft.MainAxisAlignment.CENTER,
-                                vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                                tight=True,
-                            ),
-                            padding=5,
-                            border_radius=10,
-                            bgcolor=ft.Colors.GREY_300,
-                            alignment=ft.Alignment.CENTER,
+                        ft.Chip(
+                            label=tag.name,
+                            leading=ft.Icon(ft.Icons.TAG),
                         )
                         for tag in server_tags
                     ],

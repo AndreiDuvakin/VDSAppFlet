@@ -9,6 +9,7 @@ from src.models.server import GetServer
 from src.state.load_state import LoadState
 from src.state.server_card_state import ServerCardState
 from src.ui.components.show_message_banner import show_message_banner
+from src.ui.widgets.price_widget import price_widget
 
 logger = logging.getLogger(__name__)
 
@@ -74,22 +75,10 @@ def server_card(
             ]
         )
 
-    if app_state.price is None:
-        price_block = ft.ProgressRing()
-
-    else:
-        price = app_state.price.get_month_price_beautiful(server.rplan)
-
-        if price is None:
-            price_block = ft.ProgressRing()
-
-        else:
-            price_block = ft.Text(price, size=15)
-
     plan_description = ft.Row(
         [
             ft.Text(server.plan_description, size=15),
-            price_block,
+            price_widget(server.rplan),
         ]
     )
 

@@ -3,9 +3,12 @@ import logging
 
 import flet as ft
 
+from src.controllers.server_detail_page_controller import ServerDetailPageController
 from src.core.contexts import ApiClientContext, AppContext, ServerDetailPageContext
+from src.state.load_state import LoadState
 from src.state.server_detail_page_state import ServerDetailPageState
 from src.ui.components.empty_content import empty_content
+from src.ui.components.error_content import error_content
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.pages.server_detail_page.components.rename_server_dialog import (
     rename_server_dialog,
@@ -13,6 +16,8 @@ from src.ui.pages.server_detail_page.components.rename_server_dialog import (
 from src.ui.pages.server_detail_page.tabs.server_properties_tab import (
     server_properties_tab,
 )
+from src.ui.widgets.price_widget import price_widget
+from src.ui.components.show_simple_dialog import show_simple_dialog
 
 logger = logging.getLogger(__name__)
 
@@ -64,36 +69,35 @@ def server_detail_page():
 
         server_detail_page_state.set_server(server)
 
-    async def refresh_servers():
-        try:
+    server_detail_page_controller = ServerDetailPageController(
+        api_client.servers_service,
+        server_detail_page_state,
+        lambda: page.route == f"/server/{ctid}",
+        lambda message, is_error=False: show_message_banner(message, page, is_error),
+        lambda: page.pop_dialog(),
+        lambda title, message: show_simple_dialog(title, ft.Text(message), page),
+    )
 
-            fresh_server = await api_client.servers_service.get_server(
-                server_detail_page_state.server.ctid
-            )
+    if server_detail_page_state.server_loading_status.value == LoadState.ERROR.value:
+        return ft.Column(
+            [
+                error_content(
+                    "Не удалось загрузить информацию о сервере",
+                    "Проверьте подключение к интернету или попробуйте ещё раз.",
+                    server_detail_page_controller.repeat_refresh_server,
+                ),
+                ft.Button(
+                    "Вернутся на главную",
+                    icon=ft.Icons.ARROW_BACK,
+                    on_click=go_back,
+                )
+            ],
+            expand=True,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            alignment=ft.MainAxisAlignment.CENTER,
+        )
 
-            server_detail_page_state.set_server(fresh_server)
-
-            logger.info("Auto-refresh server updated")
-
-        except Exception as e:
-            logger.error(f"Auto-refresh error: {e}")
-            show_message_banner(
-                "Ошибка обновления данных сервера.",
-                page,
-            )
-
-    async def auto_refresh():
-        while True:
-            await asyncio.sleep(10)
-
-            if page.route != f"/server/{ctid}":
-                logger.info("Route was changed, breaking refresh")
-                break
-
-            if server_detail_page_state.is_server_loading:
-                continue
-
-            await refresh_servers()
+    is_server_detail_page_loading = server_detail_page_state.server_loading_status.value == LoadState.LOADING.value
 
     def on_tab_changed(e):
         server_detail_page_state.set_current_tab_index(e.control.selected_index)
@@ -102,7 +106,7 @@ def server_detail_page():
 
     def start_auto_refresh():
         nonlocal refresh_task
-        refresh_task = asyncio.create_task(auto_refresh())
+        refresh_task = asyncio.create_task(server_detail_page_controller.auto_refresh())
 
     def stop_auto_refresh():
         if refresh_task is not None and not refresh_task.done():
@@ -113,10 +117,7 @@ def server_detail_page():
     def show_rename_server_dialog():
         page.show_dialog(
             rename_server_dialog(
-                api_client,
-                refresh_servers,
-                server_detail_page_state,
-                page,
+                server_detail_page_controller,
             )
         )
 
@@ -136,22 +137,10 @@ def server_detail_page():
             ],
         )
 
-        if app_state.price is None:
-            price_block = ft.ProgressRing()
-
-        else:
-            price = app_state.price.get_month_price_beautiful(server.rplan)
-
-            if price is None:
-                price_block = ft.ProgressRing()
-
-            else:
-                price_block = ft.Text(price, size=15)
-
         plan_description = ft.Row(
             [
                 ft.Text(server.plan_description, size=15),
-                price_block,
+                price_widget(server.rplan),
             ]
         )
 
@@ -233,7 +222,7 @@ def server_detail_page():
             alignment=ft.MainAxisAlignment.START,
         )
 
-        if server_detail_page_state.is_server_loading:
+        if is_server_detail_page_loading:
             tabs_content.controls.insert(
                 1,
                 ft.ProgressBar(),
@@ -252,7 +241,7 @@ def server_detail_page():
                 tabs,
             ],
             expand=True,
-            disabled=server_detail_page_state.is_server_loading,
+            disabled=is_server_detail_page_loading,
         )
 
     return ServerDetailPageContext(

@@ -2,72 +2,25 @@ import logging
 
 import flet as ft
 
-from src.models.server import RenameServer
-from src.ui.components.show_message_banner import show_message_banner
-from src.ui.components.show_simple_dialog import show_simple_dialog
+from src.controllers.server_detail_page_controller import ServerDetailPageController
+from src.state.load_state import LoadState
 
 logger = logging.getLogger(__name__)
 
 
-def rename_server_dialog(api_client, refresh_server, server_detail_page_state, page):
+def rename_server_dialog(
+        server_detail_page_controller: ServerDetailPageController,
+):
     new_name_field = ft.TextField(
         label=ft.Text("Новое название сервера"),
-        value=server_detail_page_state.server.name,
+        value=server_detail_page_controller.server_detail_page_state.server.name,
     )
 
-    def pop_dialog():
-        page.pop_dialog()
-
-    async def rename_server():
+    async def rename_server(e):
         new_name = new_name_field.value.strip()
+        await server_detail_page_controller.rename_server(new_name)
 
-        if not new_name:
-            show_simple_dialog(
-                "Некорректное название",
-                ft.Text("Заполните поля с новым названием сервера"),
-                page,
-            )
-            return
-
-        if new_name == server_detail_page_state.server.name:
-            show_simple_dialog(
-                "Некорректное название",
-                ft.Text("Старое и новое название должны различаться"),
-                page,
-            )
-            return
-
-        try:
-            server_detail_page_state.set_is_server_loading(True)
-            logger.info("Renaming server")
-
-            new_name = RenameServer(
-                new_name,
-            )
-            pop_dialog()
-            await api_client.servers_service.rename_server(
-                server_detail_page_state.server.ctid,
-                new_name,
-            )
-
-        except Exception as e:
-            logger.error(f"Error rename server: {e}")
-            show_message_banner(
-                "Ошибка изменения названия сервера",
-                page,
-            )
-
-        else:
-            logger.info("Rename server success")
-            show_message_banner(
-                "Название сервера изменено",
-                page,
-                is_error=False,
-            )
-            await refresh_server()
-
-        finally:
-            server_detail_page_state.set_is_server_loading(False)
+    is_server_detail_page_loading = server_detail_page_controller.server_detail_page_state.server_loading_status.value == LoadState.LOADING.value
 
     return ft.AlertDialog(
         title=ft.Text("Изменение названия сервера"),
@@ -75,13 +28,13 @@ def rename_server_dialog(api_client, refresh_server, server_detail_page_state, p
         actions=[
             ft.TextButton(
                 "Отмена",
-                on_click=pop_dialog,
-                disabled=server_detail_page_state.is_server_loading,
+                on_click=server_detail_page_controller.pop_dialog,
+                disabled=is_server_detail_page_loading,
             ),
             ft.FilledButton(
                 "Сохранить",
                 on_click=rename_server,
-                disabled=server_detail_page_state.is_server_loading,
+                disabled=is_server_detail_page_loading,
             ),
         ],
     )
