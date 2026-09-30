@@ -19,7 +19,6 @@ def account_page():
     api_client = ft.use_context(ApiClientContext)
     page = ft.context.page
     params = ft.use_route_params()
-    page.on_back_handler = page.navigate('/servers')
 
     account_page_controller = AccountPageController(
         account_page_state,

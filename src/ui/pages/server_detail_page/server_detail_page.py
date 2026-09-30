@@ -31,6 +31,8 @@ def server_detail_page():
     def go_back():
         page.navigate("/servers")
 
+    page.on_back_handler = go_back
+
     empty_page_component = ft.Column(
         [
             ft.FilledButton(

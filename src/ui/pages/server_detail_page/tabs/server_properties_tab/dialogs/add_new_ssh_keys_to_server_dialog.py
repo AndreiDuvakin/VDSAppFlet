@@ -5,8 +5,8 @@ from src.models.ssh_key import GetSSHKey
 
 
 def show_add_new_ssh_keys_to_server_dialog(
-        server_detail_page_controller: ServerDetailPageController,
-        ssh_keys: list[GetSSHKey],
+    server_detail_page_controller: ServerDetailPageController,
+    ssh_keys: list[GetSSHKey],
 ):
     def handle_checkbox_change(e: ft.Event[ft.Checkbox], key_id: int) -> None:
         if e.control.value:

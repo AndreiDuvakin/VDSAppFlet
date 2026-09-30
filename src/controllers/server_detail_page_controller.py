@@ -14,14 +14,14 @@ logger = logging.getLogger(__name__)
 
 class ServerDetailPageController:
     def __init__(
-            self,
-            servers_service: ServersService,
-            ssh_keys_service: SSHKeysService,
-            server_detail_page_state: ServerDetailPageState,
-            is_page_active: Callable[[], bool],
-            show_message_banner: Callable[[str, bool | None], None],
-            pop_dialog: Callable[[], None],
-            show_simple_dialog: Callable[[str, str], None],
+        self,
+        servers_service: ServersService,
+        ssh_keys_service: SSHKeysService,
+        server_detail_page_state: ServerDetailPageState,
+        is_page_active: Callable[[], bool],
+        show_message_banner: Callable[[str, bool | None], None],
+        pop_dialog: Callable[[], None],
+        show_simple_dialog: Callable[[str, str], None],
     ):
         self._servers_service = servers_service
         self._ssh_keys_service = ssh_keys_service
@@ -61,11 +61,11 @@ class ServerDetailPageController:
                 break
 
             if (
-                    self.server_detail_page_state.server is None
-                    or self.server_detail_page_state.server_loading_status.value
-                    == LoadState.LOADING.value
-                    or self.server_detail_page_state.server_loading_status.value
-                    == LoadState.ERROR.value
+                self.server_detail_page_state.server is None
+                or self.server_detail_page_state.server_loading_status.value
+                == LoadState.LOADING.value
+                or self.server_detail_page_state.server_loading_status.value
+                == LoadState.ERROR.value
             ):
                 continue
 
@@ -151,7 +151,7 @@ class ServerDetailPageController:
             await self._get_ssh_keys()
 
         if not isinstance(
-                self.server_detail_page_state.server.keys, list
+            self.server_detail_page_state.server.keys, list
         ) or not isinstance(self.server_detail_page_state.ssh_keys_list, list):
             logger.info("No SSH keys loaded or created")
             self._show_message_banner(
