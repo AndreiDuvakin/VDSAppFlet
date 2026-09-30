@@ -227,3 +227,29 @@ class ServerDetailPageController:
         finally:
             self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
             self.server_detail_page_state.clear_selected_ssh_keys()
+
+    async def get_server_logs(self):
+        try:
+            self.server_detail_page_state.set_logs_loading_status(LoadState.LOADING)
+            logger.info("Trying to get server logs")
+
+            servers_logs = await self._servers_service.get_logs_server(
+                self.server_detail_page_state.server.ctid,
+            )
+
+        except Exception as e:
+            logger.error(f"Error getting server logs: {str(e)}")
+            self.server_detail_page_state.set_logs_loading_status(LoadState.ERROR)
+            self._show_message_banner(
+                "Ошибка получения списка логов сервера.",
+                True,
+            )
+
+        else:
+            logger.info("Server logs loaded")
+            self.server_detail_page_state.set_logs_loading_status(LoadState.SUCCESS)
+            self.server_detail_page_state.set_server_logs_list(servers_logs)
+
+    async def repeat_load_server_logs(self):
+        logger.info("Repeating load server logs")
+        await self.get_server_logs()

@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from datetime import datetime
 from functools import cached_property
 
 from src.core.constants import PLANS
@@ -30,6 +29,12 @@ class ServerStatus:
 
         if self.status == "queued":
             return "В очереди"
+
+        if self.status == "defined":
+            return "Заказан"
+
+        if self.status == "created":
+            return "Установлен"
 
         return self.status.capitalize()
 
@@ -121,11 +126,11 @@ class GetServer(Server):
 @dataclass
 class ServerLog(ServerStatus):
     id: int
-    date: datetime
+    date: str
 
 
 @dataclass
-class GetServerLog(GetServer):
+class GetServerLog(ServerLog):
     pass
 
 

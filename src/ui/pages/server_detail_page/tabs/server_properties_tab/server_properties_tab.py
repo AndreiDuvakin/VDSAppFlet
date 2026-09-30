@@ -5,6 +5,7 @@ import flet as ft
 from src.controllers.server_detail_page_controller import ServerDetailPageController
 from src.core.contexts import AppContext
 from src.core.contexts import ServerDetailPageContext
+from src.ui.components.show_message_banner import show_message_banner
 from src.ui.pages.server_detail_page.tabs.server_properties_tab.dialogs.add_new_ssh_keys_to_server_dialog import (  # noqa: E501
     show_add_new_ssh_keys_to_server_dialog,
 )
@@ -29,6 +30,11 @@ def server_properties_tab(
         ],
     )
 
+    connect_string = ft.use_memo(
+        lambda: f"ssh root@{server_detail_page_state.server.public_address.address}",
+        [server_detail_page_state.server.public_address.address],
+    )
+
     async def add_new_ssh_keys_to_server():
         keys = await server_detail_page_controller.check_keys_to_add_into_server()
 
@@ -40,6 +46,14 @@ def server_properties_tab(
                 server_detail_page_controller,
                 keys,
             )
+        )
+
+    async def set_to_clipboard():
+        await ft.Clipboard().set(connect_string)
+        show_message_banner(
+            "Скопировано в буфер обмена",
+            page,
+            False,
         )
 
     return ft.Column(
@@ -146,6 +160,31 @@ def server_properties_tab(
                 )
                 for key in server_detail_page_state.server.keys
             ],
+            ft.GestureDetector(
+                on_tap=set_to_clipboard,
+                content=ft.Container(
+                    content=ft.Row(
+                        [
+                            ft.Column(
+                                [
+                                    ft.Text(connect_string),
+                                    ft.Text("Нажмите, чтобы скопировать"),
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER,
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                expand=True,
+                            ),
+                        ],
+                        expand=True,
+                    ),
+                    expand=True,
+                    bgcolor=ft.Colors.GREY_300,
+                    margin=10,
+                    padding=10,
+                    border_radius=10,
+                ),
+                expand=True,
+            ),
         ],
         expand=True,
         scroll=ft.ScrollMode.AUTO,
