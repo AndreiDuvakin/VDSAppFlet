@@ -20,12 +20,13 @@ logger = logging.getLogger(__name__)
 
 @ft.component
 def ssh_keys_tab(
-    account_page_controller: AccountPageController,
+        account_page_controller: AccountPageController,
 ):
     logger.info("Initializing ssh keys tab")
 
     account_page_state = ft.use_context(AccountPageContext)
     page = ft.context.page
+    params = ft.use_route_params()
 
     def show_create_ssh_key_dialog():
         page.show_dialog(
@@ -42,6 +43,20 @@ def ssh_keys_tab(
             )
         )
 
+    def open_dialog_from_params():
+        if not params:
+            return
+
+        if params.get("tab") != "ssh_keys":
+            return
+
+        account_page_controller.pop_dialog()
+
+        match params.get("dialogToOpen"):
+            case "create_ssh_key":
+                show_create_ssh_key_dialog()
+                page.navigate('/account')
+
     add_button = ft.Container(
         content=ft.Button(
             "Добавить SSH ключ",
@@ -56,8 +71,8 @@ def ssh_keys_tab(
     )
 
     if (
-        account_page_state.ssh_keys is None
-        and account_page_state.ssh_keys_loading_status.value == LoadState.IDLE.value
+            account_page_state.ssh_keys is None
+            and account_page_state.ssh_keys_loading_status.value == LoadState.IDLE.value
     ):
         logger.info("SSH keys not loaded, starting loading")
         asyncio.create_task(account_page_controller.get_ssh_keys())
@@ -86,6 +101,8 @@ def ssh_keys_tab(
         )
 
     logger.info("SSH keys loaded and present")
+
+    ft.use_effect(open_dialog_from_params, [])
 
     ssh_keys_list = ft.ListView(
         expand=True,

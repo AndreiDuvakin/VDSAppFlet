@@ -18,6 +18,8 @@ def account_page():
     account_page_state, _ = ft.use_state(AccountPageState)
     api_client = ft.use_context(ApiClientContext)
     page = ft.context.page
+    params = ft.use_route_params()
+    page.on_back_handler = page.navigate('/servers')
 
     account_page_controller = AccountPageController(
         account_page_state,
@@ -30,6 +32,16 @@ def account_page():
 
     def on_tab_changed(e):
         account_page_state.set_current_tab_index(e.control.selected_index)
+
+    def set_tab_from_params():
+        if not params:
+            return
+
+        match params.get("tab"):
+            case "ssh_keys":
+                account_page_state.set_current_tab_index(1)
+
+    ft.use_effect(set_tab_from_params, [])
 
     def build_tabs():
         tabs_content = ft.Column(

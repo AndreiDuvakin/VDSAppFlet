@@ -14,7 +14,7 @@ from src.ui.components.show_simple_dialog import show_simple_dialog
 from src.ui.pages.server_detail_page.components.rename_server_dialog import (
     rename_server_dialog,
 )
-from src.ui.pages.server_detail_page.tabs.server_properties_tab import (
+from src.ui.pages.server_detail_page.tabs.server_properties_tab.server_properties_tab import (  # noqa: E501
     server_properties_tab,
 )
 from src.ui.widgets.price_widget import price_widget
@@ -71,6 +71,7 @@ def server_detail_page():
 
     server_detail_page_controller = ServerDetailPageController(
         api_client.servers_service,
+        api_client.ssh_keys_service,
         server_detail_page_state,
         lambda: page.route == f"/server/{ctid}",
         lambda message, is_error=False: show_message_banner(message, page, is_error),
@@ -207,7 +208,9 @@ def server_detail_page():
                         ft.Container(
                             alignment=ft.Alignment.CENTER,
                             expand=True,
-                            content=server_properties_tab(),
+                            content=server_properties_tab(
+                                server_detail_page_controller,
+                            ),
                         ),
                         ft.Container(
                             alignment=ft.Alignment.CENTER,

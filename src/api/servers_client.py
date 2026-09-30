@@ -3,7 +3,7 @@ from typing import List
 from dataclass_rest import get, patch
 
 from src.api.abstract_client import AbstractClient
-from src.models.server import GetServer, GetServerLog, RenameServer
+from src.models.server import AddSSHKey, GetServer, GetServerLog, RenameServer
 
 
 class ServersClient(AbstractClient):
@@ -29,6 +29,10 @@ class ServersClient(AbstractClient):
 
     @patch("scalets/{ctid}")
     async def rename_server(self, ctid: int, body: RenameServer) -> GetServer:
+        pass
+
+    @patch("scalets/{ctid}")
+    async def add_new_ssh_key_to_server(self, ctid: int, body: AddSSHKey):
         pass
 
     @get("scalets/{ctid}/log")

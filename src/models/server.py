@@ -132,3 +132,8 @@ class GetServerLog(GetServer):
 @dataclass
 class RenameServer:
     name: str
+
+
+@dataclass
+class AddSSHKey:
+    keys: list[int]

@@ -36,7 +36,15 @@ def app_router():
                             ),
                             ft.Route(
                                 path="/account",
-                                component=account_page,
+                                children=[
+                                    ft.Route(
+                                        path="/:tab/:dialogToOpen",
+                                        component=account_page,
+                                    ),
+                                    ft.Route(
+                                        component=account_page,
+                                    ),
+                                ],
                             ),
                             ft.Route(
                                 path="/info",

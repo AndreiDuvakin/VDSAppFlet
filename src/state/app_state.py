@@ -18,9 +18,7 @@ logger = logging.getLogger(__name__)
 @ft.observable
 @dataclass
 class AppState:
-    secure_storage: fss.SecureStorage | None = field(
-        default_factory=create_secure_storage
-    )
+    secure_storage: fss.SecureStorage = field(default_factory=create_secure_storage)
     is_authenticated: bool = False
     account: GetAccount | None = None
 
@@ -36,15 +34,22 @@ class AppState:
     tags_loading_status: LoadState = LoadState.IDLE
 
     async def get_token(self) -> str | None:
-        return await self.secure_storage.get("token")
+        try:
+            return await self.secure_storage.get("token")
+        except Exception as e:
+            logger.error(f"Error getting token: {e}")
 
     async def set_token(self, token) -> None:
-        await self.secure_storage.set("token", token)
+        try:
+            await self.secure_storage.set("token", token)
+        except Exception as e:
+            logger.error(f"Error setting token: {e}")
 
     async def clear_storage(self) -> None:
-        print(3333333333333333333333333)
-        await self.secure_storage.clear()
-        print(44444444444444444444444444)
+        try:
+            await self.secure_storage.clear()
+        except Exception as e:
+            logger.error(f"Error clearing storage: {e}")
 
     def set_token_secure_check_status(self, status: LoadState):
         self.token_secure_check_status = status

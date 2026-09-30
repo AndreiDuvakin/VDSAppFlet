@@ -2,7 +2,7 @@ import logging
 from typing import List
 
 from src.api.servers_client import ServersClient
-from src.models.server import GetServer, GetServerLog, RenameServer
+from src.models.server import AddSSHKey, GetServer, GetServerLog, RenameServer
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +42,13 @@ class ServersService:
         logger.info("Renaming Server")
 
         return await self._client.rename_server(ctid, name)
+
+    async def add_new_ssh_key_to_server(
+        self, ctid: int, ssh_keys: AddSSHKey
+    ) -> GetServer:
+        logger.info("Adding new SSH Keys to Server")
+
+        return await self._client.add_new_ssh_key_to_server(ctid, ssh_keys)
 
     async def get_logs_server(self, ctid: int) -> List[GetServerLog]:
         logger.info("Getting server logs")

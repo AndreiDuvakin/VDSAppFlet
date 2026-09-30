@@ -1,13 +1,24 @@
+import logging
+
 import flet as ft
 
+from src.controllers.server_detail_page_controller import ServerDetailPageController
 from src.core.contexts import AppContext
 from src.core.contexts import ServerDetailPageContext
+from src.ui.pages.server_detail_page.tabs.server_properties_tab.dialogs.add_new_ssh_keys_to_server_dialog import (  # noqa: E501
+    show_add_new_ssh_keys_to_server_dialog,
+)
+
+logger = logging.getLogger(__name__)
 
 
 @ft.component
-def server_properties_tab():
+def server_properties_tab(
+    server_detail_page_controller: ServerDetailPageController,
+):
     server_detail_page_state = ft.use_context(ServerDetailPageContext)
     app_state = ft.use_context(AppContext)
+    page = ft.context.page
 
     server_tags = ft.use_memo(
         lambda: app_state.get_tags_by_server_ctid(server_detail_page_state.server.ctid),
@@ -17,6 +28,19 @@ def server_properties_tab():
             server_detail_page_state.server,
         ],
     )
+
+    async def add_new_ssh_keys_to_server():
+        keys = await server_detail_page_controller.check_keys_to_add_into_server()
+
+        if not keys:
+            return
+
+        page.show_dialog(
+            show_add_new_ssh_keys_to_server_dialog(
+                server_detail_page_controller,
+                keys,
+            )
+        )
 
     return ft.Column(
         [
@@ -70,6 +94,37 @@ def server_properties_tab():
             ),
             ft.Divider(),
             ft.Text("SSH-ключи пользователя root", weight=ft.FontWeight.BOLD, size=25),
+            ft.ResponsiveRow(
+                [
+                    ft.Container(
+                        col={
+                            ft.ResponsiveRowBreakpoint.XS: 12,
+                            ft.ResponsiveRowBreakpoint.MD: 6,
+                        },
+                        content=ft.Button(
+                            "Добавить на сервер существующий ключ",
+                            icon=ft.Icons.VPN_KEY,
+                            expand=True,
+                            on_click=add_new_ssh_keys_to_server,
+                        ),
+                    ),
+                    ft.Container(
+                        col={
+                            ft.ResponsiveRowBreakpoint.XS: 12,
+                            ft.ResponsiveRowBreakpoint.MD: 6,
+                        },
+                        content=ft.OutlinedButton(
+                            "Создать новый ключ",
+                            icon=ft.Icons.ADD,
+                            expand=True,
+                            on_click=lambda: page.navigate(
+                                "/account/ssh_keys/create_ssh_key"
+                            ),
+                        ),
+                    ),
+                ],
+                expand=True,
+            ),
             *[
                 ft.Card(
                     content=ft.Container(
@@ -91,8 +146,6 @@ def server_properties_tab():
                 )
                 for key in server_detail_page_state.server.keys
             ],
-            ft.Button("Добавить на сервер существующий ключ"),
-            ft.Button("Создать новый ключ"),
         ],
         expand=True,
         scroll=ft.ScrollMode.AUTO,

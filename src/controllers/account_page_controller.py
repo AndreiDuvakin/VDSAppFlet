@@ -131,6 +131,7 @@ class AccountPageController:
 
         if not name:
             logger.warning("ssh key name field is empty")
+            self.pop_dialog()
             self._show_simple_dialog(
                 "Внимание",
                 "Введите название ключа",
@@ -139,6 +140,7 @@ class AccountPageController:
 
         if not key:
             logger.warning("ssh key key field is empty")
+            self.pop_dialog()
             self._show_simple_dialog(
                 "Внимание",
                 "Введите публичный ключ",
@@ -147,6 +149,7 @@ class AccountPageController:
 
         if not key.startswith(("ssh-rsa", "ssh-ed25519", "ecdsa-sha2-nistp")):
             logger.warning("ssh key is not valid")
+            self.pop_dialog()
             self._show_simple_dialog(
                 "Внимание",
                 "Неверный формат публичного ключа",
