@@ -38,7 +38,7 @@ def server_logs_tab(
 
     if not server_detail_page_state.server_logs_list:
         return empty_content(
-            ft.Icons.CLOUD_OFF,
+            ft.Icons.HISTORY,
             "Нет логов для отображения",
             "Возможно они не были загружены",
         )

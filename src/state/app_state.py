@@ -7,6 +7,7 @@ import flet_secure_storage as fss
 
 from src.core.storage_factory import create_secure_storage
 from src.models.account import GetAccount
+from src.models.backup import GetBackup
 from src.models.price import GetPrice
 from src.models.server import GetServer
 from src.models.tag import GetTag
@@ -24,6 +25,7 @@ class AppState:
 
     servers: List[GetServer] | None = None
     tags: List[GetTag] | None = None
+    backups: List[GetBackup] | None = None
 
     price: GetPrice | None = None
     token: str = ""
@@ -32,6 +34,7 @@ class AppState:
     login_loading_status: LoadState = LoadState.IDLE
     price_loading_status: LoadState = LoadState.IDLE
     tags_loading_status: LoadState = LoadState.IDLE
+    backups_loading_status: LoadState = LoadState.IDLE
 
     async def get_token(self) -> str | None:
         try:
@@ -63,6 +66,12 @@ class AppState:
     def set_tags_loading_status(self, status: LoadState):
         self.tags_loading_status = status
 
+    def set_backups_loading_status(self, status: LoadState):
+        self.backups_loading_status = status
+
+    def set_backups(self, backups: List[GetBackup]):
+        self.backups = backups
+
     def set_price(self, price: GetPrice):
         self.price = price
 
@@ -79,17 +88,15 @@ class AppState:
         if self.servers is None:
             return None
 
-        server = list(
-            filter(
-                lambda server: server.ctid == ctid,
-                self.servers,
-            )
-        )
+        server = [server for server in self.servers if server.ctid == ctid]
 
         if server:
             return server[0]
 
         return None
+
+    def get_backups_by_server_ctid(self, ctid: int) -> List[GetBackup]:
+        return [backup for backup in self.backups if backup.scalet == ctid]
 
     def set_servers_list(self, servers_list: List[GetServer]):
         self.servers = servers_list

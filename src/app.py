@@ -25,6 +25,7 @@ def app():
     app_controller = AppController(
         api_client.price_service,
         api_client.tags_service,
+        api_client.backups_service,
         app_state,
         lambda message: show_message_banner(message, page),
     )
@@ -43,6 +44,13 @@ def app():
     ):
         asyncio.create_task(app_controller.get_tags())
 
+    if (
+        app_state.backups is None
+        and app_state.backups_loading_status.value == LoadState.IDLE.value
+        and app_state.token
+    ):
+        asyncio.create_task(app_controller.get_backups())
+
     if app_state.tags_loading_status.value == LoadState.ERROR.value:
         return error_content(
             "Не удалось загрузить теги серверов",
@@ -55,6 +63,13 @@ def app():
             "Не удалось загрузить цены",
             "Проверьте подключение к интернету или попробуйте ещё раз.",
             app_controller.repeat_loading_price,
+        )
+
+    if app_state.backups_loading_status.value == LoadState.ERROR.value:
+        return error_content(
+            "Не удалось загрузить бэкапы",
+            "Проверьте подключение к интернету или попробуйте ещё раз.",
+            app_controller.repeat_loading_backups,
         )
 
     logger.info("Returning app_router with contexts")

@@ -1,6 +1,7 @@
 import logging
 
 from src.api.account_client import AccountClient
+from src.api.backups_client import BackupsClient
 from src.api.billing_client import BillingClient
 from src.api.notification_client import NotificationClient
 from src.api.price_client import PriceClient
@@ -8,6 +9,7 @@ from src.api.servers_client import ServersClient
 from src.api.ssh_keys_client import SSHKeysClient
 from src.api.tags_client import TagsClient
 from src.services.account_service import AccountService
+from src.services.backups_service import BackupsService
 from src.services.billing_service import BillingService
 from src.services.notification_service import NotificationService
 from src.services.price_service import PriceService
@@ -47,6 +49,9 @@ class ApiClient:
         self._tags_client = None
         self.tags_service = None
 
+        self._backups_client = None
+        self.backups_service = None
+
     def init_clients(self):
         logger.info("Creating api clients and services")
 
@@ -83,6 +88,10 @@ class ApiClient:
         self._tags_client = TagsClient(self._token, self.BASE_URL)
         self.tags_service = TagsService(self._tags_client)
 
+        logger.info("Initializing BackupsService and BackupsClient")
+        self._backups_client = BackupsClient(self._token, self.BASE_URL)
+        self.backups_service = BackupsService(self._backups_client)
+
     def delete_clients_and_services(self):
         logger.info("Deleting clients and services")
 
@@ -106,6 +115,9 @@ class ApiClient:
 
         self._tags_client = None
         self.tags_service = None
+
+        self._backups_client = None
+        self.backups_service = None
 
     def set_token(self, token: str):
         logger.info("Setting token")

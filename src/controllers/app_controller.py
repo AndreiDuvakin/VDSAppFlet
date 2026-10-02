@@ -1,6 +1,7 @@
 import logging
 from typing import Callable
 
+from src.services.backups_service import BackupsService
 from src.services.price_service import PriceService
 from src.services.tags_service import TagsService
 from src.state.app_state import AppState
@@ -14,11 +15,13 @@ class AppController:
         self,
         price_service: PriceService,
         tags_service: TagsService,
+        backups_service: BackupsService,
         app_state: AppState,
         on_error: Callable[[str], None],
     ):
         self._price_service = price_service
         self._tags_service = tags_service
+        self._backups_service = backups_service
         self._app_state = app_state
         self._on_error = on_error
 
@@ -58,6 +61,24 @@ class AppController:
             logger.info("Tags loaded")
             self._app_state.set_tags_loading_status(LoadState.SUCCESS)
 
+    async def get_backups(self):
+        try:
+            logger.info("Getting backups")
+            self._app_state.set_backups_loading_status(LoadState.LOADING)
+
+            backups = await self._backups_service.get_backups()
+
+            self._app_state.set_backups(backups)
+
+        except Exception as e:
+            self._app_state.set_backups_loading_status(LoadState.ERROR)
+            logger.error(f"Error getting backups: {e}")
+            self._on_error("Ошибка получения списка резервных копий.")
+
+        else:
+            logger.info("Backups loaded")
+            self._app_state.set_backups_loading_status(LoadState.SUCCESS)
+
     async def repeat_loading_tags(self):
         logger.info("Repeat loading tags is started")
         await self.get_tags()
@@ -65,3 +86,7 @@ class AppController:
     async def repeat_loading_price(self):
         logger.info("Repeat loading price is started")
         await self.get_price()
+
+    async def repeat_loading_backups(self):
+        logger.info("Repeat loading backups is started")
+        await self.get_backups()

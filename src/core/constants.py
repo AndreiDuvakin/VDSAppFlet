@@ -25,10 +25,15 @@ SERVER_STATUSES = {
     "started": "Запущен",
     "stopped": "Остановлен",
     "billing": "Заблокирован",
+    "queued": "В очереди",
     "defined": "Заказан",
     "created": "Установлен",
 }
 
+UBUNTU_ISO_IMAGE = "free-icon-ubuntu-888879.png"
+DEBIAN_ISO_IMAGE = "free-icon-linux-246118.png"
+FEDORA_ISO_IMAGE = "free-icon-cowboy-hat-2790087.png"
+DEFAULT_ISO_IMAGE = "free-icon-linux-15465695.png"
 
 MARKDOWN_README = """# Selectel VDS Client Flet
 

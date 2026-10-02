@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 from functools import cached_property
 
-from src.core.constants import PLANS
+from src.core.constants import PLANS, SERVER_STATUSES
 from src.models.ssh_key import ServerSSHKey
+from src.utils.get_iso_image import get_iso_image
 
 
 @dataclass
@@ -16,29 +17,11 @@ class ServerAddress:
 class ServerStatus:
     status: str
 
-    @property
+    @cached_property
     def status_text(self) -> str:
-        if self.status == "started":
-            return "Запущен"
+        return SERVER_STATUSES.get(self.status, self.status.capitalize())
 
-        if self.status == "stopped":
-            return "Остановлен"
-
-        if self.status == "billing":
-            return "Заблокирован (баланс)"
-
-        if self.status == "queued":
-            return "В очереди"
-
-        if self.status == "defined":
-            return "Заказан"
-
-        if self.status == "created":
-            return "Установлен"
-
-        return self.status.capitalize()
-
-    @property
+    @cached_property
     def status_color(self):
         if self.status == "started":
             return "green"
@@ -48,7 +31,7 @@ class ServerStatus:
 
         return "red"
 
-    @property
+    @cached_property
     def is_power_on(self) -> bool:
         return self.status == "started"
 
@@ -98,18 +81,7 @@ class Server(ServerStatus):
 
     @cached_property
     def iso_image(self) -> str:
-        made_from = self.made_from.lower()
-
-        if made_from.startswith("ubuntu"):
-            return "free-icon-ubuntu-888879.png"
-
-        if made_from.startswith("debian"):
-            return "free-icon-linux-246118.png"
-
-        if made_from.startswith("fedora"):
-            return "free-icon-cowboy-hat-2790087.png"
-
-        return "free-icon-linux-15465695.png"
+        return get_iso_image(self.made_from)
 
     @cached_property
     def beautiful_name(self) -> str:

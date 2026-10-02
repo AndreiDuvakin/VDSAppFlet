@@ -14,6 +14,9 @@ from src.ui.components.show_simple_dialog import show_simple_dialog
 from src.ui.pages.server_detail_page.components.rename_server_dialog import (
     rename_server_dialog,
 )
+from src.ui.pages.server_detail_page.tabs.server_properties_tab.backups_tab import (
+    backups_tab,
+)
 from src.ui.pages.server_detail_page.tabs.server_properties_tab.server_logs_tab import (
     server_logs_tab,
 )
@@ -225,6 +228,9 @@ def server_detail_page():
                         ft.Container(
                             alignment=ft.Alignment.CENTER,
                             expand=True,
+                            content=backups_tab(
+                                server_detail_page_controller,
+                            ),
                         ),
                     ],
                 ),
