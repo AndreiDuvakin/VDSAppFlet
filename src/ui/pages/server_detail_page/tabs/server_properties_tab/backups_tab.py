@@ -3,7 +3,7 @@ import flet as ft
 from src.controllers.server_detail_page_controller import ServerDetailPageController
 from src.core.contexts import AppContext, ServerDetailPageContext
 from src.ui.components.empty_content import empty_content
-from src.ui.widgets.backup_tile import backup_tile
+from src.ui.widgets.backup_tile.backup_tile import backup_tile
 
 
 @ft.component

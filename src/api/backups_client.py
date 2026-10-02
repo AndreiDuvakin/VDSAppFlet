@@ -1,6 +1,6 @@
 from typing import List
 
-from dataclass_rest import get
+from dataclass_rest import delete, get
 
 from src.api.abstract_client import AbstractClient
 from src.models.backup import GetBackup
@@ -9,4 +9,8 @@ from src.models.backup import GetBackup
 class BackupsClient(AbstractClient):
     @get("backups")
     async def get_backups(self) -> List[GetBackup]:
+        pass
+
+    @delete("backups/{backup_id}")
+    async def delete_backup(self, backup_id: str) -> GetBackup:
         pass

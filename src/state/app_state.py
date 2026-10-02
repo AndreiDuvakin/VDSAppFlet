@@ -95,6 +95,10 @@ class AppState:
 
         return None
 
+    def remove_backup_by_id(self, backup_id: str) -> None:
+        new_backups_list = [backup for backup in self.backups if backup.id != backup_id]
+        self.backups = new_backups_list
+
     def get_backups_by_server_ctid(self, ctid: int) -> List[GetBackup]:
         return [backup for backup in self.backups if backup.scalet == ctid]
 

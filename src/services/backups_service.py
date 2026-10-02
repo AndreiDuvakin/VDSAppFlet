@@ -17,3 +17,8 @@ class BackupsService:
         logger.info("Getting backups")
 
         return await self._client.get_backups()
+
+    async def delete_backup(self, backup_id: str) -> GetBackup:
+        logger.info("Deleting backup")
+
+        return await self._client.delete_backup(backup_id)
