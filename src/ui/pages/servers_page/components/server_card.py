@@ -10,6 +10,7 @@ from src.state.load_state import LoadState
 from src.state.server_card_state import ServerCardState
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.widgets.price_widget import price_widget
+from src.ui.widgets.server_status_indicator import server_status_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -88,23 +89,7 @@ def server_card(
                 [
                     ft.Row(
                         [
-                            ft.Container(
-                                ft.Row(
-                                    [
-                                        ft.Icon(
-                                            ft.Icons.CIRCLE,
-                                            color=server.status_color,
-                                            size=12,
-                                        ),
-                                        ft.Text(
-                                            server.status_text,
-                                            color=server.status_color,
-                                            weight=ft.FontWeight.W_500,
-                                        ),
-                                    ],
-                                    spacing=4,
-                                ),
-                            ),
+                            server_status_indicator(server),
                             ft.Text(
                                 server.name or server.hostname,
                                 size=18,

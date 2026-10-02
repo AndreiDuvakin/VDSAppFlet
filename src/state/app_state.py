@@ -95,6 +95,9 @@ class AppState:
 
         return None
 
+    def append_backup(self, backup: GetBackup):
+        self.backups.append(backup)
+
     def remove_backup_by_id(self, backup_id: str) -> None:
         new_backups_list = [backup for backup in self.backups if backup.id != backup_id]
         self.backups = new_backups_list

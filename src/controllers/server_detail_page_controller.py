@@ -1,11 +1,13 @@
 import asyncio
 import logging
-from typing import Callable
+from typing import Any, Callable
 
+from src.models.backup import PostBackup
 from src.models.server import AddSSHKey, RenameServer
 from src.models.ssh_key import GetSSHKey
 from src.services.servers_service import ServersService
 from src.services.ssh_keys_service import SSHKeysService
+from src.state.app_state import AppState
 from src.state.load_state import LoadState
 from src.state.server_detail_page_state import ServerDetailPageState
 
@@ -18,18 +20,24 @@ class ServerDetailPageController:
         servers_service: ServersService,
         ssh_keys_service: SSHKeysService,
         server_detail_page_state: ServerDetailPageState,
+        app_state: AppState,
         is_page_active: Callable[[], bool],
         show_message_banner: Callable[[str, bool | None], None],
         pop_dialog: Callable[[], None],
         show_simple_dialog: Callable[[str, str], None],
+        show_page_dialog: Callable[[Any], None],
+        navigate_to_servers: Callable[[], None],
     ):
         self._servers_service = servers_service
         self._ssh_keys_service = ssh_keys_service
         self.server_detail_page_state = server_detail_page_state
+        self._app_state = app_state
         self._is_page_active = is_page_active
         self._show_message_banner = show_message_banner
         self.pop_dialog = pop_dialog
-        self._show_simple_dialog = show_simple_dialog
+        self.show_page_dialog = show_page_dialog
+        self.show_simple_dialog = show_simple_dialog
+        self._navigate_to_servers = navigate_to_servers
 
     async def _refresh_server_info(self):
         try:
@@ -78,14 +86,14 @@ class ServerDetailPageController:
 
     async def rename_server(self, new_name):
         if not new_name:
-            self._show_simple_dialog(
+            self.show_simple_dialog(
                 "Некорректное название",
                 "Заполните поля с новым названием сервера",
             )
             return
 
         if new_name == self.server_detail_page_state.server.name:
-            self._show_simple_dialog(
+            self.show_simple_dialog(
                 "Некорректное название",
                 "Старое и новое название должны различаться",
             )
@@ -253,3 +261,154 @@ class ServerDetailPageController:
     async def repeat_load_server_logs(self):
         logger.info("Repeating load server logs")
         await self.get_server_logs()
+
+    async def start_server(self):
+        self.pop_dialog()
+
+        try:
+            self.server_detail_page_state.set_server_loading_status(LoadState.LOADING)
+            logger.info("Trying to start server")
+            server = await self._servers_service.start_server(
+                self.server_detail_page_state.server.ctid,
+            )
+
+        except Exception as e:
+            logger.error(f"Error starting server: {str(e)}")
+            self._show_message_banner(
+                "Ошибка запуска сервера.",
+                True,
+            )
+
+        else:
+            self.server_detail_page_state.set_server(server)
+
+        finally:
+            self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
+
+    async def stop_server(self):
+        self.pop_dialog()
+
+        try:
+            self.server_detail_page_state.set_server_loading_status(LoadState.LOADING)
+            logger.info("Trying to stop server")
+            server = await self._servers_service.stop_server(
+                self.server_detail_page_state.server.ctid,
+            )
+
+        except Exception as e:
+            logger.error(f"Error stopping server: {str(e)}")
+            self._show_message_banner(
+                "Ошибка остановки сервера.",
+                True,
+            )
+
+        else:
+            self.server_detail_page_state.set_server(server)
+
+        finally:
+            self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
+
+    async def restart_server(self):
+        self.pop_dialog()
+
+        try:
+            self.server_detail_page_state.set_server_loading_status(LoadState.LOADING)
+            logger.info("Trying to restart server")
+            server = await self._servers_service.restart_server(
+                self.server_detail_page_state.server.ctid,
+            )
+
+        except Exception as e:
+            logger.error(f"Error restarting server: {str(e)}")
+            self._show_message_banner(
+                "Ошибка перезапуска сервера.",
+                True,
+            )
+
+        else:
+            self.server_detail_page_state.set_server(server)
+
+        finally:
+            self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
+
+    async def rebuild_server(self):
+        self.pop_dialog()
+
+        try:
+            logger.info("Trying to rebuild server")
+            self.server_detail_page_state.set_server_loading_status(LoadState.LOADING)
+            server = await self._servers_service.rebuild_server(
+                self.server_detail_page_state.server.ctid,
+            )
+
+        except Exception as e:
+            logger.error(f"Error rebuilding server: {str(e)}")
+            self._show_message_banner(
+                "Ошибка переустановки сервера.",
+                True,
+            )
+
+        else:
+            self.server_detail_page_state.set_server(server)
+
+        finally:
+            self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
+
+    async def delete_server(self):
+        self.pop_dialog()
+
+        try:
+            logger.info("Trying to delete server")
+            self.server_detail_page_state.set_server_loading_status(LoadState.LOADING)
+            await self._servers_service.delete_server(
+                self.server_detail_page_state.server.ctid,
+            )
+
+        except Exception as e:
+            self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
+            logger.error(f"Error deleting server: {str(e)}")
+            self._show_message_banner(
+                "Ошибка удаления сервера.",
+                True,
+            )
+
+        else:
+            self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
+            self._navigate_to_servers()
+
+    async def create_server_backup(
+        self,
+        backup_name: str,
+    ):
+        self.pop_dialog()
+
+        try:
+            logger.info("Trying to create backup")
+            self.server_detail_page_state.set_server_loading_status(LoadState.LOADING)
+
+            new_backup = PostBackup(
+                name=backup_name,
+            )
+
+            backup = await self._servers_service.create_server_backup(
+                self.server_detail_page_state.server.ctid,
+                new_backup,
+            )
+
+        except Exception as e:
+            logger.error(f"Error creating backup: {str(e)}")
+            self._show_message_banner(
+                "Ошибка создания бэкапа.",
+                True,
+            )
+
+        else:
+            logger.info("Backup created")
+            self._app_state.append_backup(backup)
+            self._show_message_banner(
+                "Бэкап успешно создан.",
+                False,
+            )
+
+        finally:
+            self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)

@@ -1,8 +1,9 @@
 from typing import List
 
-from dataclass_rest import get, patch
+from dataclass_rest import delete, get, patch, post
 
 from src.api.abstract_client import AbstractClient
+from src.models.backup import GetBackup, PostBackup
 from src.models.server import AddSSHKey, GetServer, GetServerLog, RenameServer
 
 
@@ -13,6 +14,14 @@ class ServersClient(AbstractClient):
 
     @get("scalets/{ctid}")
     async def get_server(self, ctid: int) -> GetServer:
+        pass
+
+    @get("scalets/{ctid}/log")
+    async def get_logs_server(self, ctid: int) -> List[GetServerLog]:
+        pass
+
+    @post("scalets/{ctid}/backup")
+    async def create_server_backup(self, ctid: int, body: PostBackup) -> GetBackup:
         pass
 
     @patch("scalets/{ctid}/stop")
@@ -35,6 +44,10 @@ class ServersClient(AbstractClient):
     async def add_new_ssh_key_to_server(self, ctid: int, body: AddSSHKey):
         pass
 
-    @get("scalets/{ctid}/log")
-    async def get_logs_server(self, ctid: int) -> List[GetServerLog]:
+    @patch("scalets/{ctid}/rebuild")
+    async def rebuild_server(self, ctid: int) -> GetServer:
+        pass
+
+    @delete("scalets/{ctid}")
+    async def delete_server(self, ctid: int) -> GetServer:
         pass

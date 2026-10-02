@@ -11,6 +11,9 @@ from src.ui.components.empty_content import empty_content
 from src.ui.components.error_content import error_content
 from src.ui.components.show_message_banner import show_message_banner
 from src.ui.components.show_simple_dialog import show_simple_dialog
+from src.ui.pages.server_detail_page.components.manage_server_bottom_sheet.manage_server_bottom_sheet import (  # noqa: E501
+    manage_server_bottom_sheet,
+)
 from src.ui.pages.server_detail_page.components.rename_server_dialog import (
     rename_server_dialog,
 )
@@ -24,6 +27,7 @@ from src.ui.pages.server_detail_page.tabs.server_properties_tab.server_propertie
     server_properties_tab,
 )
 from src.ui.widgets.price_widget import price_widget
+from src.ui.widgets.server_status_indicator import server_status_indicator
 
 logger = logging.getLogger(__name__)
 
@@ -65,8 +69,8 @@ def server_detail_page():
     api_client = ft.use_context(ApiClientContext)
 
     server = ft.use_memo(
-        lambda: app_state.get_server_by_id(ctid),
-        [ctid, app_state.servers],
+        lambda: server_detail_page_state.server or app_state.get_server_by_id(ctid),
+        [ctid, app_state.servers, server_detail_page_state.server],
     )
 
     if server_detail_page_state.server is None:
@@ -79,10 +83,13 @@ def server_detail_page():
         api_client.servers_service,
         api_client.ssh_keys_service,
         server_detail_page_state,
+        app_state,
         lambda: page.route == f"/server/{ctid}",
         lambda message, is_error=False: show_message_banner(message, page, is_error),
         lambda: page.pop_dialog(),
         lambda title, message: show_simple_dialog(title, ft.Text(message), page),
+        lambda dialog: page.show_dialog(dialog),
+        lambda: page.navigate("/servers"),
     )
 
     if server_detail_page_state.server_loading_status.value == LoadState.ERROR.value:
@@ -130,6 +137,13 @@ def server_detail_page():
             )
         )
 
+    def show_manage_server_bottom_sheet(e: ft.Event[ft.CupertinoTintedButton]):
+        page.show_dialog(
+            manage_server_bottom_sheet(
+                server_detail_page_controller,
+            )
+        )
+
     def create_page_content():
         page_bar = ft.Row(
             [
@@ -161,6 +175,14 @@ def server_detail_page():
                         ft.Image(server.iso_image, width=80, height=80),
                         ft.Column(
                             [
+                                ft.Container(
+                                    content=server_status_indicator(
+                                        server_detail_page_state.server
+                                    ),
+                                    margin=ft.Margin(
+                                        left=5,
+                                    ),
+                                ),
                                 ft.Row(
                                     [
                                         ft.Icon(
@@ -198,6 +220,15 @@ def server_detail_page():
                                     spacing=8,
                                 ),
                             ],
+                        ),
+                    ],
+                ),
+                ft.Row(
+                    [
+                        ft.CupertinoTintedButton(
+                            "Управление сервером",
+                            on_click=show_manage_server_bottom_sheet,
+                            expand=True,
                         ),
                     ],
                 ),

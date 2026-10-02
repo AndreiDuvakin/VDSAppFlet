@@ -2,6 +2,12 @@ from dataclasses import dataclass
 from functools import cached_property
 
 
+@dataclass
+class BaseBackup:
+    name: str
+
+
+@dataclass
 class BackupStatus:
     status: str
 
@@ -24,9 +30,8 @@ class BackupStatus:
 
 
 @dataclass
-class Backup(BackupStatus):
+class Backup(BaseBackup, BackupStatus):
     id: str
-    name: str
     location: str
     scalet: int
     size: int
@@ -47,5 +52,11 @@ class Backup(BackupStatus):
         return location
 
 
+@dataclass
 class GetBackup(Backup):
+    pass
+
+
+@dataclass
+class PostBackup(BaseBackup):
     pass
