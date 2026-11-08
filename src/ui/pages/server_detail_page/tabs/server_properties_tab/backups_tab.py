@@ -7,9 +7,7 @@ from src.ui.widgets.backup_tile.backup_tile import backup_tile
 
 
 @ft.component
-def backups_tab(
-    server_detail_page_controller: ServerDetailPageController,
-):
+def backups_tab():
     server_detail_page_state = ft.use_context(ServerDetailPageContext)
     app_state = ft.use_context(AppContext)
 
