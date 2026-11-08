@@ -112,7 +112,7 @@ def server_detail_page():
         )
 
     is_server_detail_page_loading = (
-            server_detail_page_state.server_loading_status.value == LoadState.LOADING.value
+        server_detail_page_state.server_loading_status.value == LoadState.LOADING.value
     )
 
     def on_tab_changed(e):

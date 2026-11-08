@@ -3,14 +3,18 @@ from typing import List
 
 
 @dataclass
-class Tag:
+class AbstractTag:
     name: str
+
+
+@dataclass
+class Tag(AbstractTag):
+    scalets: List[int]
 
 
 @dataclass
 class GetTag(Tag):
     id: int
-    scalets: List[int]
 
 
 @dataclass
@@ -19,5 +23,5 @@ class PostTag(Tag):
 
 
 @dataclass
-class PutTag(Tag):
+class PutTag(AbstractTag):
     domains: List[str]

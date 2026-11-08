@@ -124,7 +124,7 @@ class ServerDetailPageController:
             self.server_detail_page_state.set_server_loading_status(LoadState.SUCCESS)
             logger.info("Rename server success")
             self._show_message_banner(
-                "Ошибка изменения названия сервера",
+                "Сервер успешно переименован",
                 False,
             )
             await self._refresh_server_info()

@@ -2,7 +2,7 @@ import logging
 from typing import List
 
 from src.api.tags_client import TagsClient
-from src.models.tag import GetTag
+from src.models.tag import GetTag, PostTag
 
 logger = logging.getLogger(__name__)
 
@@ -17,3 +17,8 @@ class TagsService:
         logger.info("Getting tags")
 
         return await self._client.get_tags()
+
+    async def create_tag(self, tag: PostTag) -> GetTag:
+        logger.info("Creating tag")
+
+        return await self._client.create_tag(tag)

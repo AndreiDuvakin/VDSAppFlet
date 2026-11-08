@@ -10,6 +10,7 @@ from src.ui.pages.info_page import info_page
 from src.ui.pages.login_page import login_page
 from src.ui.pages.server_detail_page.server_detail_page import server_detail_page
 from src.ui.pages.servers_page.servers_page import servers_page
+from src.ui.pages.tags_page.tags_page import tags_page
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +34,10 @@ def app_router():
                             ft.Route(
                                 path="/servers",
                                 component=servers_page,
+                            ),
+                            ft.Route(
+                                path="/tags",
+                                component=tags_page,
                             ),
                             ft.Route(
                                 path="/account",

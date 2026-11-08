@@ -2,7 +2,7 @@ import flet as ft
 
 
 @ft.component
-def nav_link(icon, path, label):
+def nav_link(icon, path):
     active = ft.is_route_active(path)
     return ft.Container(
         content=ft.Column(
@@ -17,7 +17,6 @@ def nav_link(icon, path, label):
                     expand=True,
                     padding=ft.Padding.symmetric(horizontal=20, vertical=5),
                 ),
-                ft.Text(label),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
